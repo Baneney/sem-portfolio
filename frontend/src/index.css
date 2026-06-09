@@ -1,35 +1,44 @@
 @import "tailwindcss";
 
-/* Fixed background layers — crossfade via opacity */
+/* Scroll snap container */
+.snap-container {
+  height: 100vh;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+  position: relative;
+  z-index: 1;
+}
+
+.snap-page {
+  height: 100vh;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  position: relative;
+}
+
+/* Fixed background layers */
 .bg-layer {
   position: absolute;
   inset: 0;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  transition: opacity 0.6s ease;
+  transition: opacity 0.8s ease;
 }
 
-/* Global dark overlay on top of all bg layers */
-.fixed.inset-0.-z-10::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 1;
-}
-
-.section-wrap {
-  position: relative;
-  z-index: 1;
-}
-
-/* Sculpture floating element */
+/* Sculpture */
 .sculpture-float {
   position: fixed;
   z-index: 20;
   pointer-events: none;
-  transition: left 0.1s linear, top 0.1s linear, transform 0.1s linear, opacity 0.1s linear;
+  width: 420px;
+  max-width: 45vw;
+  height: 420px;
+  transition: left 0.8s cubic-bezier(0.4, 0, 0.2, 1),
+              top  0.8s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.8s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.8s ease;
 }
 
 .sculpture-img {
@@ -39,23 +48,11 @@
   filter: drop-shadow(0 0 40px rgba(180, 140, 80, 0.5));
 }
 
-/* Glowing circle ring behind the sculpture on hero */
-.sculpture-ring {
+.sculpture-layer {
   position: absolute;
-  inset: 50%;
-  translate: -50% -50%;
-  width: 360px;
-  max-width: 42vw;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  border: 2px solid rgba(200, 160, 80, 0.35);
-  box-shadow:
-    0 0 60px 20px rgba(180, 130, 60, 0.2),
-    inset 0 0 60px 10px rgba(180, 130, 60, 0.1);
-  animation: ringPulse 3s ease-in-out infinite;
+  top: 0;
+  left: 0;
+  transition: opacity 0.8s ease;
 }
 
-@keyframes ringPulse {
-  0%, 100% { opacity: 0.5; transform: scale(1);    }
-  50%       { opacity: 1;   transform: scale(1.04); }
-}
+
