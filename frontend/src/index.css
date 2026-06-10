@@ -1,5 +1,42 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: 'SuiGeneris';
+  src: url('./assets/fonts/Sui Generis Rg.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+* {
+  font-family: 'SuiGeneris', serif;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar-track {
+  background: #2a2a2a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #555;
+}
+
+#snap-container::-webkit-scrollbar {
+  width: 12px;
+  background: #2a2a2a;
+}
+
+#snap-container::-webkit-scrollbar-track {
+  background: #2a2a2a;
+}
+
+#snap-container::-webkit-scrollbar-thumb {
+  background: #555;
+}
+
+.snap-container {
+  scrollbar-color: #afafaf #2a2a2a;
+}
+
 /* Scroll snap container */
 .snap-container {
   height: 100vh;
@@ -7,7 +44,7 @@
   scroll-snap-type: y mandatory;
   scroll-behavior: smooth;
   position: relative;
-  z-index: 1;
+  z-index: 20;
 }
 
 .snap-page {
@@ -15,6 +52,10 @@
   scroll-snap-align: start;
   scroll-snap-stop: always;
   position: relative;
+}
+
+.snap-page-dark {
+  background-color: #0a0a0a;
 }
 
 /* Fixed background layers */
@@ -30,7 +71,7 @@
 /* Sculpture */
 .sculpture-float {
   position: fixed;
-  z-index: 20;
+  z-index: 10;
   pointer-events: none;
   width: 420px;
   max-width: 45vw;
@@ -45,7 +86,7 @@
   width: 420px;
   max-width: 45vw;
   display: block;
-  filter: drop-shadow(0 0 40px rgba(180, 140, 80, 0.5));
+  filter: drop-shadow(0 0 40px rgba(180, 140, 80, 0.5)) brightness(0.7);
 }
 
 .sculpture-layer {

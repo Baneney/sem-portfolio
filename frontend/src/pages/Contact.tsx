@@ -1,6 +1,6 @@
 export default function Contact() {
   return (
-    <section id="contact" className="snap-page flex flex-col justify-center px-6 bg-gray-950/80">
+    <section id="contact" className="snap-page snap-page-dark flex flex-col justify-center px-6 bg-gray-950/80">
       <div className="max-w-xl mx-auto text-center">
         <h2 className="text-3xl font-bold text-white mb-4">Get In Touch</h2>
         <p className="text-gray-400 mb-10">

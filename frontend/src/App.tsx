@@ -7,10 +7,14 @@ import cornucopiaLeft from './assets/cornucopia-left.png'
 import cornucopiaRight from './assets/cornucopia-right.png'
 import Navbar from './components/Navbar'
 import Hero from './pages/Hero'
+import About1 from './pages/About1'
+import About2 from './pages/About2'
+import About3 from './pages/About3'
 import Skills from './pages/Skills'
 import Projects from './pages/Projects'
 import Contact from './pages/Contact'
 
+// Pages 1, 2, 3 = About1, About2, About3
 const bgImages   = [cornucopia, stonePlatformLeft, stonePlatformRight]
 const sculptures = [cornucopiaCenter, cornucopiaLeft, cornucopiaRight]
 
@@ -21,9 +25,10 @@ const POS = [
 ]
 
 function App() {
-  const bgRefs         = useRef<(HTMLDivElement | null)[]>([])
-  const sculptureRefs  = useRef<(HTMLImageElement | null)[]>([])
-  const wrapperRef     = useRef<HTMLDivElement>(null)
+  const bgRefs        = useRef<(HTMLDivElement | null)[]>([])
+  const sculptureRefs = useRef<(HTMLImageElement | null)[]>([])
+  const wrapperRef    = useRef<HTMLDivElement>(null)
+  const bgContainerRef = useRef<HTMLDivElement>(null)
   const currentPageRef = useRef(-1)
   const [atTop, setAtTop] = useState(true)
 
@@ -32,23 +37,28 @@ function App() {
     currentPageRef.current = index
     setAtTop(index === 0)
 
-    bgRefs.current.forEach((bg, i) => {
-      if (bg) bg.style.opacity = i === index ? '1' : '0'
-    })
+    const aboutIndex = index - 1 // about pages 1,2,3 → 0,1,2
+    const isAbout = aboutIndex >= 0 && aboutIndex < 3
 
-    sculptureRefs.current.forEach((img, i) => {
-      if (img) img.style.opacity = i === index ? '1' : '0'
-    })
+    // show/hide bg container
+    if (bgContainerRef.current) bgContainerRef.current.style.opacity = isAbout ? '1' : '0'
 
-    if (index < 3 && wrapperRef.current) {
-      const pos = POS[index]
-      wrapperRef.current.style.left      = `${pos.x}%`
-      wrapperRef.current.style.top       = `${pos.y}%`
-      wrapperRef.current.style.transform = `translate(-50%, -50%) scale(${pos.scale})`
-    }
-
-    if (wrapperRef.current) {
-      wrapperRef.current.style.opacity = index < 3 ? '1' : '0'
+    if (isAbout) {
+      bgRefs.current.forEach((bg, i) => {
+        if (bg) bg.style.opacity = i === aboutIndex ? '1' : '0'
+      })
+      sculptureRefs.current.forEach((img, i) => {
+        if (img) img.style.opacity = i === aboutIndex ? '1' : '0'
+      })
+      if (wrapperRef.current) {
+        const pos = POS[aboutIndex]
+        wrapperRef.current.style.opacity   = '1'
+        wrapperRef.current.style.left      = `${pos.x}%`
+        wrapperRef.current.style.top       = `${pos.y}%`
+        wrapperRef.current.style.transform = `translate(-50%, -50%) scale(${pos.scale})`
+      }
+    } else {
+      if (wrapperRef.current) wrapperRef.current.style.opacity = '0'
     }
   }
 
@@ -70,8 +80,12 @@ function App() {
   return (
     <div className="text-gray-300 font-sans">
 
-      {/* Fixed crossfade backgrounds */}
-      <div className="fixed inset-0 -z-10">
+      {/* Fixed backgrounds — About pages only */}
+      <div
+        ref={bgContainerRef}
+        className="fixed inset-0 -z-10"
+        style={{ opacity: 0, transition: 'opacity 0.8s ease' }}
+      >
         {bgImages.map((src, i) => (
           <div
             key={i}
@@ -80,11 +94,17 @@ function App() {
             style={{ backgroundImage: `url(${src})`, opacity: i === 0 ? 1 : 0 }}
           />
         ))}
-        <div className="absolute inset-0 bg-black/30" style={{ zIndex: 1 }} />
+        <div className="absolute inset-0 bg-black/50" style={{ zIndex: 1 }} />
       </div>
 
-      {/* Sculpture wrapper */}
-      <div ref={wrapperRef} className="sculpture-float">
+      {/* Sculpture — About pages only */}
+      <div
+        ref={wrapperRef}
+        className="sculpture-float"
+        style={{ opacity: 0,
+                 left: `${POS[0].x}%`, top: `${POS[0].y}%`,
+                 transform: `translate(-50%, -50%) scale(${POS[0].scale})` }}
+      >
         {sculptures.map((src, i) => (
           <img
             key={i}
@@ -97,11 +117,13 @@ function App() {
         ))}
       </div>
 
-      <Navbar atTop={atTop} />
+      {/* <Navbar atTop={atTop} /> */}
 
-      {/* Scroll snap container */}
       <div id="snap-container" className="snap-container">
         <Hero />
+        <About1 />
+        <About2 />
+        <About3 />
         <Skills />
         <Projects />
         <Contact />

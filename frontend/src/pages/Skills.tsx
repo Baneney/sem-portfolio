@@ -5,7 +5,7 @@ const skills = [
 
 export default function Skills() {
   return (
-    <section id="skills" className="snap-page flex flex-col justify-end px-6 pb-24">
+    <section id="skills" className="snap-page snap-page-dark flex flex-col justify-end px-6 pb-24">
       <div className="max-w-5xl mx-auto w-full">
         <h2 className="text-3xl font-bold text-white text-center mb-4">Skills</h2>
         <p className="text-center text-gray-400 mb-12">Technologies I work with</p>
