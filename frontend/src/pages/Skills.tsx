@@ -29,9 +29,17 @@ export default function Skills() {
   return (
     <section
       id="skills"
-      className="free-page flex items-center px-10 overflow-hidden bg-[#423422]"
+      className="free-page flex items-center px-10 overflow-hidden"
     >
-      <div className="flex w-full h-full">
+      {/* Background */}
+      <div className="absolute inset-0 bg-[#080400]">
+        <div className="absolute top-[15%] left-[-10%] w-[50%] h-[75%] rounded-full bg-[#c85000]/55 blur-[100px]" />
+        <div className="absolute top-[20%] left=[0%] w-[35%] h-[55%] rounded-full bg-[#ff8c00]/45 blur-[60px]" />
+        <div className="absolute top-[28%] left-[5%] w-[22%] h-[40%] rounded-full bg-[#ffd700]/40 blur-[30px]" />
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-[#080400]" />
+      </div>
+
+      <div className="flex w-full h-full relative">
         {/* Left side — bio */}
         <div className="w-1/2 flex flex-col justify-center pr-16">
           <p className="text-[#e5d4a1] text-sm font-medium tracking-widest uppercase mb-6">
