@@ -6,6 +6,7 @@ import cornucopiaCenter from './assets/cornucopia-center.png'
 import cornucopiaLeft from './assets/cornucopia-left.png'
 import cornucopiaRight from './assets/cornucopia-right.png'
 import Navbar from './components/Navbar'
+import ScannerWipe from './components/FireWipe'
 import Hero from './pages/Hero'
 import About1 from './pages/About1'
 import About2 from './pages/About2'
@@ -31,6 +32,8 @@ function App() {
   const bgContainerRef = useRef<HTMLDivElement>(null)
   const currentPageRef = useRef(-1)
   const [atTop, setAtTop] = useState(true)
+  const [fireWipeActive, setFireWipeActive] = useState(false)
+  const fireWipeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   function goToPage(index: number) {
     if (index === currentPageRef.current) return
@@ -69,8 +72,20 @@ function App() {
     goToPage(0)
 
     const handleScroll = () => {
-      const index = Math.round(container.scrollTop / window.innerHeight)
-      goToPage(index)
+      const scrollTop = container.scrollTop
+      const vh = window.innerHeight
+      const index = Math.round(scrollTop / vh)
+
+      if (index !== currentPageRef.current) {
+        const prevIndex = currentPageRef.current
+        goToPage(index)
+
+        if (prevIndex === 0 && index === 1) {
+          setFireWipeActive(true)
+          if (fireWipeTimeoutRef.current) clearTimeout(fireWipeTimeoutRef.current)
+          fireWipeTimeoutRef.current = setTimeout(() => setFireWipeActive(false), 800)
+        }
+      }
     }
 
     container.addEventListener('scroll', handleScroll, { passive: true })
@@ -118,6 +133,8 @@ function App() {
       </div>
 
       {/* <Navbar atTop={atTop} /> */}
+
+      <ScannerWipe active={fireWipeActive} />
 
       <div id="snap-container" className="snap-container">
         <Hero />
