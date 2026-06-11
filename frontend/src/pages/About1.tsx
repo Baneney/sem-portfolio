@@ -46,7 +46,7 @@ export default function About1() {
     <section
       ref={containerRef}
       id="about1"
-      className="snap-page relative flex min-h-screen flex-col justify-end items-center text-center px-6 pb-5 overflow-hidden"
+      className="snap-page relative flex min-h-screen flex-col justify-end items-center text-center px-6 pb-10 overflow-hidden"
     >
       {/* Animated background gradients */}
       <div className="absolute inset-0 opacity-30 pointer-events-none">

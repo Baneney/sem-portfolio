@@ -58,6 +58,11 @@
   background-color: #0a0a0a;
 }
 
+/* Smooth scroll for later pages */
+#skills, #projects, #contact {
+  scroll-snap-stop: normal;
+}
+
 /* Fixed background layers */
 .bg-layer {
   position: absolute;
