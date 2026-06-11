@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import skillsBg from '../assets/skills-bg.png'
 import treeLeft from '../assets/tree-left.png'
@@ -53,9 +53,43 @@ const pillReveal = {
 
 export default function Skills() {
   const [openIndex, setOpenIndex] = useState<string | null>(null)
+  const sectionRef = useRef<HTMLElement>(null)
+  const treeLeftRef = useRef<HTMLImageElement>(null)
+  const treeCenterRef = useRef<HTMLImageElement>(null)
+  const treeRightRef = useRef<HTMLImageElement>(null)
+
+  useEffect(() => {
+    const container = document.getElementById('snap-container')
+    const section = sectionRef.current
+    if (!container || !section) return
+
+    const handleScroll = () => {
+      const scrollTop = container.scrollTop
+      const offsetTop = section.offsetTop
+      const vh = container.clientHeight
+
+      const p = Math.max(0, Math.min(1, (scrollTop - offsetTop + vh) / (vh + section.offsetHeight)))
+      const t = 1 - p
+
+      if (treeLeftRef.current) {
+        treeLeftRef.current.style.transform = `translateX(${-t * 100}%)`
+      }
+      if (treeRightRef.current) {
+        treeRightRef.current.style.transform = `translateX(${t * 100}%)`
+      }
+      if (treeCenterRef.current) {
+        treeCenterRef.current.style.transform = `translateY(${t * 60}px)`
+      }
+    }
+
+    container.addEventListener('scroll', handleScroll, { passive: true })
+    handleScroll()
+    return () => container.removeEventListener('scroll', handleScroll)
+  }, [])
 
   return (
     <section
+      ref={sectionRef}
       id="skills"
       className="free-page flex items-center px-10 overflow-hidden"
     >
@@ -72,9 +106,9 @@ export default function Skills() {
 
       {/* Tree silhouettes — foreground */}
       <div className="absolute inset-0 flex items-end pointer-events-none z-10 overflow-hidden">
-        <img src={treeLeft} alt="" className="h-full object-cover object-left" style={{ flex: '620 1 0' }} />
-        <img src={treeCenter} alt="" className="h-full object-cover object-center" style={{ flex: '700 1 0' }} />
-        <img src={treeRight} alt="" className="h-full object-cover object-right" style={{ flex: '558 1 0' }} />
+        <img ref={treeLeftRef} src={treeLeft} alt="" className="h-full object-cover object-left will-change-transform" style={{ flex: '620 1 0' }} />
+        <img ref={treeCenterRef} src={treeCenter} alt="" className="h-full object-cover object-center will-change-transform" style={{ flex: '700 1 0' }} />
+        <img ref={treeRightRef} src={treeRight} alt="" className="h-full object-cover object-right will-change-transform" style={{ flex: '558 1 0' }} />
       </div>
 
       <div className="flex w-full h-full relative z-20">
