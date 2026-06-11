@@ -1,27 +1,51 @@
 import { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 
 const categories = [
   {
     name: 'Frontend',
+    icon: '◈',
     skills: ['HTML', 'CSS', 'JavaScript', 'TypeScript', 'React', 'Next.js', 'Tailwind', 'Bootstrap', 'Electron'],
   },
   {
     name: 'Animation & 3D',
+    icon: '◆',
     skills: ['Framer Motion', 'Three.js', 'GSAP', 'CSS Animations', 'WebGL'],
   },
   {
     name: 'Backend',
+    icon: '◇',
     skills: ['Node.js', 'Python', 'Express', 'REST APIs', 'GraphQL', 'Django'],
   },
   {
     name: 'Databases',
+    icon: '◈',
     skills: ['PostgreSQL', 'MongoDB', 'Firebase', 'Redis', 'Supabase'],
   },
   {
     name: 'DevOps & Tools',
+    icon: '◆',
     skills: ['Git', 'Docker', 'AWS', 'Linux', 'CI/CD', 'Figma'],
   },
 ]
+
+const stagger = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.04, delayChildren: 0.08 },
+  },
+}
+
+const pillReveal = {
+  hidden: { opacity: 0, y: 16, scale: 0.9 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { type: 'spring', stiffness: 300, damping: 22 },
+  },
+}
 
 export default function Skills() {
   const [openIndex, setOpenIndex] = useState<number | null>(null)
@@ -34,7 +58,7 @@ export default function Skills() {
       {/* Background */}
       <div className="absolute inset-0 bg-[#080400]">
         <div className="absolute top-[15%] left-[-10%] w-[50%] h-[75%] rounded-full bg-[#c85000]/55 blur-[100px]" />
-        <div className="absolute top-[20%] left=[0%] w-[35%] h-[55%] rounded-full bg-[#ff8c00]/45 blur-[60px]" />
+        <div className="absolute top-[20%] left-[0%] w-[35%] h-[55%] rounded-full bg-[#ff8c00]/45 blur-[60px]" />
         <div className="absolute top-[28%] left-[5%] w-[22%] h-[40%] rounded-full bg-[#ffd700]/40 blur-[30px]" />
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-[#080400]" />
       </div>
@@ -58,39 +82,114 @@ export default function Skills() {
         </div>
 
         {/* Right side — accordion */}
-        <div className="w-1/2 flex flex-col justify-center">
-          {categories.map((cat, i) => {
-            const isOpen = openIndex === i;
+        <div className="w-1/2 flex flex-col justify-center pl-6">
+          {categories.map((cat) => {
+            const isOpen = openIndex === cat.name
             return (
-              <div key={cat.name} className="border-b border-white/10">
+              <div key={cat.name} className="relative">
+                {/* Active indicator */}
+                <AnimatePresence>
+                  {isOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, scaleY: 0 }}
+                      animate={{ opacity: 1, scaleY: 1 }}
+                      exit={{ opacity: 0, scaleY: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="absolute left-[-24px] top-0 bottom-0 w-[3px] origin-top bg-gradient-to-b from-[#ffd86a] via-[#f0b43a] to-transparent rounded-full"
+                    />
+                  )}
+                </AnimatePresence>
+
+                {/* Category header */}
                 <button
-                  onClick={() => setOpenIndex(isOpen ? null : i)}
-                  className="w-full flex items-center justify-between py-6 text-left group"
+                  onClick={() => setOpenIndex(isOpen ? null : cat.name)}
+                  className="relative w-full flex items-center justify-between py-5 text-left group"
                 >
-                  <span className="text-[2rem] font-bold text-white group-hover:text-[#ffd86a] transition-colors">
-                    {cat.name}
-                  </span>
-                  <span className="text-white/50 text-2xl font-light w-8 text-right">
-                    {isOpen ? "−" : "+"}
-                  </span>
+                  <div className="flex items-center gap-4">
+                    <motion.span
+                      animate={{ color: isOpen ? '#ffd86a' : 'rgba(255,255,255,0.25)' }}
+                      transition={{ duration: 0.3 }}
+                      className="text-sm"
+                    >
+                      {cat.icon}
+                    </motion.span>
+                    <span className={`text-xl uppercase font-bold transition-colors duration-300 ${isOpen ? 'text-[#ffd86a]' : 'text-white/80 group-hover:text-white'}`}>
+                      {cat.name}
+                    </span>
+                    <motion.span
+                      animate={{ opacity: isOpen ? 1 : 0, scale: isOpen ? 1 : 0.5 }}
+                      transition={{ duration: 0.2 }}
+                      className="text-[10px] tracking-wider font-medium text-[#ffd86a]/60 bg-[#ffd86a]/10 px-2 py-0.5 rounded-full border border-[#ffd86a]/20"
+                    >
+                      {cat.skills.length}
+                    </motion.span>
+                  </div>
+                  <motion.span
+                    animate={{ rotate: isOpen ? 45 : 0, color: isOpen ? '#ffd86a' : 'rgba(255,255,255,0.3)' }}
+                    transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                    className="text-xl font-light"
+                  >
+                    +
+                  </motion.span>
                 </button>
-                <div
-                  className="overflow-hidden transition-all duration-300 ease-in-out"
-                  style={{ maxHeight: isOpen ? "300px" : "0" }}
-                >
-                  <ul className="pb-6 pl-2 space-y-2">
-                    {cat.skills.map((skill) => (
-                      <li key={skill} className="text-white/60 text-base">
-                        {skill}
-                      </li>
-                    ))}
-                  </ul>
+
+                {/* Divider */}
+                <div className="relative h-px">
+                  <div className="absolute inset-0 bg-white/[0.06]" />
+                  <motion.div
+                    animate={{ scaleX: isOpen ? 1 : 0 }}
+                    transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+                    className="absolute inset-0 bg-gradient-to-r from-[#ffd86a]/40 via-[#ffd86a]/20 to-transparent origin-left"
+                  />
                 </div>
+
+                {/* Skills content */}
+                <AnimatePresence initial={false}>
+                  {isOpen && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
+                      className="overflow-hidden"
+                    >
+                      {/* Radial glow behind pills */}
+                      <div className="relative py-5 pl-4">
+                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[120%] bg-[radial-gradient(ellipse,rgba(255,216,106,0.06),transparent_70%)] pointer-events-none" />
+
+                        <motion.ul
+                          variants={stagger}
+                          initial="hidden"
+                          animate="visible"
+                          className="relative flex flex-wrap gap-2.5"
+                        >
+                          {cat.skills.map((skill) => (
+                            <motion.li
+                              key={skill}
+                              variants={pillReveal}
+                              whileHover={{ scale: 1.08, y: -2 }}
+                              className="px-4 py-2 rounded-full text-[13px] font-medium tracking-wide
+                                         bg-white/[0.04] border border-white/[0.08]
+                                         text-white/60
+                                         hover:border-[#ffd86a]/30 hover:text-[#ffd86a]
+                                         hover:bg-[#ffd86a]/[0.06]
+                                         hover:shadow-[0_0_24px_rgba(255,216,106,0.1)]
+                                         transition-colors duration-200 cursor-default
+                                         backdrop-blur-sm"
+                            >
+                              {skill}
+                            </motion.li>
+                          ))}
+                        </motion.ul>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
-            );
+            )
           })}
         </div>
       </div>
     </section>
-  );
+  )
 }
