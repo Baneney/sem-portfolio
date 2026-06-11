@@ -1,5 +1,9 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import skillsBg from '../assets/skills-bg.png'
+import treeLeft from '../assets/tree-left.png'
+import treeCenter from '../assets/tree-center.png'
+import treeRight from '../assets/tree-right.png'
 
 const categories = [
   {
@@ -57,19 +61,27 @@ export default function Skills() {
     >
       {/* Background */}
       <div className="absolute inset-0 bg-[#080400]">
-        <div className="absolute top-[15%] left-[-10%] w-[50%] h-[75%] rounded-full bg-[#c85000]/55 blur-[100px]" />
-        <div className="absolute top-[20%] left-[0%] w-[35%] h-[55%] rounded-full bg-[#ff8c00]/45 blur-[60px]" />
-        <div className="absolute top-[28%] left-[5%] w-[22%] h-[40%] rounded-full bg-[#ffd700]/40 blur-[30px]" />
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-[#080400]" />
+        <img
+          src={skillsBg}
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#080400]/80 via-[#080400]/40 to-[#080400]/70" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#080400]/60 via-transparent to-[#080400]/80" />
       </div>
 
-      <div className="flex w-full h-full relative">
+      {/* Tree silhouettes — foreground */}
+      <img src={treeLeft} alt="" className="absolute bottom-0 left-0 h-full w-full pointer-events-none z-10" />
+      <img src={treeCenter} alt="" className="absolute bottom-0 left-1/2 -translate-x-1/2 h-full w-full pointer-events-none z-10" />
+      <img src={treeRight} alt="" className="absolute bottom-0 right-0 h-full w-full pointer-events-none z-10" />
+
+      <div className="flex w-full h-full relative z-20">
         {/* Left side — bio */}
-        <div className="w-1/2 flex flex-col justify-center pr-16">
-          <p className="text-[#e5d4a1] text-sm font-medium tracking-widest uppercase mb-6">
+        <div className="w-[45%] flex flex-col justify-center pr-16">
+          <p className="text-[#e5d4a1] text-xs font-medium tracking-widest uppercase mb-4">
             Skills
           </p>
-          <h2 className="text-[2.8rem] font-black text-white leading-[1.1] uppercase tracking-tight mb-12">
+          <h2 className="text-[1.6rem] font-black text-white leading-[1.15] uppercase tracking-tight mb-10">
             Full Stack Developer crafting digital experiences with precision and
             fire.
           </h2>
@@ -82,7 +94,7 @@ export default function Skills() {
         </div>
 
         {/* Right side — accordion */}
-        <div className="w-1/2 flex flex-col justify-center pl-6">
+        <div className="w-[55%] flex flex-col justify-center pl-6">
           {categories.map((cat) => {
             const isOpen = openIndex === cat.name
             return (
@@ -103,7 +115,7 @@ export default function Skills() {
                 {/* Category header */}
                 <button
                   onClick={() => setOpenIndex(isOpen ? null : cat.name)}
-                  className="relative w-full flex items-center justify-between py-5 text-left group"
+                  className="relative w-full flex items-center justify-between py-6 text-left group"
                 >
                   <div className="flex items-center gap-4">
                     <motion.span
