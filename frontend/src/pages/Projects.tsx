@@ -21,7 +21,7 @@ const projects = [
 
 export default function Projects() {
   return (
-    <section id="projects" className="snap-page snap-page-dark flex flex-col justify-end px-6 pb-24">
+    <section id="projects" className="free-page snap-page-dark flex flex-col justify-end px-6 pb-24">
       <div className="max-w-5xl mx-auto w-full">
         <h2 className="text-3xl font-bold text-white text-center mb-4">Projects</h2>
         <p className="text-center text-gray-400 mb-12">Things I've built</p>

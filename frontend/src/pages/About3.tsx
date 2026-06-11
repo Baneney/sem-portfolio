@@ -75,9 +75,8 @@ export default function About3() {
         <div className="absolute -top-3 -left-3 w-6 h-6 bg-[#ffd86a] rounded-full opacity-0 group-hover:opacity-20 blur-sm animate-pulse transition-opacity duration-300" />
         <div className="absolute -bottom-3 -right-3 w-6 h-6 bg-[#c85000] rounded-full opacity-0 group-hover:opacity-20 blur-sm animate-pulse transition-opacity duration-300" style={{ animationDelay: '0.5s' }} />
 
-        {/* Content wrapper */}
+        {/* Content wrapper — left aligned */}
         <div className="flex flex-col items-start z-10 space-y-4 text-left">
-          {/* Label with animation */}
           <p
             className={`text-[#e5d4a1] text-sm font-medium tracking-widest uppercase mb-3 ${
               isVisible ? 'animate-fade-in-down delay-100' : 'opacity-0'
@@ -86,7 +85,6 @@ export default function About3() {
             What drives me
           </p>
 
-          {/* Main heading */}
           <h2
             className={`text-[190%] font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#ffd86a] via-[#f0b43a] to-[#d18a1e] mb-4 uppercase tracking-[0.2em] animate-glow ${
               isVisible ? 'animate-scale-in delay-200' : 'opacity-0'
@@ -95,7 +93,6 @@ export default function About3() {
             Philosophy
           </h2>
 
-          {/* Description text */}
           <p
             className={`text-[#e5d4a1] leading-relaxed text-lg ${
               isVisible ? 'animate-fade-in-up delay-300' : 'opacity-0'
