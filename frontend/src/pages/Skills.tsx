@@ -69,7 +69,7 @@ export default function Skills() {
       const vh = container.clientHeight
 
       const p = Math.max(0, Math.min(1, (scrollTop - offsetTop + vh) / (vh + section.offsetHeight)))
-      const t = 1 - p
+      const t = Math.max(0, 1 - p * 2)
 
       if (treeLeftRef.current) {
         treeLeftRef.current.style.transform = `translateX(${-t * 100}%)`
