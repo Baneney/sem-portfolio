@@ -37,9 +37,6 @@ function App() {
     const aboutIndex = index - 1 // about pages 1,2,3 → 0,1,2
     const isAbout = aboutIndex >= 0 && aboutIndex < 3
 
-    // show/hide bg container
-    if (bgContainerRef.current) bgContainerRef.current.style.opacity = isAbout ? '1' : '0'
-
     if (isAbout) {
       bgRefs.current.forEach((bg, i) => {
         if (bg) bg.style.opacity = i === aboutIndex ? '1' : '0'
@@ -90,7 +87,7 @@ function App() {
       <div
         ref={bgContainerRef}
         className="fixed inset-0 -z-10"
-        style={{ opacity: 0, transition: 'opacity 0.8s ease' }}
+        style={{ opacity: 1 }}
       >
         {bgImages.map((src, i) => (
           <div
