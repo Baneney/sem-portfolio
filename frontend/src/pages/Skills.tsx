@@ -47,12 +47,12 @@ const pillReveal = {
     opacity: 1,
     y: 0,
     scale: 1,
-    transition: { type: 'spring', stiffness: 300, damping: 22 },
+    transition: { type: 'spring' as const, stiffness: 300, damping: 22 },
   },
 }
 
 export default function Skills() {
-  const [openIndex, setOpenIndex] = useState<number | null>(null)
+  const [openIndex, setOpenIndex] = useState<string | null>(null)
 
   return (
     <section
@@ -71,9 +71,11 @@ export default function Skills() {
       </div>
 
       {/* Tree silhouettes — foreground */}
-      <img src={treeLeft} alt="" className="absolute bottom-0 left-0 h-full w-full pointer-events-none z-10" />
-      <img src={treeCenter} alt="" className="absolute bottom-0 left-1/2 -translate-x-1/2 h-full w-full pointer-events-none z-10" />
-      <img src={treeRight} alt="" className="absolute bottom-0 right-0 h-full w-full pointer-events-none z-10" />
+      <div className="absolute inset-0 flex items-end pointer-events-none z-10 overflow-hidden">
+        <img src={treeLeft} alt="" className="h-full object-cover object-left" style={{ flex: '620 1 0' }} />
+        <img src={treeCenter} alt="" className="h-full object-cover object-center" style={{ flex: '700 1 0' }} />
+        <img src={treeRight} alt="" className="h-full object-cover object-right" style={{ flex: '558 1 0' }} />
+      </div>
 
       <div className="flex w-full h-full relative z-20">
         {/* Left side — bio */}
@@ -138,7 +140,7 @@ export default function Skills() {
                   </div>
                   <motion.span
                     animate={{ rotate: isOpen ? 45 : 0, color: isOpen ? '#ffd86a' : 'rgba(255,255,255,0.3)' }}
-                    transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                    transition={{ type: 'spring' as const, stiffness: 300, damping: 20 }}
                     className="text-xl font-light"
                   >
                     +

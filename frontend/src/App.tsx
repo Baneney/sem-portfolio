@@ -1,11 +1,10 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import cornucopia from './assets/cornucopia.jpeg'
 import stonePlatformLeft from './assets/stone-platform-left.jpeg'
 import stonePlatformRight from './assets/stone-platform-right.jpeg'
 import cornucopiaCenter from './assets/cornucopia-center.png'
 import cornucopiaLeft from './assets/cornucopia-left.png'
 import cornucopiaRight from './assets/cornucopia-right.png'
-import Navbar from './components/Navbar'
 import Hero from './pages/Hero'
 import About1 from './pages/About1'
 import About2 from './pages/About2'
@@ -30,12 +29,10 @@ function App() {
   const wrapperRef    = useRef<HTMLDivElement>(null)
   const bgContainerRef = useRef<HTMLDivElement>(null)
   const currentPageRef = useRef(-1)
-  const [atTop, setAtTop] = useState(true)
 
   function goToPage(index: number) {
     if (index === currentPageRef.current) return
     currentPageRef.current = index
-    setAtTop(index === 0)
 
     const aboutIndex = index - 1 // about pages 1,2,3 → 0,1,2
     const isAbout = aboutIndex >= 0 && aboutIndex < 3
