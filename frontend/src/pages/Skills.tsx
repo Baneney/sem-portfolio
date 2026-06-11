@@ -114,28 +114,73 @@ export default function Skills() {
 
       <div className="flex w-full h-full relative z-20">
         {/* Left side — bio */}
-        <div className="w-[45%] flex flex-col justify-center pr-16">
-          <p className="text-[#e5d4a1] text-xs font-medium tracking-widest uppercase mb-4">
-            Skills
-          </p>
-          <h2 className="text-[1.6rem] font-black text-white leading-[1.15] uppercase tracking-tight mb-10">
-            Full Stack Developer crafting digital experiences with precision and
-            fire.
-          </h2>
-          <a
-            href="#contact"
-            className="text-[#e5d4a1] text-xs font-semibold tracking-[0.3em] uppercase hover:text-[#ffd86a] transition-colors"
+        <div className="w-[45%] flex flex-col justify-center pr-16 relative">
+
+          <div className="flex items-center gap-2 mb-3">
+            <span className="w-1.5 h-px bg-[#ffd86a]/60" />
+            <span className="text-[#ffd86a]/60 text-[10px] tracking-[0.3em] uppercase font-medium">
+              Expertise
+            </span>
+          </div>
+
+          <motion.h2
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
+            className="text-9xl font-black text-white leading-[0.95] tracking-tight mb-6 uppercase"
           >
-            Contact Me ✦
-          </a>
+            Skills
+          </motion.h2>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.15, ease: 'easeOut' }}
+            className="text-white/50 text-sm leading-relaxed mb-10 max-w-lg"
+          >
+            Full Stack Developer &mdash; crafting digital experiences with precision and fire through elegant code and dramatic motion.
+          </motion.p>
+
+          <motion.a
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.4, delay: 0.25, ease: 'easeOut' }}
+            whileHover={{ x: 4 }}
+            href="#contact"
+            className="inline-flex items-center gap-2 text-xs font-semibold tracking-[0.3em] uppercase text-[#ffd86a]/80 hover:text-[#ffd86a] transition-colors group"
+          >
+            Contact Me
+            <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">→</span>
+          </motion.a>
         </div>
 
         {/* Right side — accordion */}
-        <div className="w-[55%] flex flex-col justify-center pl-6">
-          {categories.map((cat) => {
+        <div className="w-[55%] flex flex-col justify-center pl-6 relative">
+          {/* Ambient decorative glows */}
+          <motion.div
+            animate={{ opacity: [0.3, 0.6, 0.3], scale: [1, 1.1, 1] }}
+            transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+            className="absolute top-[10%] right-[10%] w-32 h-32 rounded-full bg-[#ffd86a]/[0.03] blur-3xl pointer-events-none"
+          />
+          <motion.div
+            animate={{ opacity: [0.2, 0.5, 0.2], scale: [1, 1.2, 1] }}
+            transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
+            className="absolute bottom-[20%] left-[5%] w-40 h-40 rounded-full bg-[#c85000]/[0.03] blur-3xl pointer-events-none"
+          />
+          {categories.map((cat, index) => {
             const isOpen = openIndex === cat.name
             return (
-              <div key={cat.name} className="relative">
+              <motion.div
+                key={cat.name}
+                initial={{ opacity: 0, x: 40 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.08, ease: 'easeOut' }}
+                className="relative"
+              >
                 {/* Active indicator */}
                 <AnimatePresence>
                   {isOpen && (
@@ -175,8 +220,9 @@ export default function Skills() {
                   </div>
                   <motion.span
                     animate={{ rotate: isOpen ? 45 : 0, color: isOpen ? '#ffd86a' : 'rgba(255,255,255,0.3)' }}
+                    whileHover={{ scale: 1.3 }}
                     transition={{ type: 'spring' as const, stiffness: 300, damping: 20 }}
-                    className="text-xl font-light"
+                    className="text-xl font-light cursor-pointer"
                   >
                     +
                   </motion.span>
@@ -216,13 +262,14 @@ export default function Skills() {
                             <motion.li
                               key={skill}
                               variants={pillReveal}
-                              whileHover={{ scale: 1.08, y: -2 }}
+                              whileHover={{ scale: 1.15, y: -4 }}
+                              whileTap={{ scale: 0.95 }}
                               className="px-4 py-2 rounded-full text-[13px] font-medium tracking-wide
                                          bg-white/[0.04] border border-white/[0.08]
                                          text-white/60
-                                         hover:border-[#ffd86a]/30 hover:text-[#ffd86a]
-                                         hover:bg-[#ffd86a]/[0.06]
-                                         hover:shadow-[0_0_24px_rgba(255,216,106,0.1)]
+                                         hover:border-[#ffd86a]/40 hover:text-[#ffd86a]
+                                         hover:bg-[#ffd86a]/[0.08]
+                                         hover:shadow-[0_0_32px_rgba(255,216,106,0.18)]
                                          transition-colors duration-200 cursor-default
                                          backdrop-blur-sm"
                             >
@@ -234,7 +281,7 @@ export default function Skills() {
                     </motion.div>
                   )}
                 </AnimatePresence>
-              </div>
+                </motion.div>
             )
           })}
         </div>
