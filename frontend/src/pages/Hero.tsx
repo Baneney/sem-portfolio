@@ -1,8 +1,25 @@
 import hgPin from '../assets/hg-big-pin.png'
 import FireCanvas from '../components/FireCanvas'
 import PinShine from '../components/PinShine'
+import { motion, useInView, useMotionValue, useTransform, animate } from 'framer-motion'
+import { useRef, useEffect } from 'react'
 
 export default function Hero() {
+  const bottomBarRef = useRef<HTMLDivElement>(null)
+  const lineInView = useInView(bottomBarRef, { once: true, amount: 0.5 })
+  const progress = useMotionValue(0)
+  const dotCx = useTransform(progress, [0, 1], [0, 1000])
+
+  useEffect(() => {
+    if (lineInView) {
+      animate(progress, 1, {
+        duration: 1.4,
+        ease: [0.25, 0.1, 0.25, 1],
+        delay: 0.3,
+      })
+    }
+  }, [lineInView, progress])
+
   return (
     <section
       id="about"
@@ -76,10 +93,53 @@ export default function Hero() {
 
       {/* Bottom bar */}
       <div
-        className="relative group flex justify-between items-center border-t border-white/10 pt-6 text-xs tracking-[0.35em] uppercase text-white/60 overflow-hidden"
+        ref={bottomBarRef}
+        className="relative group flex justify-between items-center pt-6 text-xs tracking-[0.35em] uppercase text-white/60 overflow-hidden"
         style={{ zIndex: 3 }}
       >
-        <div className="absolute inset-x-0 top-0 h-[1px] bg-[radial-gradient(circle,rgba(255,181,46,0.2),transparent_55%)] pointer-events-none" />
+        {/* Animated SVG draw line */}
+        <svg
+          className="absolute inset-x-0 top-0 w-full h-[1px] pointer-events-none"
+          preserveAspectRatio="none"
+          viewBox="0 0 1000 1"
+        >
+          <defs>
+            <filter id="line-dot-glow" x="-200%" y="-200%" width="500%" height="500%">
+              <feGaussianBlur stdDeviation="2" result="blur" />
+              <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
+          {/* Glow layer */}
+          <motion.path
+            d="M 0 0.5 L 1000 0.5"
+            fill="none"
+            stroke="rgba(255,181,46,0.15)"
+            strokeWidth="4"
+            strokeLinecap="round"
+            style={{ pathLength: progress }}
+          />
+          {/* Core line */}
+          <motion.path
+            d="M 0 0.5 L 1000 0.5"
+            fill="none"
+            stroke="rgba(255,216,106,0.25)"
+            strokeWidth="1"
+            strokeLinecap="round"
+            style={{ pathLength: progress }}
+          />
+          {/* Traveling dot — driven by same progress value */}
+          <motion.circle
+            cx={dotCx}
+            cy={0.5}
+            r="2"
+            fill="rgba(255,216,106,0.6)"
+            filter="url(#line-dot-glow)"
+            style={{ opacity: progress }}
+          />
+        </svg>
 
         <span className="relative inline-flex items-center gap-2 text-white/60 transition-colors duration-300 hover:text-[#ffd86a]">
           <span className="text-[#ffd86a]/80">→</span>
