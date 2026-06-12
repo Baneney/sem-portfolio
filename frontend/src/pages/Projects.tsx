@@ -90,15 +90,37 @@ const projects = [
 function generateSnakePath(n: number) {
   const lx = 55
   const rx = 145
+  const seg = PROJECT_H
+
   let d = `M ${lx} 0`
+  // Virtual "previous CP2" so the first segment enters smoothly from above
+  // Reflection: cp1 = 2*start - prevCP2 → want cp1.y ≈ seg*0.25 below start
+  // So prevCP2.y = 2*0 - seg*0.25 = -seg*0.25
+  let prevCP2 = { x: lx, y: -seg * 0.25 }
+
   for (let i = 0; i < n; i++) {
-    const y1 = i * PROJECT_H
-    const y2 = (i + 1) * PROJECT_H
-    const my = (y1 + y2) / 2
-    const tx = i % 2 === 0 ? rx : lx
-    d += ` C ${lx} ${my} ${tx} ${my} ${tx} ${y2}`
+    const startX = i === 0 ? lx : (i % 2 === 0 ? lx : rx)
+    const startY = i * seg
+    const endX = i % 2 === 0 ? rx : lx
+    const endY = (i + 1) * seg
+
+    // C1 continuity: reflect previous CP2 through current start point
+    const cp1x = 2 * startX - prevCP2.x
+    const cp1y = 2 * startY - prevCP2.y
+
+    // Second control point pulls toward the end x, 30% above end y
+    const cp2x = endX
+    const cp2y = endY - seg * 0.3
+
+    d += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${endX} ${endY}`
+    prevCP2 = { x: cp2x, y: cp2y }
   }
   return d
+}
+
+function getPointOnPath(pathEl: SVGPathElement, ratio: number) {
+  const len = pathEl.getTotalLength()
+  return pathEl.getPointAtLength(len * ratio)
 }
 
 export default function Projects() {
@@ -107,6 +129,8 @@ export default function Projects() {
   const [pathLen, setPathLen] = useState(1200)
   const svgRef = useRef<SVGSVGElement>(null)
   const containerRef = useRef<HTMLElement>(null)
+  const glowDotRef = useRef<SVGCircleElement>(null)
+  const glowTrailRef = useRef<SVGPathElement>(null)
 
   const snakePath = generateSnakePath(projects.length)
 
@@ -136,10 +160,26 @@ export default function Projects() {
       )
       setActiveIdx(Math.max(0, idx))
 
+      // Animate main stroke draw
       const drawn = pathLen * Math.min(1, progress * 1.15)
-      const pathEl = svgRef.current?.querySelector('path')
+      const pathEl = svgRef.current?.querySelector('.snake-main') as SVGPathElement | null
       if (pathEl) {
         pathEl.style.strokeDashoffset = String(pathLen - drawn)
+      }
+
+      // Glow trail — brighter stroke that follows the draw
+      const glowPathEl = glowTrailRef.current
+      if (glowPathEl) {
+        const glowDrawn = pathLen * Math.min(1, progress * 1.15)
+        glowPathEl.style.strokeDashoffset = String(pathLen - glowDrawn)
+      }
+
+      // Traveling glow dot — moves along the path
+      const dot = glowDotRef.current
+      if (dot && pathEl) {
+        const point = getPointOnPath(pathEl, Math.min(1, progress * 1.15))
+        dot.setAttribute('cx', String(point.x))
+        dot.setAttribute('cy', String(point.y))
       }
     }
 
@@ -194,28 +234,46 @@ export default function Projects() {
             }}
           >
             <defs>
-              <filter id="snake-glow" x="-50%" y="-50%" width="200%" height="200%">
-                <feGaussianBlur stdDeviation="6" result="blur" />
+              <filter id="snake-glow" x="-100%" y="-100%" width="300%" height="300%">
+                <feGaussianBlur stdDeviation="5" result="blur1" />
+                <feGaussianBlur stdDeviation="12" result="blur2" />
                 <feMerge>
+                  <feMergeNode in="blur2" />
+                  <feMergeNode in="blur1" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+              <filter id="dot-glow" x="-200%" y="-200%" width="500%" height="500%">
+                <feGaussianBlur stdDeviation="8" result="blur" />
+                <feMerge>
+                  <feMergeNode in="blur" />
                   <feMergeNode in="blur" />
                   <feMergeNode in="SourceGraphic" />
                 </feMerge>
               </filter>
+              <radialGradient id="dot-gradient">
+                <stop offset="0%" stopColor="#ffffff" />
+                <stop offset="40%" stopColor="#ffd86a" />
+                <stop offset="100%" stopColor="#d18a1e" stopOpacity="0" />
+              </radialGradient>
             </defs>
+
             {/* Faint background track */}
             <path
               d={snakePath}
               fill="none"
-              stroke="rgba(255,216,106,0.08)"
-              strokeWidth="3"
+              stroke="rgba(255,216,106,0.06)"
+              strokeWidth="4"
               strokeLinecap="round"
             />
-            {/* Animated main stroke */}
+
+            {/* Glow trail — brighter, wider, blurred behind the main stroke */}
             <path
+              ref={glowTrailRef}
               d={snakePath}
               fill="none"
-              stroke="#ffd86a"
-              strokeWidth="3"
+              stroke="rgba(255,216,106,0.3)"
+              strokeWidth="8"
               strokeLinecap="round"
               filter="url(#snake-glow)"
               style={{
@@ -224,32 +282,84 @@ export default function Projects() {
                 transition: 'stroke-dashoffset 0.1s linear',
               }}
             />
+
+            {/* Animated main stroke */}
+            <path
+              className="snake-main"
+              d={snakePath}
+              fill="none"
+              stroke="#ffd86a"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              style={{
+                strokeDasharray: pathLen,
+                strokeDashoffset: pathLen,
+                transition: 'stroke-dashoffset 0.1s linear',
+              }}
+            />
+
+            {/* Traveling glow dot */}
+            <circle
+              ref={glowDotRef}
+              cx="55"
+              cy="0"
+              r="10"
+              fill="url(#dot-gradient)"
+              filter="url(#dot-glow)"
+              opacity="0.9"
+            />
+
             {/* Node circles at each project */}
             {projects.map((_, i) => {
               const cx = i % 2 === 0 ? 145 : 55
               const cy = i * PROJECT_H + PROJECT_H / 2
               const isActive = i === activeIdx
+              const isPast = i < activeIdx
               return (
                 <g key={i}>
+                  {/* Outer ring on active */}
                   {isActive && (
                     <circle
                       cx={cx}
                       cy={cy}
-                      r="18"
+                      r="20"
                       fill="none"
                       stroke="#ffd86a"
                       strokeWidth="1"
-                      opacity="0.4"
-                      className="animate-pulse"
-                    />
+                      opacity="0.3"
+                    >
+                      <animate
+                        attributeName="r"
+                        values="14;22;14"
+                        dur="2s"
+                        repeatCount="indefinite"
+                      />
+                      <animate
+                        attributeName="opacity"
+                        values="0.5;0.1;0.5"
+                        dur="2s"
+                        repeatCount="indefinite"
+                      />
+                    </circle>
                   )}
+                  {/* Core dot */}
                   <circle
                     cx={cx}
                     cy={cy}
-                    r="6"
-                    fill={isActive ? '#ffd86a' : 'rgba(255,216,106,0.25)'}
-                    style={{ transition: 'fill 0.3s ease' }}
+                    r={isActive ? 7 : 5}
+                    fill={isActive ? '#ffd86a' : isPast ? 'rgba(255,216,106,0.5)' : 'rgba(255,216,106,0.15)'}
+                    style={{ transition: 'all 0.4s ease' }}
                   />
+                  {/* Inner bright core on active */}
+                  {isActive && (
+                    <circle
+                      cx={cx}
+                      cy={cy}
+                      r="2.5"
+                      fill="#ffffff"
+                      opacity="0.8"
+                    />
+                  )}
                 </g>
               )
             })}
