@@ -58,7 +58,7 @@ export default function Splash({ onComplete }: SplashProps) {
           top: ['50%', '50%', '50%', '35%'],
           x: '-50%',
           y: '-50%',
-          scale: [0, 1.2, 1, 5],
+          scale: [0, 1.2, 1, 7],
           rotate: [-180, 10, 0, 0],
           opacity: [0, 1, 1, 0],
         }}
