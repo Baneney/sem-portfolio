@@ -298,4 +298,74 @@
   filter: drop-shadow(0 0 20px rgba(255, 216, 106, 0.6));
 }
 
+/* ========== PAGE TRANSITION (About3 → Skills) ========== */
+
+@keyframes transition-bloom {
+  0%   { opacity: 0; transform: scale(0.3); }
+  12%  { opacity: 1; transform: scale(1); }
+  35%  { opacity: 0.7; }
+  60%  { opacity: 0.3; }
+  100% { opacity: 0; transform: scale(1.3); }
+}
+
+@keyframes transition-fire {
+  0%   { opacity: 0; transform: translateY(100%); }
+  18%  { opacity: 1; transform: translateY(0%); }
+  55%  { opacity: 0.5; }
+  100% { opacity: 0; transform: translateY(-25%); }
+}
+
+@keyframes transition-ember {
+  0%   { opacity: 1; transform: translateY(0) scale(1); }
+  30%  { opacity: 0.9; }
+  100% { opacity: 0; transform: translateY(-320px) scale(0.3); }
+}
+
+.animate-transition-bloom {
+  animation: transition-bloom 1.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.animate-transition-fire {
+  animation: transition-fire 1.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.animate-transition-ember {
+  animation: transition-ember 1.6s ease-out forwards;
+}
+
+/* ========== SKILLS PAGE — FOREST EMBERS ========== */
+
+@keyframes forest-ember {
+  0%   { opacity: 0; transform: translateY(0) translateX(0); }
+  15%  { opacity: 0.7; }
+  50%  { opacity: 0.5; transform: translateY(-70px) translateX(10px); }
+  100% { opacity: 0; transform: translateY(-140px) translateX(-5px); }
+}
+
+/* Skill pill spark ring */
+.skill-pill {
+  position: relative;
+}
+
+.skill-pill::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 216, 106, 0.3);
+  opacity: 0;
+  transition: opacity 0.2s;
+  pointer-events: none;
+}
+
+.skill-pill:hover::after {
+  opacity: 1;
+  animation: spark-ring 0.5s ease-out forwards;
+}
+
+@keyframes spark-ring {
+  0%   { transform: scale(0.85); opacity: 0.6; }
+  100% { transform: scale(1.25); opacity: 0; }
+}
+
 

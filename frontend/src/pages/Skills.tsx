@@ -8,46 +8,56 @@ import treeRight from '../assets/tree-right.png'
 const categories = [
   {
     name: 'Frontend',
-    icon: '◈',
+    icon: '✦',
     skills: ['HTML', 'CSS', 'JavaScript', 'TypeScript', 'React', 'Next.js', 'Tailwind', 'Bootstrap', 'Electron'],
   },
   {
     name: 'Animation & 3D',
-    icon: '◆',
+    icon: '✦',
     skills: ['Framer Motion', 'Three.js', 'GSAP', 'CSS Animations', 'WebGL'],
   },
   {
     name: 'Backend',
-    icon: '◇',
+    icon: '✦',
     skills: ['Node.js', 'Python', 'Express', 'REST APIs', 'GraphQL', 'Django'],
   },
   {
     name: 'Databases',
-    icon: '◈',
+    icon: '✦',
     skills: ['PostgreSQL', 'MongoDB', 'Firebase', 'Redis', 'Supabase'],
   },
   {
     name: 'DevOps & Tools',
-    icon: '◆',
+    icon: '✦',
     skills: ['Git', 'Docker', 'AWS', 'Linux', 'CI/CD', 'Figma'],
   },
 ]
+
+const embers = Array.from({ length: 16 }, (_, i) => ({
+  left: 4 + (i * 6.2) % 92,
+  bottom: 2 + (i * 9) % 50,
+  delay: i * 0.28,
+  duration: 2.8 + (i % 3) * 0.6,
+  size: 1.5 + (i % 3) * 0.5,
+  drift: (i % 2 === 0 ? 1 : -1) * (8 + (i % 4) * 3),
+}))
 
 const stagger = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.04, delayChildren: 0.08 },
+    transition: { staggerChildren: 0.035, delayChildren: 0.06 },
   },
 }
 
 const pillReveal = {
-  hidden: { opacity: 0, y: 16, scale: 0.9 },
+  hidden: { opacity: 0, y: 20, scale: 0.6, rotate: -8 },
   visible: {
     opacity: 1,
     y: 0,
     scale: 1,
-    transition: { type: 'spring' as const, stiffness: 300, damping: 22 },
+    rotate: 0,
+    transition: { type: 'spring' as const, stiffness: 200, damping: 16 },
   },
 }
 
@@ -57,13 +67,14 @@ export default function Skills() {
   const treeLeftRef = useRef<HTMLImageElement>(null)
   const treeCenterRef = useRef<HTMLImageElement>(null)
   const treeRightRef = useRef<HTMLImageElement>(null)
+  const mouseRef = useRef({ x: 0.5, y: 0.5 })
 
   useEffect(() => {
     const container = document.getElementById('snap-container')
     const section = sectionRef.current
     if (!container || !section) return
 
-    const handleScroll = () => {
+    const apply = () => {
       const scrollTop = container.scrollTop
       const offsetTop = section.offsetTop
       const vh = container.clientHeight
@@ -72,20 +83,38 @@ export default function Skills() {
       const raw = Math.max(0, 1 - p * 2)
       const t = 1 - Math.pow(1 - raw, 3)
 
+      const mx = (mouseRef.current.x - 0.5) * 2
+      const my = (mouseRef.current.y - 0.5) * 1.2
+
       if (treeLeftRef.current) {
-        treeLeftRef.current.style.transform = `translateX(${-t * 100}%)`
+        treeLeftRef.current.style.transform = `translateX(${-t * 100 + mx * 6}px) translateY(${my * 4}px)`
       }
       if (treeRightRef.current) {
-        treeRightRef.current.style.transform = `translateX(${t * 100}%)`
+        treeRightRef.current.style.transform = `translateX(${t * 100 + mx * -5}px) translateY(${my * 4}px)`
       }
       if (treeCenterRef.current) {
-        treeCenterRef.current.style.transform = `translateY(${t * 60}px)`
+        treeCenterRef.current.style.transform = `translateY(${t * 60 + my * -6}px) translateX(${mx * -4}px)`
       }
+
     }
 
-    container.addEventListener('scroll', handleScroll, { passive: true })
-    handleScroll()
-    return () => container.removeEventListener('scroll', handleScroll)
+    const handleMouse = (e: MouseEvent) => {
+      const rect = section.getBoundingClientRect()
+      mouseRef.current = {
+        x: Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width)),
+        y: Math.max(0, Math.min(1, (e.clientY - rect.top) / rect.height)),
+      }
+      apply()
+    }
+
+    container.addEventListener('scroll', apply, { passive: true })
+    section.addEventListener('mousemove', handleMouse, { passive: true })
+    apply()
+
+    return () => {
+      container.removeEventListener('scroll', apply)
+      section.removeEventListener('mousemove', handleMouse)
+    }
   }, [])
 
   return (
@@ -112,6 +141,25 @@ export default function Skills() {
         <img ref={treeRightRef} src={treeRight} alt="" className="h-full object-cover object-right will-change-transform" style={{ flex: '558 1 0' }} />
       </div>
 
+      {/* Forest embers — floating golden particles */}
+      <div className="absolute inset-0 pointer-events-none z-[5] overflow-hidden">
+        {embers.map((e, i) => (
+          <div
+            key={i}
+            className="absolute rounded-full bg-[#ffd86a]"
+            style={{
+              left: `${e.left}%`,
+              bottom: `${e.bottom}%`,
+              width: `${e.size}px`,
+              height: `${e.size}px`,
+              opacity: 0,
+              animation: `forest-ember ${e.duration}s ease-out ${e.delay}s infinite`,
+              boxShadow: `0 0 ${e.size * 2}px rgba(255,216,106,0.4)`,
+            }}
+          />
+        ))}
+      </div>
+
       <div className="flex w-full h-full relative z-20">
         {/* Left side — bio */}
         <div className="w-[45%] flex flex-col justify-center pr-16 relative">
@@ -128,7 +176,7 @@ export default function Skills() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className="text-9xl font-black text-white leading-[0.95] tracking-tight mb-6 uppercase"
+            className="text-[600%] font-black text-white leading-[0.95] tracking-[1rem] mb-6 uppercase"
           >
             Skills
           </motion.h2>
@@ -200,29 +248,30 @@ export default function Skills() {
                   className="relative w-full flex items-center justify-between py-6 text-left group"
                 >
                   <div className="flex items-center gap-4">
-                    <motion.span
-                      animate={{ color: isOpen ? '#ffd86a' : 'rgba(255,255,255,0.25)' }}
-                      transition={{ duration: 0.3 }}
-                      className="text-sm"
+                    <span
+                      className={`text-sm inline-block transition-all duration-300 ease-out ${
+                        isOpen
+                          ? 'text-[#ffd86a] rotate-180 scale-125'
+                          : 'text-white/25 group-hover:text-[#ffd86a] group-hover:rotate-180 group-hover:scale-125'
+                      }`}
                     >
                       {cat.icon}
-                    </motion.span>
-                    <span className={`text-xl uppercase font-bold transition-colors duration-300 ${isOpen ? 'text-[#ffd86a]' : 'text-white/80 group-hover:text-white'}`}>
+                    </span>
+                    <span className={`text-xl uppercase font-bold transition-all duration-300 ${isOpen ? 'text-[#ffd86a] translate-x-1' : 'text-white/80 group-hover:text-[#ffd86a] group-hover:translate-x-1'}`}>
                       {cat.name}
                     </span>
                     <motion.span
                       animate={{ opacity: isOpen ? 1 : 0, scale: isOpen ? 1 : 0.5 }}
                       transition={{ duration: 0.2 }}
-                      className="text-[10px] tracking-wider font-medium text-[#ffd86a]/60 bg-[#ffd86a]/10 px-2 py-0.5 rounded-full border border-[#ffd86a]/20"
+                      className="text-[10px] tracking-wider font-medium text-[#ffd86a]/60 bg-[#ffd86a]/10 px-2 py-0.5 rounded-full border border-[#ffd86a]/20 transition-all duration-300 group-hover:scale-110 group-hover:border-[#ffd86a]/50 group-hover:text-[#ffd86a]/90"
                     >
                       {cat.skills.length}
                     </motion.span>
                   </div>
                   <motion.span
                     animate={{ rotate: isOpen ? 45 : 0, color: isOpen ? '#ffd86a' : 'rgba(255,255,255,0.3)' }}
-                    whileHover={{ scale: 1.3 }}
                     transition={{ type: 'spring' as const, stiffness: 300, damping: 20 }}
-                    className="text-xl font-light cursor-pointer"
+                    className="text-xl font-light cursor-pointer transition-all duration-300 group-hover:scale-[1.3] group-hover:text-[#ffd86a]"
                   >
                     +
                   </motion.span>
@@ -264,7 +313,7 @@ export default function Skills() {
                               variants={pillReveal}
                               whileHover={{ scale: 1.15, y: -4 }}
                               whileTap={{ scale: 0.95 }}
-                              className="px-4 py-2 rounded-full text-[13px] font-medium tracking-wide
+                              className="skill-pill px-4 py-2 rounded-full text-[13px] font-medium tracking-wide
                                          bg-white/[0.04] border border-white/[0.08]
                                          text-white/60
                                          hover:border-[#ffd86a]/40 hover:text-[#ffd86a]

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import cornucopia from './assets/cornucopia.jpeg'
 import stonePlatformLeft from './assets/stone-platform-left.jpeg'
 import stonePlatformRight from './assets/stone-platform-right.jpeg'
@@ -24,18 +24,27 @@ const POS = [
 ]
 
 function App() {
-  const bgRefs        = useRef<(HTMLDivElement | null)[]>([])
-  const sculptureRefs = useRef<(HTMLImageElement | null)[]>([])
-  const wrapperRef    = useRef<HTMLDivElement>(null)
+  const bgRefs         = useRef<(HTMLDivElement | null)[]>([])
+  const sculptureRefs  = useRef<(HTMLImageElement | null)[]>([])
+  const wrapperRef     = useRef<HTMLDivElement>(null)
   const bgContainerRef = useRef<HTMLDivElement>(null)
   const currentPageRef = useRef(-1)
+  const [showTransition, setShowTransition] = useState(false)
 
   function goToPage(index: number) {
-    if (index === currentPageRef.current) return
+    const prevIndex = currentPageRef.current
+    if (index === prevIndex) return
     currentPageRef.current = index
 
     const aboutIndex = index - 1 // about pages 1,2,3 → 0,1,2
     const isAbout = aboutIndex >= 0 && aboutIndex < 3
+
+    // Cinematic flourish when leaving About3 for Skills
+    const wasAbout = prevIndex >= 1 && prevIndex <= 3
+    if (wasAbout && !isAbout && prevIndex === 3) {
+      setShowTransition(true)
+      setTimeout(() => setShowTransition(false), 1700)
+    }
 
     if (isAbout) {
       bgRefs.current.forEach((bg, i) => {
@@ -119,6 +128,27 @@ function App() {
           />
         ))}
       </div>
+
+      {/* Page transition overlay — About3 → Skills */}
+      {showTransition && (
+        <div className="fixed inset-0 z-50 pointer-events-none overflow-hidden">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,200,80,0.35),rgba(200,80,0,0.15),transparent_65%)] animate-transition-bloom" />
+          <div className="absolute inset-x-0 bottom-0 h-3/4 bg-gradient-to-t from-[#ff8c00]/25 via-[#c85000]/12 to-transparent blur-3xl animate-transition-fire" />
+          <div className="absolute inset-x-0 bottom-0 h-full">
+            {[...Array(14)].map((_, i) => (
+              <div key={i} className="absolute bottom-0 rounded-full bg-[#ffd86a] animate-transition-ember"
+                style={{
+                  left: `${8 + i * 6.5}%`,
+                  width: `${2 + (i % 3)}px`,
+                  height: `${2 + (i % 3)}px`,
+                  animationDelay: `${i * 0.06}s`,
+                  animationDuration: `${1.4 + (i % 4) * 0.15}s`,
+                }}
+              />
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* <Navbar atTop={atTop} /> */}
 
