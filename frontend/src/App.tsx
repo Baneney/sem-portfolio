@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { AnimatePresence } from 'framer-motion'
 import cornucopia from './assets/cornucopia.jpeg'
 import stonePlatformLeft from './assets/stone-platform-left.jpeg'
 import stonePlatformRight from './assets/stone-platform-right.jpeg'
@@ -13,6 +14,7 @@ import Skills from './pages/Skills'
 import Projects from './pages/Projects'
 import Contact from './pages/Contact'
 import ScrollIndicator from './components/ScrollIndicator'
+import Splash from './components/Splash'
 
 // Pages 1, 2, 3 = About1, About2, About3
 const bgImages   = [cornucopia, stonePlatformLeft, stonePlatformRight]
@@ -31,6 +33,12 @@ function App() {
   const bgContainerRef = useRef<HTMLDivElement>(null)
   const currentPageRef = useRef(-1)
   const [showTransition, setShowTransition] = useState(false)
+  const [showSplash, setShowSplash] = useState(true)
+
+  useEffect(() => {
+    const t = setTimeout(() => setShowSplash(false), 2800)
+    return () => clearTimeout(t)
+  }, [])
 
   function goToPage(index: number) {
     const prevIndex = currentPageRef.current
@@ -92,6 +100,12 @@ function App() {
 
   return (
     <div className="text-gray-300 font-sans">
+
+      <AnimatePresence>
+        {showSplash && (
+          <Splash onComplete={() => setShowSplash(false)} />
+        )}
+      </AnimatePresence>
 
       {/* Fixed backgrounds — About pages only */}
       <div
