@@ -568,16 +568,15 @@ export default function Projects() {
                 Back
               </button>
 
-              {/* Header gradient */}
+              {/* Header image */}
               <div
                 className="w-full h-56 rounded-t-2xl relative overflow-hidden"
-                style={{ background: projects[selected].gradient }}
               >
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-white/15 text-[8rem] font-black uppercase">
-                    {projects[selected].title.charAt(0)}
-                  </span>
-                </div>
+                <img
+                  src={projects[selected].image}
+                  alt={projects[selected].title}
+                  className="w-full h-full object-cover"
+                />
                 <div
                   className="absolute inset-0"
                   style={{
