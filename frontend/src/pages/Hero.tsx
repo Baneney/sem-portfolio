@@ -2,13 +2,33 @@ import hgPin from '../assets/hg-big-pin.png'
 import FireCanvas from '../components/FireCanvas'
 import PinShine from '../components/PinShine'
 import { motion, useInView, useMotionValue, useTransform, animate } from 'framer-motion'
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, useState } from 'react'
+
+function RevealText({ children, delay, className = '' }: { children: React.ReactNode; delay: number; className?: string }) {
+  return (
+    <span className={`inline-block overflow-hidden ${className}`}>
+      <motion.span
+        className="inline-block"
+        initial={{ y: '110%', opacity: 0 }}
+        animate={{ y: '0%', opacity: 1 }}
+        transition={{
+          duration: 0.6,
+          ease: [0.25, 0.1, 0.25, 1],
+          delay,
+        }}
+      >
+        {children}
+      </motion.span>
+    </span>
+  )
+}
 
 export default function Hero() {
   const bottomBarRef = useRef<HTMLDivElement>(null)
   const lineInView = useInView(bottomBarRef, { once: true, amount: 0.5 })
   const progress = useMotionValue(0)
   const dotCx = useTransform(progress, [0, 1], [0, 1000])
+  const [reveal, setReveal] = useState(false)
 
   useEffect(() => {
     if (lineInView) {
@@ -17,6 +37,8 @@ export default function Hero() {
         ease: [0.25, 0.1, 0.25, 1],
         delay: 0.3,
       })
+      const t = setTimeout(() => setReveal(true), 1500)
+      return () => clearTimeout(t)
     }
   }, [lineInView, progress])
 
@@ -141,21 +163,25 @@ export default function Hero() {
           />
         </svg>
 
+        {/* ── Left: V1.0 ── */}
         <span className="relative inline-flex items-center gap-2 text-white/60 transition-colors duration-300 hover:text-[#ffd86a]">
-          <span className="text-[#ffd86a]/80">→</span>
+          <RevealText delay={1.5} className="hover:text-[#ffd86a]">
+            <span className="text-[#ffd86a]/80">→</span>
+          </RevealText>
           <span className="relative">
-            V1.0
+            <RevealText delay={1.55}>V1.0</RevealText>
             <span className="absolute inset-x-0 -bottom-1 h-[2px] rounded-full bg-[linear-gradient(90deg,transparent,rgba(255,214,104,0.95),transparent)] scale-x-0 hover:scale-x-100 transition-transform duration-300 origin-center" />
           </span>
         </span>
 
+        {/* ── Center: LinkedIn / GitHub ── */}
         <div className="flex gap-4">
           <a
             href="#"
             className="group relative inline-flex items-center text-white/70 transition-all duration-300 hover:text-[#ffd86a] hover:-translate-y-1"
           >
             <span className="absolute inset-0 rounded-full bg-[radial-gradient(circle,rgba(255,181,46,0.15),transparent_70%)] opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10" />
-            <span className="relative z-10">LinkedIn</span>
+            <RevealText delay={1.6} className="relative z-10 hover:text-[#ffd86a]">LinkedIn</RevealText>
             <span className="absolute -top-4 left-1/2 h-2 w-2 -translate-x-1/2 rounded-full bg-[#ffd86a] opacity-100 group-hover:opacity-0 transition-all duration-500 animate-pulse group-hover:animate-none" />
             <span className="absolute inset-x-0 -bottom-1 h-[3px] rounded-full bg-[linear-gradient(90deg,transparent,rgba(255,214,104,0.95),transparent)] scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-center" />
           </a>
@@ -165,19 +191,20 @@ export default function Hero() {
             className="group relative inline-flex items-center text-white/70 transition-all duration-300 hover:text-[#ffd86a] hover:-translate-y-1"
           >
             <span className="absolute inset-0 rounded-full bg-[radial-gradient(circle,rgba(255,181,46,0.15),transparent_70%)] opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10" />
-            <span className="relative z-10">GitHub</span>
+            <RevealText delay={1.66} className="relative z-10 hover:text-[#ffd86a]">GitHub</RevealText>
             <span className="absolute -top-4 left-1/2 h-2 w-2 -translate-x-1/2 rounded-full bg-[#ffd86a] opacity-100 group-hover:opacity-0 transition-all duration-500 animate-pulse group-hover:animate-none" />
             <span className="absolute inset-x-0 -bottom-1 h-[3px] rounded-full bg-[linear-gradient(90deg,transparent,rgba(255,214,104,0.95),transparent)] scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-center" />
           </a>
         </div>
 
+        {/* ── Right: About / Skills / Projects / Contact ── */}
         <div className="flex gap-6">
           <a
             href="#about1"
             className="group relative inline-flex items-center text-white/70 transition-all duration-300 hover:text-[#ffd86a] hover:-translate-y-1"
           >
             <span className="absolute inset-0 rounded-full bg-[radial-gradient(circle,rgba(255,181,46,0.15),transparent_70%)] opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10" />
-            <span className="relative z-10">About</span>
+            <RevealText delay={1.72} className="relative z-10 hover:text-[#ffd86a]">About</RevealText>
             <span className="absolute -top-4 left-1/2 h-2 w-2 -translate-x-1/2 rounded-full bg-[#ffd86a] opacity-100 group-hover:opacity-0 transition-all duration-500 animate-pulse group-hover:animate-none" />
             <span className="absolute inset-x-0 -bottom-1 h-[3px] rounded-full bg-[linear-gradient(90deg,transparent,rgba(255,214,104,0.9),transparent)] scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-center" />
           </a>
@@ -186,7 +213,7 @@ export default function Hero() {
             className="group relative inline-flex items-center text-white/70 transition-all duration-300 hover:text-[#ffd86a] hover:-translate-y-1"
           >
             <span className="absolute inset-0 rounded-full bg-[radial-gradient(circle,rgba(255,181,46,0.15),transparent_70%)] opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10" />
-            <span className="relative z-10">Skills</span>
+            <RevealText delay={1.78} className="relative z-10 hover:text-[#ffd86a]">Skills</RevealText>
             <span className="absolute -top-4 left-1/2 h-2 w-2 -translate-x-1/2 rounded-full bg-[#ffd86a] opacity-80 group-hover:opacity-0 transition-all duration-500 animate-pulse group-hover:animate-none" />
             <span className="absolute inset-x-0 -bottom-1 h-[3px] rounded-full bg-[linear-gradient(90deg,transparent,rgba(255,214,104,0.9),transparent)] scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-center" />
           </a>
@@ -195,7 +222,7 @@ export default function Hero() {
             className="group relative inline-flex items-center text-white/70 transition-all duration-300 hover:text-[#ffd86a] hover:-translate-y-1"
           >
             <span className="absolute inset-0 rounded-full bg-[radial-gradient(circle,rgba(255,181,46,0.15),transparent_70%)] opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10" />
-            <span className="relative z-10">Projects</span>
+            <RevealText delay={1.84} className="relative z-10 hover:text-[#ffd86a]">Projects</RevealText>
             <span className="absolute -top-4 left-1/2 h-2 w-2 -translate-x-1/2 rounded-full bg-[#ffd86a] opacity-80 group-hover:opacity-0 transition-all duration-500 animate-pulse group-hover:animate-none" />
             <span className="absolute inset-x-0 -bottom-1 h-[3px] rounded-full bg-[linear-gradient(90deg,transparent,rgba(255,214,104,0.9),transparent)] scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-center" />
           </a>
@@ -204,7 +231,7 @@ export default function Hero() {
             className="group relative inline-flex items-center text-white/70 transition-all duration-300 hover:text-[#ffd86a] hover:-translate-y-1"
           >
             <span className="absolute inset-0 rounded-full bg-[radial-gradient(circle,rgba(255,181,46,0.15),transparent_70%)] opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10" />
-            <span className="relative z-10">Contact</span>
+            <RevealText delay={1.9} className="relative z-10 hover:text-[#ffd86a]">Contact</RevealText>
             <span className="absolute -top-4 left-1/2 h-2 w-2 -translate-x-1/2 rounded-full bg-[#ffd86a] opacity-80 group-hover:opacity-0 transition-all duration-500 animate-pulse group-hover:animate-none" />
             <span className="absolute inset-x-0 -bottom-1 h-[3px] rounded-full bg-[linear-gradient(90deg,transparent,rgba(255,214,104,0.9),transparent)] scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-center" />
           </a>
