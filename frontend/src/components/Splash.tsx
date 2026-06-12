@@ -54,8 +54,8 @@ export default function Splash({ onComplete }: SplashProps) {
           opacity: 0,
         }}
         animate={{
-          left: ['50%', '50%', '50%', '88%'],
-          top: ['50%', '50%', '50%', '15%'],
+          left: ['50%', '50%', '50%', '90%'],
+          top: ['50%', '50%', '50%', '35%'],
           x: '-50%',
           y: '-50%',
           scale: [0, 1.2, 1, 8],
