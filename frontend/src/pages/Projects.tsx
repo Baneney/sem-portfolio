@@ -125,13 +125,13 @@ function getPointOnPath(pathEl: SVGPathElement, ratio: number) {
 
 export default function Projects() {
   const [activeIdx, setActiveIdx] = useState(0)
-  const [scales, setScales] = useState<number[]>(projects.map(() => 1))
   const [selected, setSelected] = useState<number | null>(null)
   const [pathLen, setPathLen] = useState(1200)
   const svgRef = useRef<SVGSVGElement>(null)
   const containerRef = useRef<HTMLElement>(null)
   const glowDotRef = useRef<SVGCircleElement>(null)
   const glowTrailRef = useRef<SVGPathElement>(null)
+  const itemsRef = useRef<HTMLDivElement>(null)
 
   const snakePath = generateSnakePath(projects.length)
 
@@ -155,20 +155,48 @@ export default function Projects() {
 
       const progress = Math.max(0, Math.min(1, (scrollTop - offsetTop) / (sectionH - vh)))
 
-      const idx = Math.min(
+      const newIdx = Math.min(
         projects.length - 1,
         Math.floor(progress * projects.length)
       )
-      setActiveIdx(Math.max(0, idx))
+      const clampedIdx = Math.max(0, newIdx)
+      setActiveIdx(prev => prev === clampedIdx ? prev : clampedIdx)
 
-      // Per-item scale: bell curve around the active project
-      const newScales = projects.map((_, i) => {
-        const dist = Math.abs(progress * (projects.length - 1) - i)
-        // Gaussian-like falloff: peak 1.3 at dist=0, floor ~0.6 at dist>=1.5
-        const s = 0.6 + 0.7 * Math.exp(-dist * dist * 1.4)
-        return Math.round(s * 100) / 100
-      })
-      setScales(newScales)
+      // Directly update project item DOM elements (bypass React state for smoothness)
+      const items = itemsRef.current?.querySelectorAll('[data-project]') as NodeListOf<HTMLElement> | undefined
+      if (items) {
+        items.forEach((el, i) => {
+          const dist = Math.abs(progress * (projects.length - 1) - i)
+          const s = 0.6 + 0.7 * Math.exp(-dist * dist * 1.4)
+          const isActive = i === clampedIdx
+
+          el.style.transform = `scale(${s})`
+          el.style.transformOrigin = 'left center'
+
+          const h3 = el.querySelector('h3') as HTMLElement | null
+          if (h3) {
+            h3.style.fontSize = `${1.5 + s * 0.7}rem`
+            h3.style.color = isActive ? '#ffffff' : `rgba(255,255,255,${0.1 + s * 0.1})`
+          }
+
+          const num = el.querySelector('[data-num]') as HTMLElement | null
+          if (num) {
+            num.style.color = isActive ? '#ffd86a' : `rgba(255,216,106,${0.1 + s * 0.15})`
+          }
+
+          const desc = el.querySelector('[data-desc]') as HTMLElement | null
+          if (desc) {
+            desc.style.color = isActive ? 'rgba(255,255,255,0.5)' : `rgba(255,255,255,${0.05 + s * 0.08})`
+          }
+
+          const conn = el.querySelector('[data-connector]') as HTMLElement | null
+          if (conn) {
+            conn.style.background = isActive
+              ? 'linear-gradient(90deg, #ffd86a, transparent)'
+              : `rgba(255,216,106,${0.05 + s * 0.08})`
+          }
+        })
+      }
 
       // Animate main stroke draw
       const drawn = pathLen * Math.min(1, progress * 1.15)
@@ -202,32 +230,10 @@ export default function Projects() {
     <section
       ref={containerRef}
       id="projects"
-      className="relative"
+      className="relative py-70 px-10"
       style={{ backgroundColor: '#000', minHeight: `${(projects.length + 0.5) * PROJECT_H}px` }}
     >
-      {/* Section label */}
-      <div className="absolute top-12 left-10 z-10 flex items-center gap-2">
-        <span className="w-1.5 h-px bg-[#ffd86a]/60" />
-        <span className="text-[#ffd86a]/60 text-[10px] tracking-[0.3em] uppercase font-medium">
-          Projects
-        </span>
-      </div>
 
-      {/* Title */}
-      <div className="absolute top-24 left-10 z-10">
-        <h2
-          className="text-[5rem] font-black leading-[0.95] uppercase"
-          style={{
-            background: 'linear-gradient(90deg, #d18a1e, #ffd86a, #ffffff, #f0b43a, #d18a1e)',
-            backgroundSize: '300% 100%',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text',
-          }}
-        >
-          Work
-        </h2>
-      </div>
 
       <div className="flex w-full">
         {/* Left — snake line + project list */}
@@ -376,13 +382,13 @@ export default function Projects() {
           </svg>
 
           {/* Project items */}
+          <div ref={itemsRef}>
           {projects.map((p, i) => {
-            const isActive = i === activeIdx
             const isLeft = i % 2 === 0
-            const s = scales[i] ?? 1
             return (
               <div
                 key={p.title}
+                data-project
                 className="relative flex items-center"
                 style={{
                   height: PROJECT_H,
@@ -391,15 +397,13 @@ export default function Projects() {
               >
                 {/* Connector line from node to text */}
                 <div
-                  className="absolute top-1/2"
+                  className="absolute top-1/2 connector-line"
+                  data-connector
                   style={{
                     left: isLeft ? 180 : 130,
                     width: 50,
                     height: 1,
-                    background: isActive
-                      ? 'linear-gradient(90deg, #ffd86a, transparent)'
-                      : 'rgba(255,216,106,0.1)',
-                    transition: 'background 0.3s ease',
+                    background: 'rgba(255,216,106,0.1)',
                   }}
                 />
 
@@ -407,31 +411,27 @@ export default function Projects() {
                   className="cursor-pointer group"
                   style={{
                     marginLeft: isLeft ? 240 : 190,
-                    transform: `scale(${s})`,
                     transformOrigin: 'left center',
-                    transition: 'transform 0.15s ease-out, color 0.3s ease',
                   }}
                   onClick={() => setSelected(i)}
                 >
                   <span
-                    className="block text-[11px] tracking-wider uppercase mb-1 transition-colors duration-300"
-                    style={{ color: isActive ? '#ffd86a' : 'rgba(255,216,106,0.25)' }}
+                    data-num
+                    className="block text-[11px] tracking-wider uppercase mb-1"
+                    style={{ color: 'rgba(255,216,106,0.25)' }}
                   >
                     {String(i + 1).padStart(2, '0')}
                   </span>
                   <h3
-                    className="font-bold uppercase tracking-wide transition-all duration-300 group-hover:text-[#ffd86a]"
-                    style={{
-                      fontSize: `${1.5 + s * 0.7}rem`,
-                      color: isActive ? '#ffffff' : `rgba(255,255,255,${0.1 + s * 0.1})`,
-                      textShadow: isActive ? '0 0 30px rgba(255,216,106,0.15)' : 'none',
-                    }}
+                    className="font-bold uppercase tracking-wide group-hover:text-[#ffd86a]"
+                    style={{ fontSize: '1.5rem', color: 'rgba(255,255,255,0.2)' }}
                   >
                     {p.title}
                   </h3>
                   <p
-                    className="mt-1 max-w-md transition-colors duration-300"
-                    style={{ color: isActive ? 'rgba(255,255,255,0.5)' : `rgba(255,255,255,${0.05 + s * 0.08})` }}
+                    data-desc
+                    className="mt-1 max-w-md"
+                    style={{ color: 'rgba(255,255,255,0.12)' }}
                   >
                     {p.description}
                   </p>
@@ -439,6 +439,7 @@ export default function Projects() {
               </div>
             )
           })}
+          </div>
         </div>
 
         {/* Right — sticky preview */}
