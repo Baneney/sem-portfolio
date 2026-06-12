@@ -113,7 +113,7 @@ export default function ScrollIndicator() {
               key={i}
               onClick={() => scrollTo(i)}
               className="absolute left-1/2 -translate-x-1/2 rounded-full overflow-visible cursor-pointer group"
-              style={{ top: seg.top, width: 2, height: seg.height }}
+              style={{ top: seg.top, width: 3, height: seg.height }}
             >
               {/* Wider hit area */}
               <div className="absolute -inset-x-3 -inset-y-1" />
@@ -154,7 +154,7 @@ export default function ScrollIndicator() {
             className="absolute right-full mr-4 -translate-y-1/2 cursor-pointer"
             style={{ top: segments[activeIdx] ? segments[activeIdx].top + segments[activeIdx].fill * segments[activeIdx].height : 0 }}
           >
-            <span className="text-[10px] tracking-[0.2em] uppercase text-white hover:text-[#ffd86a] transition-colors duration-200 whitespace-nowrap">
+            <span className="text-[12px] tracking-[0.2em] uppercase text-white hover:text-[#ffd86a] transition-colors duration-200 whitespace-nowrap">
               {sections[activeIdx].label}
             </span>
           </motion.button>
