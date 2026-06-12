@@ -87,10 +87,10 @@ export default function Skills() {
       const my = (mouseRef.current.y - 0.5) * 1.2
 
       if (treeLeftRef.current) {
-        treeLeftRef.current.style.transform = `translateX(${-t * 100 + mx * 6}px) translateY(${my * 4}px)`
+        treeLeftRef.current.style.transform = `translateX(${-t * 160 + mx * 6}px) translateY(${my * 4}px)`
       }
       if (treeRightRef.current) {
-        treeRightRef.current.style.transform = `translateX(${t * 100 + mx * -5}px) translateY(${my * 4}px)`
+        treeRightRef.current.style.transform = `translateX(${t * 160 + mx * -5}px) translateY(${my * 4}px)`
       }
       if (treeCenterRef.current) {
         treeCenterRef.current.style.transform = `translateY(${t * 60 + my * -6}px) translateX(${mx * -4}px)`
