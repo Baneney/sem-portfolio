@@ -43,7 +43,7 @@ export default function Splash({ onComplete }: SplashProps) {
         src={hgPin}
         alt=""
         className="absolute z-10"
-        style={{ width: 160, height: 160, objectFit: 'contain' }}
+        style={{ width: 100, height: 100, objectFit: 'contain' }}
         initial={{
           left: '50%',
           top: '50%',
@@ -58,7 +58,7 @@ export default function Splash({ onComplete }: SplashProps) {
           top: ['50%', '50%', '50%', '15%'],
           x: '-50%',
           y: '-50%',
-          scale: [0, 1.2, 1, 0.7],
+          scale: [0, 1.2, 1, 8],
           rotate: [-180, 10, 0, 0],
           opacity: [0, 1, 1, 0],
         }}
