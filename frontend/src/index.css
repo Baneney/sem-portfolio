@@ -392,4 +392,32 @@
   animation: preview-fade-in 0.7s ease-out 0.3s both;
 }
 
+/* ========== PROJECTS — ITEM REVEAL ========== */
+
+.project-reveal {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+  transition: opacity 0.6s cubic-bezier(0.25,0.46,0.45,0.94),
+              transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94) !important;
+}
+
+.project-reveal-done {
+  transition: none;
+}
+
+/* ========== MODAL SCROLLBAR ========== */
+
+.modal-scrollbar {
+  scrollbar-width: none;
+}
+
+.modal-scrollbar::-webkit-scrollbar {
+  width: 0;
+  display: none;
+}
+
+.modal-scrollbar {
+  scrollbar-width: none;
+}
+
 
