@@ -368,4 +368,17 @@
   100% { transform: scale(1.25); opacity: 0; }
 }
 
+/* ========== SKILLS PAGE — FIRE TEXT ========== */
+
+@keyframes text-fire {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animate-text-fire {
+  animation: text-fire 3.5s ease-in-out infinite;
+  filter: drop-shadow(0 0 30px rgba(255, 216, 106, 0.25));
+}
+
 

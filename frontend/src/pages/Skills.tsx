@@ -68,6 +68,9 @@ export default function Skills() {
   const treeCenterRef = useRef<HTMLImageElement>(null)
   const treeRightRef = useRef<HTMLImageElement>(null)
   const mouseRef = useRef({ x: 0.5, y: 0.5 })
+  const leftRef = useRef<HTMLDivElement>(null)
+  const rightRef = useRef<HTMLDivElement>(null)
+  const titleRef = useRef<HTMLHeadingElement>(null)
 
   useEffect(() => {
     const container = document.getElementById('snap-container')
@@ -83,19 +86,35 @@ export default function Skills() {
       const raw = Math.max(0, 1 - p * 2)
       const t = 1 - Math.pow(1 - raw, 3)
 
+      const l = Math.max(0, (p - 0.5) * 2)
+
       const mx = (mouseRef.current.x - 0.5) * 2
       const my = (mouseRef.current.y - 0.5) * 1.2
 
       if (treeLeftRef.current) {
-        treeLeftRef.current.style.transform = `translateX(${-t * 160 + mx * 6}px) translateY(${my * 4}px)`
+        treeLeftRef.current.style.transform = `translateX(${-t * 160 - l * 120 + mx * 6}px) translateY(${my * 4}px)`
       }
       if (treeRightRef.current) {
-        treeRightRef.current.style.transform = `translateX(${t * 160 + mx * -5}px) translateY(${my * 4}px)`
+        treeRightRef.current.style.transform = `translateX(${t * 160 + l * 120 + mx * -5}px) translateY(${my * 4}px)`
       }
       if (treeCenterRef.current) {
-        treeCenterRef.current.style.transform = `translateY(${t * 60 + my * -6}px) translateX(${mx * -4}px)`
+        treeCenterRef.current.style.transform = `translateY(${t * 60 + l * 50 + my * -6}px) translateX(${mx * -4}px)`
       }
 
+      if (leftRef.current) {
+        leftRef.current.style.transform = `translateX(${-l * 60}px)`
+        leftRef.current.style.opacity = String(Math.max(0.2, 1 - l * 0.8))
+      }
+      if (rightRef.current) {
+        rightRef.current.style.transform = `translateX(${l * 60}px)`
+        rightRef.current.style.opacity = String(Math.max(0.2, 1 - l * 0.8))
+      }
+
+      if (titleRef.current) {
+        const tiltX = (mouseRef.current.x - 0.5) * 12
+        const tiltY = (mouseRef.current.y - 0.5) * -8
+        titleRef.current.style.transform = `perspective(800px) rotateY(${tiltX}deg) rotateX(${tiltY}deg)`
+      }
     }
 
     const handleMouse = (e: MouseEvent) => {
@@ -162,7 +181,7 @@ export default function Skills() {
 
       <div className="flex w-full h-full relative z-20">
         {/* Left side — bio */}
-        <div className="w-[45%] flex flex-col justify-center pr-16 relative">
+        <div ref={leftRef} className="w-[45%] flex flex-col justify-center pr-16 relative" style={{ willChange: 'transform, opacity' }}>
 
           <div className="flex items-center gap-2 mb-3">
             <span className="w-1.5 h-px bg-[#ffd86a]/60" />
@@ -171,15 +190,27 @@ export default function Skills() {
             </span>
           </div>
 
-          <motion.h2
+          <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className="text-[600%] font-black text-white leading-[0.95] tracking-[1rem] mb-6 uppercase"
           >
-            Skills
-          </motion.h2>
+            <h2
+              ref={titleRef}
+              className="text-[600%] font-black leading-[0.95] tracking-[1rem] mb-6 uppercase animate-text-fire"
+              style={{
+                background: 'linear-gradient(90deg, #d18a1e, #ffd86a, #ffffff, #f0b43a, #d18a1e)',
+                backgroundSize: '300% 100%',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+                filter: 'drop-shadow(0 0 30px rgba(255, 216, 106, 0.25))',
+              }}
+            >
+              Skills
+            </h2>
+          </motion.div>
 
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -206,7 +237,7 @@ export default function Skills() {
         </div>
 
         {/* Right side — accordion */}
-        <div className="w-[55%] flex flex-col justify-center pl-6 relative">
+        <div ref={rightRef} className="w-[55%] flex flex-col justify-center pl-6 relative" style={{ willChange: 'transform, opacity' }}>
           {/* Ambient decorative glows */}
           <motion.div
             animate={{ opacity: [0.3, 0.6, 0.3], scale: [1, 1.1, 1] }}
