@@ -106,7 +106,7 @@ export default function ScrollIndicator() {
 
   return (
     <div
-      className="fixed right-10 top-1/2 -translate-y-1/2 z-40 flex items-center gap-4 transition-opacity duration-300"
+      className="fixed right-8 top-1/2 -translate-y-1/2 z-40 flex items-center gap-4 transition-opacity duration-300"
       style={{
         height: segments.length ? segments[segments.length - 1].top + segments[segments.length - 1].height : 0,
         opacity: activeIdx === 0 ? 0 : 1,
