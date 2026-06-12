@@ -94,34 +94,46 @@ export default function ScrollIndicator() {
     }
   }, [compute])
 
+  const scrollTo = (index: number) => {
+    const container = document.getElementById('snap-container')
+    const el = document.getElementById(sections[index].id)
+    if (!container || !el) return
+    container.scrollTo({ top: el.offsetTop, behavior: 'smooth' })
+  }
+
   return (
-    <div className="fixed right-10 top-1/2 -translate-y-1/2 z-40 flex items-center gap-4 pointer-events-none">
+    <div className="fixed right-10 top-1/2 -translate-y-1/2 z-40 flex items-center gap-4">
       {/* Section label */}
-      <AnimatePresence mode="wait">
-        <motion.span
-          key={activeIdx}
-          initial={{ opacity: 0, y: 6 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -6 }}
-          transition={{ duration: 0.25 }}
-          className="text-[10px] tracking-[0.2em] uppercase text-white text-right min-w-[70px]"
-        >
-          {sections[activeIdx].label}
-        </motion.span>
-      </AnimatePresence>
+      <button onClick={() => scrollTo(activeIdx)} className="cursor-pointer">
+        <AnimatePresence mode="wait">
+          <motion.span
+            key={activeIdx}
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.25 }}
+            className="text-[10px] tracking-[0.2em] uppercase text-white text-right min-w-[70px] hover:text-[#ffd86a] transition-colors duration-200"
+          >
+            {sections[activeIdx].label}
+          </motion.span>
+        </AnimatePresence>
+      </button>
 
       {/* Segmented track */}
       <div className="relative" style={{ height: segments.length ? segments[segments.length - 1].top + segments[segments.length - 1].height : 0 }}>
         {segments.map((seg, i) => {
           const isActive = i === activeIdx
           return (
-            <div
+            <button
               key={i}
-              className="absolute left-1/2 -translate-x-1/2 rounded-full overflow-visible"
+              onClick={() => scrollTo(i)}
+              className="absolute left-1/2 -translate-x-1/2 rounded-full overflow-visible cursor-pointer group"
               style={{ top: seg.top, width: 2, height: seg.height }}
             >
+              {/* Wider hit area */}
+              <div className="absolute -inset-x-3 -inset-y-1" />
               {/* Background track */}
-              <div className="absolute inset-0 bg-white/[0.06] rounded-full" />
+              <div className="absolute inset-0 bg-white/[0.06] rounded-full group-hover:bg-white/[0.12] transition-colors duration-200" />
               {/* Fill */}
               <motion.div
                 className="absolute top-0 left-0 w-full rounded-full"
@@ -141,7 +153,7 @@ export default function ScrollIndicator() {
                   transition={{ duration: 0.15, ease: 'linear' }}
                 />
               )}
-            </div>
+            </button>
           )
         })}
       </div>
