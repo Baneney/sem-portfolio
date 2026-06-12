@@ -9,13 +9,29 @@ const LinkedinIcon = () => (
   <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
 )
 
-const EMAIL = 'johndoe@email.com'
+const EMAIL = 'luizsemwarain@gmail.com'
 
 const links = [
-  { label: 'Email', href: `mailto:${EMAIL}`, Icon: Mail, subtitle: EMAIL, copy: EMAIL },
-  { label: 'GitHub', href: 'https://github.com', Icon: GithubIcon, subtitle: '@username' },
-  { label: 'LinkedIn', href: 'https://linkedin.com', Icon: LinkedinIcon, subtitle: '/in/username' },
-]
+  {
+    label: "Email",
+    href: `mailto:${EMAIL}`,
+    Icon: Mail,
+    subtitle: EMAIL,
+    copy: EMAIL,
+  },
+  {
+    label: "GitHub",
+    href: "https://github.com/Baneney",
+    Icon: GithubIcon,
+    subtitle: "@Baneney",
+  },
+  {
+    label: "LinkedIn",
+    href: "https://www.linkedin.com/in/sem-luiz-warain-0085b73a4",
+    Icon: LinkedinIcon,
+    subtitle: "/in/sem-luiz",
+  },
+];
 
 const fadeUp: import('framer-motion').Variants = {
   hidden: { opacity: 0, y: 40, filter: 'blur(8px)' },
@@ -213,7 +229,7 @@ function LinkCard({ link, index, onCopy, copied }: { link: typeof links[number];
       variants={fadeUp}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="group relative flex flex-col items-center gap-3 px-8 py-7 rounded-2xl border border-white/[0.06] bg-white/[0.02] hover:border-[#ffd86a]/25 transition-[border-color,background-color] duration-500 min-w-[180px] cursor-pointer"
+      className="group relative flex flex-col items-center gap-3 px-8 py-7 rounded-2xl border border-white/[0.06] bg-white/[0.10] hover:border-[#ffd86a]/25 transition-[border-color,background-color] duration-500 min-w-[180px] cursor-pointer"
       style={{ transformStyle: 'preserve-3d', willChange: 'transform', transition: 'transform 0.15s ease-out, border-color 0.5s, background-color 0.5s' }}
     >
       {/* Spotlight follow */}

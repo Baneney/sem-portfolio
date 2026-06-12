@@ -1,102 +1,119 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X } from 'lucide-react'
-import ecommerceImg from "../assets/cornucopia.png";
-import taskManagerImg from "../assets/skills-bg.png";
-import weatherImg from '../assets/projects/weather-dashboard.png'
-import portfolioImg from '../assets/projects/portfolio.png'
-import chatImg from '../assets/projects/chat.png'
+import schedulaterImg from "../assets/schedulater.png";
+import fixTrack from "../assets/FixTrack.png";
+import ciudad from '../assets/ciudad.png'
+import tas from '../assets/tas.png'
+import portfolio from "../assets/portfolio.png";
 
 const PROJECT_H = 280
 
 const projects = [
   {
-    title: 'E-Commerce App',
-    year: '2024',
-    image: ecommerceImg,
-    description: 'A full-stack online store with cart, auth, and payment integration.',
+    title: "Schedulater",
+    year: "2024",
+    image: schedulaterImg,
+    description:
+      "A smart task management system that uses AI-powered prioritization to help users organize, track, and manage tasks with React, Flask, and Firebase.",
     longDescription:
-      'Built a complete e-commerce platform featuring user authentication, product catalog with search and filtering, shopping cart, and Stripe payment integration. Includes real-time inventory tracking, order history, and a responsive admin dashboard.',
-    tech: ['React', 'Node.js', 'MongoDB', 'Stripe'],
-    gradient: 'linear-gradient(135deg, #667eea, #764ba2)',
-    github: '#',
-    live: '#',
+      "A smart task management system that helps users organize, prioritize, and track their tasks using an AI-powered rule-based prioritization engine. It combines a modern React frontend with a Flask backend and Firebase for authentication and data storage.",
+    tech: ["HTML5", "Javascript", "Flask", "Firebase", "Render"],
+    gradient: "linear-gradient(135deg, #667eea, #764ba2)",
+    github: "https://github.com/Baneney/Schedulater.git",
+    live: "https://schedulater.onrender.com/",
     highlights: [
-      'User authentication with JWT',
-      'Real-time inventory tracking',
-      'Stripe payment integration',
-      'Admin dashboard with analytics',
+      "Task categorization using MoSCoW method",
+      "Rule-based AI system using Experta",
+      "Rewards user consistency and productivity",
+      "Deadline reminders",
     ],
   },
   {
-    title: 'Task Manager',
-    year: '2024',
-    image: taskManagerImg,
-    description: 'A productivity app to manage tasks with drag-and-drop and real-time sync.',
+    title: "FixTrack",
+    year: "2025",
+    image: fixTrack,
+    description:
+      "A React Native app that simplifies apartment maintenance through service requests and tracking between tenants, landlords, and technicians.",
     longDescription:
-      'A Kanban-style task management application with drag-and-drop boards, real-time collaboration via WebSockets, and cloud sync. Supports team workspaces, due dates, labels, and priority levels.',
-    tech: ['TypeScript', 'React', 'Firebase'],
-    github: '#',
-    live: '#',
+      "React Native mobile application designed to streamline apartment maintenance by facilitating real-time service requests and transparent transaction tracking between tenants, landlords, and technicians",
+    tech: ["React Native", "Typescript", "Firebase", "Expo"],
+    github: "https://github.com/Baneney/Schedulater.git",
+    live: "",
     highlights: [
-      'Drag-and-drop Kanban boards',
-      'Real-time collaboration',
-      'Cloud sync with Firebase',
-      'Team workspaces',
+      "Request approval and assignment workflow",
+      "Maintenance request management system",
+      "Real-time repair request status updates",
+      "Technician task assignment and tracking",
     ],
   },
   {
-    title: 'Weather Dashboard',
-    year: '2023',
-    image: weatherImg,
-    description: 'Displays real-time weather data using a public API with interactive charts.',
+    title: "CIUDAD",
+    year: "2025",
+    image: ciudad,
+    description:
+      "A digital web and mobile system that streamlines barangay services, including certificate requests and financial tracking. Developed as an IT capstone project for Barangay San Roque, Cebu.",
     longDescription:
-      'A weather dashboard that visualizes current conditions and forecasts using the OpenWeatherMap API. Features interactive charts, location search, and a 7-day forecast with animated weather icons.',
-    tech: ['JavaScript', 'Python', 'REST API'],
-    github: '#',
-    live: '#',
+      "CIUDAD: BARIOS (BARANGAY SERVICES & MODERNIZATION SYSTEM) is a comprehensive web and mobile application to digitalize local government services, streamlining certificate requests and real-time financial tracking modules built with the guidance of the client - Barangay Officials of San Roque Cebu. This was my capstone project for my Bachelor's Degree in Information Technology.",
+    tech: [
+      "React",
+      "React Native",
+      "Typescript",
+      "Django",
+      "Tailwind CSS",
+      "Supabase",
+      "Firebase",
+      "Figma",
+    ],
+    github: "https://github.com/Baneney/CIUDAD-APP-BARIOS.git",
+    live: "",
     highlights: [
-      'Interactive weather charts',
-      '7-day forecast',
-      'Location search with autocomplete',
-      'Animated weather icons',
+      "Barangay management and administrative system",
+      "Development plan and financial management",
+      "Council event, ordinance, and document management",
+      "GAD project and budget tracking",
+      "Waste management and collection request system",
+      "Complaint and illegal dumping reporting",
+      "Resident announcements and notification system",
+      "Role-based access for barangay staff and residents",
     ],
   },
   {
-    title: 'Portfolio Site',
-    year: '2023',
-    image: portfolioImg,
-    description: 'A cinematic portfolio with parallax scrolling and custom animations.',
+    title: "Archivist's Silence",
+    year: "2023",
+    image: tas,
+    description:
+      "An isometric puzzle adventure game built with pure GDScript, where players explore a mysterious manor, solve puzzles, and uncover hidden secrets. Developed as an intern project at Lifewood Data Technology.",
     longDescription:
-      'A personal portfolio website built with React and Framer Motion, featuring cinematic scroll transitions, parallax backgrounds, and custom SVG animations. Designed to showcase projects with a dramatic, immersive aesthetic.',
-    tech: ['React', 'Framer Motion', 'Tailwind CSS'],
-    github: '#',
-    live: '#',
+      "The Archivist’s Silence is an isometric puzzle adventure game where players control Elias Thorne, an archivist trapped inside a mysterious manor. Players explore hidden areas, solve puzzles, and uncover clues to reveal the truth behind a stolen family legacy and a hidden crime. The game focuses on exploration, investigation, and solving interactive puzzles to progress through the story.",
+    tech: ["GDScript", "Godot Engine", "GDShader"],
+    github: "https://github.com/Baneney/tas-game.git",
+    live: "",
     highlights: [
-      'Cinematic scroll transitions',
-      'Parallax background layers',
-      'Custom SVG animations',
-      'Responsive design',
+      "Immersive isometric puzzle adventure experience",
+      "Narrative-driven investigation with a deep mystery storyline",
+      "Campaign-based level design with unique locations and challenges",
+      "Custom-built gameplay systems using pure GDScript",
     ],
   },
   {
-    title: 'Chat App',
-    year: '2023',
-    image: chatImg,
-    description: 'Real-time messaging app with rooms, typing indicators, and file sharing.',
+    title: "Personal Portfolio",
+    year: "2026",
+    image: portfolio,
+    description:
+      "A personal portfolio website developed with React and Tailwind CSS that highlights my skills, projects, and development experience. This project represents the portfolio website currently displayed.",
     longDescription:
-      'A real-time chat application built with Socket.io and Express. Features multiple chat rooms, typing indicators, online user presence, image/file sharing, and message history with pagination.',
-    tech: ['Node.js', 'Socket.io', 'Express', 'React'],
-    github: '#',
-    live: '#',
+      "A personal portfolio website developed using React and Tailwind CSS to showcase my technical skills, projects, and professional experience in software development. The website features a modern and responsive design that highlights my work, capabilities, and journey as a developer.",
+    tech: ["React", "Typescript","Tailwind CSS", "Framer Motion", "Vite", "Vercel"],
+    github: "#",
+    live: "",
     highlights: [
-      'Real-time messaging with Socket.io',
-      'Multiple chat rooms',
-      'Typing indicators',
-      'File and image sharing',
+      "Skills and experience presentation",
+      "Project showcase and case study sections",
+      "Responsive and modern UI design",
     ],
   },
-]
+];
 
 function generateSnakePath(n: number) {
   const lx = 55
