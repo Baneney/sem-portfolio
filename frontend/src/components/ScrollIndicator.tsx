@@ -71,13 +71,14 @@ export default function ScrollIndicator() {
 
     // Active section — which section contains the scroll position?
     let cumH = 0
-    let closest = sections.length - 1
+    let closest = 0
     for (let i = 0; i < measured.length; i++) {
       cumH += measured[i]
       if (scrollTop < cumH - measured[i] * 0.3) {
         closest = i
         break
       }
+      closest = i
     }
     setActiveIdx(closest)
   }, [])
@@ -85,10 +86,12 @@ export default function ScrollIndicator() {
   useEffect(() => {
     const container = document.getElementById('snap-container')
     if (!container) return
-    compute()
+    // Delay initial compute so DOM sections are measured
+    const raf = requestAnimationFrame(() => compute())
     container.addEventListener('scroll', compute, { passive: true })
     window.addEventListener('resize', compute)
     return () => {
+      cancelAnimationFrame(raf)
       container.removeEventListener('scroll', compute)
       window.removeEventListener('resize', compute)
     }
@@ -102,7 +105,14 @@ export default function ScrollIndicator() {
   }
 
   return (
-    <div className="fixed right-10 top-1/2 -translate-y-1/2 z-40 flex items-center gap-4" style={{ height: segments.length ? segments[segments.length - 1].top + segments[segments.length - 1].height : 0 }}>
+    <div
+      className="fixed right-10 top-1/2 -translate-y-1/2 z-40 flex items-center gap-4 transition-opacity duration-300"
+      style={{
+        height: segments.length ? segments[segments.length - 1].top + segments[segments.length - 1].height : 0,
+        opacity: activeIdx === 0 ? 0 : 1,
+        pointerEvents: activeIdx === 0 ? 'none' : 'auto',
+      }}
+    >
       {/* Segmented track */}
       <div className="relative" style={{ height: '100%' }}>
         {segments.map((seg, i) => {
