@@ -125,6 +125,7 @@ function getPointOnPath(pathEl: SVGPathElement, ratio: number) {
 
 export default function Projects() {
   const [activeIdx, setActiveIdx] = useState(0)
+  const [scales, setScales] = useState<number[]>(projects.map(() => 1))
   const [selected, setSelected] = useState<number | null>(null)
   const [pathLen, setPathLen] = useState(1200)
   const svgRef = useRef<SVGSVGElement>(null)
@@ -159,6 +160,15 @@ export default function Projects() {
         Math.floor(progress * projects.length)
       )
       setActiveIdx(Math.max(0, idx))
+
+      // Per-item scale: bell curve around the active project
+      const newScales = projects.map((_, i) => {
+        const dist = Math.abs(progress * (projects.length - 1) - i)
+        // Gaussian-like falloff: peak 1.3 at dist=0, floor ~0.6 at dist>=1.5
+        const s = 0.6 + 0.7 * Math.exp(-dist * dist * 1.4)
+        return Math.round(s * 100) / 100
+      })
+      setScales(newScales)
 
       // Animate main stroke draw
       const drawn = pathLen * Math.min(1, progress * 1.15)
@@ -369,6 +379,7 @@ export default function Projects() {
           {projects.map((p, i) => {
             const isActive = i === activeIdx
             const isLeft = i % 2 === 0
+            const s = scales[i] ?? 1
             return (
               <div
                 key={p.title}
@@ -396,7 +407,9 @@ export default function Projects() {
                   className="cursor-pointer group"
                   style={{
                     marginLeft: isLeft ? 240 : 190,
-                    transition: 'all 0.3s ease',
+                    transform: `scale(${s})`,
+                    transformOrigin: 'left center',
+                    transition: 'transform 0.15s ease-out, color 0.3s ease',
                   }}
                   onClick={() => setSelected(i)}
                 >
@@ -407,17 +420,18 @@ export default function Projects() {
                     {String(i + 1).padStart(2, '0')}
                   </span>
                   <h3
-                    className="text-3xl font-bold uppercase tracking-wide transition-all duration-300 group-hover:text-[#ffd86a]"
+                    className="font-bold uppercase tracking-wide transition-all duration-300 group-hover:text-[#ffd86a]"
                     style={{
-                      color: isActive ? '#ffffff' : 'rgba(255,255,255,0.2)',
+                      fontSize: `${1.5 + s * 0.7}rem`,
+                      color: isActive ? '#ffffff' : `rgba(255,255,255,${0.1 + s * 0.1})`,
                       textShadow: isActive ? '0 0 30px rgba(255,216,106,0.15)' : 'none',
                     }}
                   >
                     {p.title}
                   </h3>
                   <p
-                    className="text-sm mt-1 max-w-md transition-colors duration-300"
-                    style={{ color: isActive ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.12)' }}
+                    className="mt-1 max-w-md transition-colors duration-300"
+                    style={{ color: isActive ? 'rgba(255,255,255,0.5)' : `rgba(255,255,255,${0.05 + s * 0.08})` }}
                   >
                     {p.description}
                   </p>
