@@ -60,7 +60,7 @@ export default function ScrollIndicator() {
       </AnimatePresence>
 
       {/* Track + fill */}
-      <div className="relative w-[2px] h-[200px] bg-white/[0.06] rounded-full overflow-visible">
+      <div className="relative w-[2px] h-[70vh] bg-white/[0.06] rounded-full overflow-visible">
         <motion.div
           className="absolute top-0 left-0 w-full rounded-full"
           style={{
