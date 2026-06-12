@@ -37,7 +37,7 @@ const categories = [
   {
     name: "DevOps & Tools",
     icon: "✦",
-    skills: ["Git", "Docker", "AWS", "Figma", "Lucidchart", "AI Tools"],
+    skills: ["Git", "Docker", "Github", "Figma", "Lucidchart", "AI Tools"],
   },
 ];
 
