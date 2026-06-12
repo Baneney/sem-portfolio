@@ -1,5 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import ecommerceImg from "../assets/cornucopia.png";
+import taskManagerImg from "../assets/skills-bg.png";
+import weatherImg from '../assets/projects/weather-dashboard.png'
+import portfolioImg from '../assets/projects/portfolio.png'
+import chatImg from '../assets/projects/chat.png'
 
 const PROJECT_H = 280
 
@@ -7,6 +12,7 @@ const projects = [
   {
     title: 'E-Commerce App',
     year: '2024',
+    image: ecommerceImg,
     description: 'A full-stack online store with cart, auth, and payment integration.',
     longDescription:
       'Built a complete e-commerce platform featuring user authentication, product catalog with search and filtering, shopping cart, and Stripe payment integration. Includes real-time inventory tracking, order history, and a responsive admin dashboard.',
@@ -24,6 +30,7 @@ const projects = [
   {
     title: 'Task Manager',
     year: '2024',
+    image: taskManagerImg,
     description: 'A productivity app to manage tasks with drag-and-drop and real-time sync.',
     longDescription:
       'A Kanban-style task management application with drag-and-drop boards, real-time collaboration via WebSockets, and cloud sync. Supports team workspaces, due dates, labels, and priority levels.',
@@ -40,6 +47,7 @@ const projects = [
   {
     title: 'Weather Dashboard',
     year: '2023',
+    image: weatherImg,
     description: 'Displays real-time weather data using a public API with interactive charts.',
     longDescription:
       'A weather dashboard that visualizes current conditions and forecasts using the OpenWeatherMap API. Features interactive charts, location search, and a 7-day forecast with animated weather icons.',
@@ -56,6 +64,7 @@ const projects = [
   {
     title: 'Portfolio Site',
     year: '2023',
+    image: portfolioImg,
     description: 'A cinematic portfolio with parallax scrolling and custom animations.',
     longDescription:
       'A personal portfolio website built with React and Framer Motion, featuring cinematic scroll transitions, parallax backgrounds, and custom SVG animations. Designed to showcase projects with a dramatic, immersive aesthetic.',
@@ -72,6 +81,7 @@ const projects = [
   {
     title: 'Chat App',
     year: '2023',
+    image: chatImg,
     description: 'Real-time messaging app with rooms, typing indicators, and file sharing.',
     longDescription:
       'A real-time chat application built with Socket.io and Express. Features multiple chat rooms, typing indicators, online user presence, image/file sharing, and message history with pagination.',
@@ -481,19 +491,18 @@ export default function Projects() {
                   </span>
                 </div>
 
-                {/* Image placeholder */}
+                {/* Image */}
                 <div
                   className="w-full aspect-[4/3] rounded-xl overflow-hidden relative"
                   style={{
-                    background: projects[activeIdx].gradient,
                     boxShadow: '0 8px 60px rgba(0,0,0,0.5), 0 0 80px rgba(255,216,106,0.05)',
                   }}
                 >
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-white/20 text-6xl font-black uppercase tracking-widest">
-                      {projects[activeIdx].title.charAt(0)}
-                    </span>
-                  </div>
+                  <img
+                    src={projects[activeIdx].image}
+                    alt={projects[activeIdx].title}
+                    className="w-full h-full object-cover"
+                  />
                   {/* Scanline overlay */}
                   <div
                     className="absolute inset-0 pointer-events-none"
