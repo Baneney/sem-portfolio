@@ -12,6 +12,7 @@ import About3 from './pages/About3'
 import Skills from './pages/Skills'
 import Projects from './pages/Projects'
 import Contact from './pages/Contact'
+import ScrollIndicator from './components/ScrollIndicator'
 
 // Pages 1, 2, 3 = About1, About2, About3
 const bgImages   = [cornucopia, stonePlatformLeft, stonePlatformRight]
@@ -161,6 +162,8 @@ function App() {
         <Projects />
         <Contact />
       </div>
+
+      <ScrollIndicator />
 
     </div>
   )
