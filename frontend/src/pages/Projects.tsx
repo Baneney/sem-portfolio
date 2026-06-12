@@ -233,11 +233,22 @@ export default function Projects() {
       className="relative py-70 px-10"
       style={{ backgroundColor: '#000', minHeight: `${(projects.length + 0.5) * PROJECT_H}px` }}
     >
-
-
+      {/* Page transition — entire section fades and slides up */}
+      <motion.div
+        initial={{ opacity: 0, y: 60 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.05 }}
+        transition={{ duration: 0.9, ease: [0.25, 0.46, 0.45, 0.94] }}
+      >
       <div className="flex w-full">
         {/* Left — snake line + project list */}
-        <div className="relative w-[65%] pl-10 pt-[260px]">
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true, amount: 0.1 }}
+          transition={{ duration: 0.8, ease: 'easeOut' }}
+          className="relative w-[65%] pl-10 pt-[260px]"
+        >
           {/* SVG snake line */}
           <svg
             ref={svgRef}
@@ -386,9 +397,13 @@ export default function Projects() {
           {projects.map((p, i) => {
             const isLeft = i % 2 === 0
             return (
-              <div
+              <motion.div
                 key={p.title}
                 data-project
+                initial={{ opacity: 0, x: -30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{ duration: 0.5, delay: i * 0.08, ease: 'easeOut' }}
                 className="relative flex items-center"
                 style={{
                   height: PROJECT_H,
@@ -436,17 +451,16 @@ export default function Projects() {
                     {p.description}
                   </p>
                 </div>
-              </div>
+              </motion.div>
             )
           })}
           </div>
-        </div>
+        </motion.div>
 
         {/* Right — sticky preview */}
-        <div className="w-[35%] relative">
+        <div className="w-[35%] relative preview-fade-in">
           <div
             className="sticky top-0 h-screen flex flex-col items-center justify-center px-8"
-            style={{ position: 'sticky', top: 0 }}
           >
             <AnimatePresence mode="wait">
               <motion.div
@@ -506,6 +520,7 @@ export default function Projects() {
           </div>
         </div>
       </div>
+      </motion.div>
 
       {/* Modal */}
       <AnimatePresence>
