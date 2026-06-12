@@ -7,31 +7,39 @@ import treeRight from '../assets/tree-right.png'
 
 const categories = [
   {
-    name: 'Frontend',
-    icon: '✦',
-    skills: ['HTML', 'CSS', 'JavaScript', 'TypeScript', 'React', 'Next.js', 'Tailwind', 'Bootstrap', 'Electron'],
+    name: "Frontend",
+    icon: "✦",
+    skills: [
+      "HTML",
+      "CSS",
+      "JavaScript",
+      "TypeScript",
+      "React",
+      "React Native",
+      "Tailwind",
+    ],
   },
   {
-    name: 'Animation & 3D',
-    icon: '✦',
-    skills: ['Framer Motion', 'Three.js', 'GSAP', 'CSS Animations', 'WebGL'],
+    name: "Animation & 3D",
+    icon: "✦",
+    skills: ["Framer Motion", "Three.js", "ReactBits"],
   },
   {
-    name: 'Backend',
-    icon: '✦',
-    skills: ['Node.js', 'Python', 'Express', 'REST APIs', 'GraphQL', 'Django'],
+    name: "Backend",
+    icon: "✦",
+    skills: ["Node.js", "Python", "Flask", "ASP.NET", "Django", ""],
   },
   {
-    name: 'Databases',
-    icon: '✦',
-    skills: ['PostgreSQL', 'MongoDB', 'Firebase', 'Redis', 'Supabase'],
+    name: "Databases",
+    icon: "✦",
+    skills: ["PostgreSQL", "MongoDB", "Firebase", "Supabase"],
   },
   {
-    name: 'DevOps & Tools',
-    icon: '✦',
-    skills: ['Git', 'Docker', 'AWS', 'Linux', 'CI/CD', 'Figma'],
+    name: "DevOps & Tools",
+    icon: "✦",
+    skills: ["Git", "Docker", "AWS", "Figma", "Lucidchart", "AI Tools"],
   },
-]
+];
 
 const embers = Array.from({ length: 16 }, (_, i) => ({
   left: 4 + (i * 6.2) % 92,

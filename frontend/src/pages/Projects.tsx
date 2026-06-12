@@ -501,10 +501,10 @@ export default function Projects() {
               >
                 {/* Label */}
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-[10px] tracking-[0.3em] uppercase text-white/30">
+                  <span className="text-[10px] tracking-[0.3em] uppercase text-[#ffd86a]/60">
                     Preview
                   </span>
-                  <span className="text-[10px] tracking-wider text-white/20">
+                  <span className="text-[10px] tracking-wider text-[#ffd86a]/40">
                     {projects[activeIdx].year}
                   </span>
                 </div>
@@ -536,7 +536,7 @@ export default function Projects() {
                   {projects[activeIdx].tech.map(t => (
                     <span
                       key={t}
-                      className="text-[10px] px-2.5 py-1 rounded-full bg-white/[0.04] border border-white/[0.08] text-white/40"
+                      className="text-[10px] px-2.5 py-1 rounded-full border text-[#ffd86a]/60 border-[#ffd86a]/15 bg-[#ffd86a]/[0.04]"
                     >
                       {t}
                     </span>
