@@ -44,7 +44,7 @@ export default function ScrollIndicator() {
   }, [])
 
   return (
-    <div className="fixed right-5 top-1/2 -translate-y-1/2 z-40 flex items-center gap-4 pointer-events-none">
+    <div className="fixed right-10 top-1/2 -translate-y-1/2 z-40 flex items-center gap-4 pointer-events-none">
       {/* Section label */}
       <AnimatePresence mode="wait">
         <motion.span
@@ -53,7 +53,7 @@ export default function ScrollIndicator() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -6 }}
           transition={{ duration: 0.25 }}
-          className="text-[10px] tracking-[0.2em] uppercase text-white/40 text-right min-w-[70px]"
+          className="text-[10px] tracking-[0.2em] uppercase text-white text-right min-w-[70px]"
         >
           {sections[activeIdx].label}
         </motion.span>
