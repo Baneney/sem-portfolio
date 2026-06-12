@@ -102,27 +102,12 @@ export default function ScrollIndicator() {
   }
 
   return (
-    <div className="fixed right-10 top-1/2 -translate-y-1/2 z-40 flex items-center gap-4">
-      {/* Section label */}
-      <button onClick={() => scrollTo(activeIdx)} className="cursor-pointer">
-        <AnimatePresence mode="wait">
-          <motion.span
-            key={activeIdx}
-            initial={{ opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -6 }}
-            transition={{ duration: 0.25 }}
-            className="text-[10px] tracking-[0.2em] uppercase text-white text-right min-w-[70px] hover:text-[#ffd86a] transition-colors duration-200"
-          >
-            {sections[activeIdx].label}
-          </motion.span>
-        </AnimatePresence>
-      </button>
-
+    <div className="fixed right-10 top-1/2 -translate-y-1/2 z-40 flex items-center gap-4" style={{ height: segments.length ? segments[segments.length - 1].top + segments[segments.length - 1].height : 0 }}>
       {/* Segmented track */}
-      <div className="relative" style={{ height: segments.length ? segments[segments.length - 1].top + segments[segments.length - 1].height : 0 }}>
+      <div className="relative" style={{ height: '100%' }}>
         {segments.map((seg, i) => {
           const isActive = i === activeIdx
+          const dotY = seg.top + seg.fill * seg.height
           return (
             <button
               key={i}
@@ -156,6 +141,24 @@ export default function ScrollIndicator() {
             </button>
           )
         })}
+
+        {/* Label — follows the active dot */}
+        <AnimatePresence mode="wait">
+          <motion.button
+            key={activeIdx}
+            onClick={() => scrollTo(activeIdx)}
+            initial={{ opacity: 0, x: 6 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 6 }}
+            transition={{ duration: 0.25 }}
+            className="absolute right-full mr-4 -translate-y-1/2 cursor-pointer"
+            style={{ top: segments[activeIdx] ? segments[activeIdx].top + segments[activeIdx].fill * segments[activeIdx].height : 0 }}
+          >
+            <span className="text-[10px] tracking-[0.2em] uppercase text-white hover:text-[#ffd86a] transition-colors duration-200 whitespace-nowrap">
+              {sections[activeIdx].label}
+            </span>
+          </motion.button>
+        </AnimatePresence>
       </div>
     </div>
   )
