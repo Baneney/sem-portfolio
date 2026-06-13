@@ -113,7 +113,7 @@ export default function Hero({ showSplash }: { showSplash: boolean }) {
 
       {/* Name + description */}
       <div
-        className="flex flex-col justify-center flex-1 w-full sm:w-[55%] relative"
+        className="flex flex-col justify-end sm:justify-center flex-1 w-full sm:w-[55%] relative mb-7 sm:mb-0"
         style={{ zIndex: 3 }}
       >
         {/* decorative label */}
@@ -149,7 +149,7 @@ export default function Hero({ showSplash }: { showSplash: boolean }) {
       {/* Bottom bar */}
       <div
         ref={bottomBarRef}
-        className="relative group flex justify-between items-center pt-6 text-[10px] sm:text-xs tracking-[0.2em] sm:tracking-[0.35em] uppercase text-white/60 overflow-hidden"
+        className="relative group flex justify-between items-center pt-[15px] sm:pt-6 text-[10px] sm:text-xs tracking-[0.2em] sm:tracking-[0.35em] uppercase text-white/60 overflow-hidden"
         style={{ zIndex: 3 }}
       >
         {/* Animated SVG draw line */}
