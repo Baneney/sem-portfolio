@@ -344,6 +344,13 @@
   50%      { transform: scale(2.2); opacity: 0; }
 }
 
+@keyframes project-scatter {
+  0%   { opacity: 0; transform: translate(0, 0) scale(1); }
+  10%  { opacity: 1; }
+  50%  { opacity: 0.6; }
+  100% { opacity: 0; transform: translate(var(--scatter-x), var(--scatter-y)) scale(0.2); }
+}
+
 /* Skill pill spark ring */
 .skill-pill {
   position: relative;

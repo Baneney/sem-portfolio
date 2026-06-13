@@ -303,22 +303,34 @@ export default function Projects() {
         <div className="absolute bottom-[10%] right-[10%] w-[40%] h-[30%] rounded-full bg-[#ff8c00]/10 blur-[80px]" />
       </div>
 
-      {/* Rising embers */}
+      {/* Fire sparkles — scatter from fire sources across the page */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {Array.from({ length: 14 }, (_, i) => (
-          <div
-            key={i}
-            className="absolute rounded-full"
-            style={{
-              left: `${5 + (i * 7) % 90}%`,
-              bottom: '-4px',
-              width: `${1.5 + (i % 3) * 0.7}px`,
-              height: `${1.5 + (i % 3) * 0.7}px`,
-              background: i % 3 === 0 ? '#ffd86a' : i % 3 === 1 ? '#ffb300' : '#ff8c00',
-              animation: `ember-rise ${2.6 + (i % 5) * 0.5}s ease-out ${i * 0.3}s infinite`,
-            }}
-          />
-        ))}
+        {Array.from({ length: 35 }, (_, i) => {
+          const angle = (i / 35) * Math.PI * 2 + (i % 3) * 0.5
+          const dist = 10 + (i % 5) * 10
+          const dx = Math.cos(angle) * dist
+          const dy = Math.sin(angle) * dist
+          const sourceX = 10 + (i * 7) % 80
+          const sourceY = 5 + (i * 11) % 90
+          return (
+            <div
+              key={i}
+              className="absolute rounded-full"
+              style={{
+                left: `${sourceX}%`,
+                top: `${sourceY}%`,
+                width: `${2 + (i % 4) * 1.2}px`,
+                height: `${2 + (i % 4) * 1.2}px`,
+                background: i % 3 === 0 ? '#ffd86a' : i % 3 === 1 ? '#ffb300' : '#ff8c00',
+                boxShadow: `0 0 ${6 + (i % 4) * 3}px ${i % 3 === 0 ? 'rgba(255,216,106,0.8)' : i % 3 === 1 ? 'rgba(255,179,0,0.7)' : 'rgba(255,140,0,0.6)'}`,
+                opacity: 0,
+                animation: `project-scatter ${2.5 + (i % 5) * 0.8}s ease-out ${i * 0.2}s infinite`,
+                '--scatter-x': `${dx}vw`,
+                '--scatter-y': `${dy - 8}vh`,
+              } as React.CSSProperties}
+            />
+          )
+        })}
       </div>
 
       {/* Page transition — entire section fades and slides up */}
