@@ -351,7 +351,7 @@ export default function Projects() {
             </span>
           </div>
           <h2
-            className="text-[12vw] md:text-4xl font-black leading-[0.95] tracking-[0.2rem] md:tracking-wide mb-2 md:mb-6 uppercase animate-text-fire"
+            className="text-[10vw] md:text-4xl font-black leading-[0.95] tracking-[0.2rem] md:tracking-wide mb-2 md:mb-6 uppercase animate-text-fire"
             style={{
               background: 'linear-gradient(90deg, #d18a1e, #ffd86a, #ffffff, #f0b43a, #d18a1e)',
               backgroundSize: '300% 100%',

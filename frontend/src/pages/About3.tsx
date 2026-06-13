@@ -148,15 +148,12 @@ export default function About3() {
       {/* Main content card — scroll parallax + mouse tilt */}
       <div
         ref={cardRef}
-        className="max-w-2xl w-full rounded-[28px] bg-[#070806]/20 p-6 sm:p-10 shadow-[0_30px_80px_rgba(0,0,0,0.35)] backdrop-blur-md border border-[#ffd86a]/20 relative group hover-glow"
+        className="max-w-2xl w-full rounded-[24px] bg-[#070806]/80 p-6 sm:p-8 shadow-[0_20px_60px_rgba(0,0,0,0.3)] backdrop-blur-md border border-[#ffd86a]/20 relative overflow-hidden"
         style={{ willChange: 'transform, opacity' }}
       >
-        {/* Border glow */}
-        <div className="absolute inset-0 rounded-[28px] bg-gradient-to-r from-[#ffd86a]/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-
-        {/* Decorative dots */}
-        <div className="absolute -top-3 -left-3 w-6 h-6 bg-[#ffd86a] rounded-full opacity-0 group-hover:opacity-20 blur-sm animate-pulse transition-opacity duration-300" />
-        <div className="absolute -bottom-3 -right-3 w-6 h-6 bg-[#c85000] rounded-full opacity-0 group-hover:opacity-20 blur-sm animate-pulse transition-opacity duration-300" style={{ animationDelay: '0.5s' }} />
+        {/* Corner glows */}
+        <div className="absolute -top-20 -right-20 w-40 h-40 bg-[#ffd86a]/8 rounded-full blur-[60px]" />
+        <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-[#c85000]/8 rounded-full blur-[60px]" />
 
         {/* Content wrapper — staggered text parallax */}
         <div className="flex flex-col items-start z-10 space-y-4 text-left">
@@ -188,9 +185,6 @@ export default function About3() {
             Every line of code is an opportunity to make someone's life a little easier.
           </p>
         </div>
-
-        {/* Underline accent */}
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-1 bg-gradient-to-r from-transparent via-[#ffd86a] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-full blur-sm" />
       </div>
 
     </section>
