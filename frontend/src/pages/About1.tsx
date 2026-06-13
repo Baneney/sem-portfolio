@@ -45,7 +45,7 @@ export default function About1() {
       className="snap-page relative flex min-h-screen flex-col justify-end items-center text-center px-5 sm:px-10 py-10 overflow-hidden"
     >
       {/* Noise + amber vignette overlays */}
-      <div className="noise-texture absolute inset-0 pointer-events-none z-[1]" style={{ opacity: 0.06 }} />
+      <div className="noise-texture absolute inset-0 pointer-events-none z-[1]" style={{ opacity: 0.15 }} />
       <div className="amber-vignette absolute inset-0 pointer-events-none z-[1]" />
 
       {/* Animated background gradients */}
