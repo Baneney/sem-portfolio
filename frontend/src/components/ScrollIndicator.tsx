@@ -105,7 +105,16 @@ export default function ScrollIndicator() {
     if (!isSnapPage) container.style.scrollSnapType = 'none'
     container.scrollTo({ top: el.offsetTop, behavior: 'smooth' })
     if (!isSnapPage) {
-      setTimeout(() => { container.style.scrollSnapType = 'y mandatory' }, 800)
+      const targetTop = el.offsetTop
+      const checkReached = () => {
+        const diff = Math.abs(container.scrollTop - targetTop)
+        if (diff < 5) {
+          container.style.scrollSnapType = 'y mandatory'
+          return
+        }
+        requestAnimationFrame(checkReached)
+      }
+      requestAnimationFrame(checkReached)
     }
   }
 
