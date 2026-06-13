@@ -42,6 +42,18 @@ export default function Hero({ showSplash }: { showSplash: boolean }) {
     }
   }, [lineInView, progress, showSplash])
 
+  function scrollToSection(id: string) {
+    const container = document.getElementById('snap-container')
+    const el = document.getElementById(id)
+    if (!container || !el) return
+    const isSnapPage = ['about', 'about1', 'about2', 'about3'].includes(id)
+    if (!isSnapPage) container.style.scrollSnapType = 'none'
+    container.scrollTo({ top: el.offsetTop, behavior: 'smooth' })
+    if (!isSnapPage) {
+      setTimeout(() => { container.style.scrollSnapType = 'y mandatory' }, 800)
+    }
+  }
+
   return (
     <section
       id="about"
@@ -199,6 +211,7 @@ export default function Hero({ showSplash }: { showSplash: boolean }) {
         <div className={`flex gap-6 ${reveal ? '' : 'opacity-0'}`}>
           <a
             href="#about1"
+            onClick={e => { e.preventDefault(); scrollToSection('about1') }}
             className="group relative inline-flex items-center text-white/70 transition-all duration-300 hover:text-[#ffd86a] hover:-translate-y-1"
           >
             <RevealText key={reveal ? 'ra1' : 'wait5'} delay={reveal ? 0.22 : 9999}>About</RevealText>
@@ -206,6 +219,7 @@ export default function Hero({ showSplash }: { showSplash: boolean }) {
           </a>
           <a
             href="#skills"
+            onClick={e => { e.preventDefault(); scrollToSection('skills') }}
             className="group relative inline-flex items-center text-white/70 transition-all duration-300 hover:text-[#ffd86a] hover:-translate-y-1"
           >
             <RevealText key={reveal ? 'rs1' : 'wait6'} delay={reveal ? 0.28 : 9999}>Skills</RevealText>
@@ -213,6 +227,7 @@ export default function Hero({ showSplash }: { showSplash: boolean }) {
           </a>
           <a
             href="#projects"
+            onClick={e => { e.preventDefault(); scrollToSection('projects') }}
             className="group relative inline-flex items-center text-white/70 transition-all duration-300 hover:text-[#ffd86a] hover:-translate-y-1"
           >
             <RevealText key={reveal ? 'rp1' : 'wait7'} delay={reveal ? 0.34 : 9999}>Projects</RevealText>
@@ -220,6 +235,7 @@ export default function Hero({ showSplash }: { showSplash: boolean }) {
           </a>
           <a
             href="#contact"
+            onClick={e => { e.preventDefault(); scrollToSection('contact') }}
             className="group relative inline-flex items-center text-white/70 transition-all duration-300 hover:text-[#ffd86a] hover:-translate-y-1"
           >
             <RevealText key={reveal ? 'rc1' : 'wait8'} delay={reveal ? 0.4 : 9999}>Contact</RevealText>
