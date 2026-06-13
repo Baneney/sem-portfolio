@@ -15,6 +15,7 @@ import Projects from './pages/Projects'
 import Contact from './pages/Contact'
 import ScrollIndicator from './components/ScrollIndicator'
 import Splash from './components/Splash'
+import Chatbot from './components/Chatbot'
 
 // Pages 1, 2, 3 = About1, About2, About3
 const bgImages   = [cornucopia, stonePlatformLeft, stonePlatformRight]
@@ -240,6 +241,7 @@ function App() {
       </div>
 
       <ScrollIndicator />
+      <Chatbot />
 
     </div>
   )
