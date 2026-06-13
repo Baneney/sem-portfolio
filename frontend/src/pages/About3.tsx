@@ -115,6 +115,10 @@ export default function About3() {
       id="about3"
       className="snap-page relative flex min-h-screen flex-col justify-end items-start px-5 sm:px-10 pb-10 overflow-hidden"
     >
+      {/* Noise + amber vignette overlays */}
+      <div className="noise-texture absolute inset-0 pointer-events-none z-[1]" style={{ opacity: 0.06 }} />
+      <div className="amber-vignette absolute inset-0 pointer-events-none z-[1]" />
+
       {/* Parallax background gradients — only visible when in view */}
       <div className={`absolute inset-0 pointer-events-none overflow-hidden transition-all duration-300 ${isVisible ? 'opacity-100' : 'opacity-0 invisible'}`}>
         <div

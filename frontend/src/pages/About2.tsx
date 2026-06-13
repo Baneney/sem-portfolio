@@ -95,6 +95,10 @@ export default function About2() {
       id="about2"
       className="snap-page relative flex min-h-screen flex-col justify-end items-end px-5 sm:px-10 pb-10 overflow-hidden"
     >
+      {/* Noise + amber vignette overlays */}
+      <div className="noise-texture absolute inset-0 pointer-events-none z-[1]" style={{ opacity: 0.06 }} />
+      <div className="amber-vignette absolute inset-0 pointer-events-none z-[1]" />
+
       {/* Animated background gradients */}
       <div className={`absolute inset-0 pointer-events-none transition-all duration-300 ${isVisible ? 'opacity-100' : 'opacity-0 invisible'}`}>
         <div className="absolute top-20 left-20 w-80 h-80 bg-gradient-to-r from-[#ffd86a] to-transparent rounded-full blur-3xl animate-float-slow opacity-30" />
