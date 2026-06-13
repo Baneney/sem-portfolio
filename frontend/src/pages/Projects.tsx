@@ -415,7 +415,7 @@ export default function Projects() {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true, amount: 0.1 }}
           transition={{ duration: 0.8, ease: 'easeOut' }}
-          className="relative w-[65%] pt-[8%]"
+          className="relative w-[65%] pt-[8%] overflow-hidden pr-10"
         >
           {/* SVG snake line */}
           <svg
@@ -591,7 +591,7 @@ export default function Projects() {
                 />
 
                 <div
-                  className="cursor-pointer group"
+                  className="cursor-pointer group max-w-[calc(100%-260px)]"
                   style={{
                     marginLeft: isLeft ? 240 : 190,
                     transformOrigin: 'left center',
