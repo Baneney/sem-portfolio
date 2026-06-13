@@ -306,7 +306,7 @@ export default function Projects() {
       {/* ── MOBILE: Minimal timeline ── */}
       <div className="lg:hidden">
         {/* Header */}
-        <div className="mb-10">
+        <div className="mb-20">
           <div className="flex items-center gap-2 mb-3">
             <span className="w-1.5 h-px bg-[#ffd86a]/60" />
             <span className="text-[#ffd86a]/60 text-[10px] tracking-[0.3em] uppercase font-medium">
@@ -339,6 +339,7 @@ export default function Projects() {
                 viewport={{ once: true, amount: 0.3 }}
                 transition={{ duration: 0.5, delay: i * 0.08, ease: 'easeOut' }}
                 className="relative cursor-pointer group"
+                style={{ transition: 'opacity 0.5s ease, filter 0.5s ease' }}
                 onClick={() => setSelected(i)}
               >
                 {/* Dot on the line — centered on the 2px line at left-[11px] */}
@@ -353,17 +354,17 @@ export default function Projects() {
                 </div>
 
                 {/* Number */}
-                <span className="text-[13px] tracking-wider text-[#ffd86a]/40 block mb-2">
+                <span className="text-[13px] tracking-wider text-[#ffd86a]/40 block mb-2" style={{ transition: 'color 0.5s ease' }}>
                   {String(i + 1).padStart(2, '0')}
                 </span>
 
                 {/* Title */}
-                <h3 className="text-3xl font-black uppercase tracking-wide text-white/90 mb-3">
+                <h3 className="text-3xl font-black uppercase tracking-wide text-white/90 mb-3" style={{ transition: 'color 0.5s ease' }}>
                   {p.title}
                 </h3>
 
                 {/* Description */}
-                <p className="text-white/35 text-sm leading-relaxed">
+                <p className="text-white/35 text-sm leading-relaxed" style={{ transition: 'color 0.5s ease' }}>
                   {p.description}
                 </p>
               </motion.div>
