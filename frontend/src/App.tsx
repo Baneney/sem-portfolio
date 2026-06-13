@@ -241,7 +241,7 @@ function App() {
       </div>
 
       <ScrollIndicator />
-      <Chatbot />
+      {!showSplash && <Chatbot />}
 
     </div>
   )
