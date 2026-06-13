@@ -37,6 +37,7 @@ export default function About2() {
   const [isVisible, setIsVisible] = useState(false);
   const [active, setActive] = useState(0);
   const [direction, setDirection] = useState(1);
+  const [isHovered, setIsHovered] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const startInterval = useCallback(() => {
@@ -48,9 +49,13 @@ export default function About2() {
   }, []);
 
   useEffect(() => {
-    startInterval();
+    if (isHovered) {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    } else {
+      startInterval();
+    }
     return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
-  }, [startInterval]);
+  }, [isHovered, startInterval]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -112,6 +117,8 @@ export default function About2() {
       {/* Main content card */}
       <div
         className="max-w-2xl w-full rounded-[28px] bg-[#070806]/20 p-6 sm:p-10 shadow-[0_30px_80px_rgba(0,0,0,0.35)] backdrop-blur-md border border-[#ffd86a]/20 relative group hover-glow"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
         style={{
           transform: `perspective(1000px) rotateX(${-mousePos.y}deg) rotateY(${mousePos.x}deg) translateZ(20px)`,
           transition: 'transform 0.1s ease-out',
