@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X } from 'lucide-react'
 import schedulaterImg from "../assets/schedulater.png";
-import fixTrack from "../assets/FixTrack.png";
+import fixTrack from "../assets/fixtrack.png";
 import ciudad from '../assets/ciudad.png'
 import tas from '../assets/tas.png'
 import portfolio from "../assets/portfolio.png";
