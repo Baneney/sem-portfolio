@@ -29,15 +29,27 @@ export default function Hero({ showSplash }: { showSplash: boolean }) {
   const progress = useMotionValue(0)
   const dotCx = useTransform(progress, [0, 1], [0, 1000])
   const [reveal, setReveal] = useState(false)
+  const animationsDone = useRef(false)
 
   useEffect(() => {
-    if (lineInView && !showSplash) {
+    const container = document.getElementById('snap-container')
+    if (!container) return
+
+    if (showSplash || !animationsDone.current) {
+      container.style.overflowY = 'hidden'
+    }
+
+    if (!showSplash && !animationsDone.current && (lineInView || true)) {
       animate(progress, 1, {
         duration: 0.6,
         ease: [0.25, 0.1, 0.25, 1],
         delay: 0,
       })
-      const t = setTimeout(() => setReveal(true), 600)
+      const t = setTimeout(() => {
+        setReveal(true)
+        animationsDone.current = true
+        container.style.overflowY = ''
+      }, 1000)
       return () => clearTimeout(t)
     }
   }, [lineInView, progress, showSplash])
