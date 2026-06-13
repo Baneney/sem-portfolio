@@ -101,7 +101,12 @@ export default function ScrollIndicator() {
     const container = document.getElementById('snap-container')
     const el = document.getElementById(sections[index].id)
     if (!container || !el) return
+    const isSnapPage = index <= 3
+    if (!isSnapPage) container.style.scrollSnapType = 'none'
     container.scrollTo({ top: el.offsetTop, behavior: 'smooth' })
+    if (!isSnapPage) {
+      setTimeout(() => { container.style.scrollSnapType = 'y mandatory' }, 800)
+    }
   }
 
   return (
