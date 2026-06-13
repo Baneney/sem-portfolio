@@ -293,7 +293,7 @@ export default function Projects() {
     <section
       ref={containerRef}
       id="projects"
-      className="relative py-16 sm:py-70 px-20projec"
+      className="relative py-16 sm:py-70 px-20"
       style={{ backgroundColor: '#000' }}
     >
       {/* Page transition — entire section fades and slides up */}
