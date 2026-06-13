@@ -40,6 +40,7 @@ function App() {
   const currentPageRef = useRef(-1)
   const [showTransition, setShowTransition] = useState(false)
   const [showSplash, setShowSplash] = useState(true)
+  const [hideSculpture, setHideSculpture] = useState(window.innerWidth < 768)
   const splashDone = useRef(false)
   const contentReady = useRef(false)
 
@@ -147,7 +148,14 @@ function App() {
     }
 
     container.addEventListener('scroll', handleScroll, { passive: true })
-    return () => container.removeEventListener('scroll', handleScroll)
+
+    const handleResize = () => setHideSculpture(window.innerWidth < 768)
+    window.addEventListener('resize', handleResize)
+
+    return () => {
+      container.removeEventListener('scroll', handleScroll)
+      window.removeEventListener('resize', handleResize)
+    }
   }, [])
 
   return (
@@ -176,7 +184,8 @@ function App() {
         <div className="absolute inset-0 bg-black/50" style={{ zIndex: 1 }} />
       </div>
 
-      {/* Sculpture — About pages only */}
+      {/* Sculpture — About pages only, hidden on mobile */}
+      {!hideSculpture && (
       <div
         ref={wrapperRef}
         className="sculpture-float"
@@ -195,6 +204,7 @@ function App() {
           />
         ))}
       </div>
+      )}
 
       {/* Page transition overlay — About3 → Skills */}
       {showTransition && (
