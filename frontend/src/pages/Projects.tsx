@@ -853,6 +853,18 @@ export default function Projects() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Hint */}
+      <div className="absolute bottom-6 left-0 right-0 text-center pointer-events-none">
+        <a
+          href="https://github.com/Baneney"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-[11px] tracking-[0.15em] uppercase text-white/50 hover:text-[#ffd86a] transition-colors duration-300 pointer-events-auto"
+        >
+          more on GitHub →
+        </a>
+      </div>
     </section>
   )
 }
