@@ -421,7 +421,7 @@ export default function Projects() {
           <svg
             ref={svgRef}
             viewBox={`0 0 200 ${projects.length * PROJECT_H}`}
-            className="absolute top-[8%]"
+            className="absolute top-[8%] pb-10"
             style={{
               width: 200,
               height: projects.length * PROJECT_H,
