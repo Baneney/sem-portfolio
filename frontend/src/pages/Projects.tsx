@@ -659,14 +659,16 @@ export default function Projects() {
                   >
                     GitHub →
                   </a>
-                  <a
-                    href={projects[selected].live}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-xs tracking-[0.2em] uppercase text-[#ffd86a]/60 hover:text-[#ffd86a] transition-colors"
-                  >
-                    Live Demo →
-                  </a>
+                  {projects[selected].live && (
+                    <a
+                      href={projects[selected].live}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs tracking-[0.2em] uppercase text-[#ffd86a]/60 hover:text-[#ffd86a] transition-colors"
+                    >
+                      Live Demo →
+                    </a>
+                  )}
                 </div>
               </div>
             </motion.div>
