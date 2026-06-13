@@ -23,7 +23,7 @@ function RevealText({ children, delay, className = '' }: { children: React.React
   )
 }
 
-export default function Hero() {
+export default function Hero({ showSplash }: { showSplash: boolean }) {
   const bottomBarRef = useRef<HTMLDivElement>(null)
   const lineInView = useInView(bottomBarRef, { once: true, amount: 0.5 })
   const progress = useMotionValue(0)
@@ -31,7 +31,7 @@ export default function Hero() {
   const [reveal, setReveal] = useState(false)
 
   useEffect(() => {
-    if (lineInView) {
+    if (lineInView && !showSplash) {
       animate(progress, 1, {
         duration: 1.4,
         ease: [0.25, 0.1, 0.25, 1],
@@ -40,7 +40,7 @@ export default function Hero() {
       const t = setTimeout(() => setReveal(true), 1500)
       return () => clearTimeout(t)
     }
-  }, [lineInView, progress])
+  }, [lineInView, progress, showSplash])
 
   return (
     <section
@@ -164,11 +164,11 @@ export default function Hero() {
         </svg>
 
         {/* ── Left: V1.0 ── */}
-        <span className="relative inline-flex items-center gap-2 text-white/60 transition-colors duration-300 hover:text-[#ffd86a]">
-          <RevealText delay={1.5}>
+        <span className={`relative inline-flex items-center gap-2 text-white/60 transition-colors duration-300 hover:text-[#ffd86a] ${reveal ? '' : 'opacity-0'}`}>
+          <RevealText key={reveal ? 'rv1' : 'wait'} delay={reveal ? 0 : 9999}>
             <span className="text-[#ffd86a]/80">→</span>
           </RevealText>
-          <RevealText delay={1.55}>
+          <RevealText key={reveal ? 'rv2' : 'wait2'} delay={reveal ? 0.05 : 9999}>
             <span className="relative cursor-default">
               V1.0
               <span className="absolute inset-x-0 -bottom-1 h-[2px] rounded-full bg-[linear-gradient(90deg,transparent,rgba(255,214,104,0.95),transparent)] scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-center" />
@@ -177,12 +177,12 @@ export default function Hero() {
         </span>
 
         {/* ── Center: LinkedIn / GitHub ── */}
-        <div className="flex gap-4">
+        <div className={`flex gap-4 ${reveal ? '' : 'opacity-0'}`}>
           <a
             href="#"
             className="group relative inline-flex items-center text-white/70 transition-all duration-300 hover:text-[#ffd86a] hover:-translate-y-1"
           >
-            <RevealText delay={1.6}>LinkedIn</RevealText>
+            <RevealText key={reveal ? 'rl1' : 'wait3'} delay={reveal ? 0.1 : 9999}>LinkedIn</RevealText>
             <span className="absolute inset-x-0 -bottom-1 h-[3px] rounded-full bg-[linear-gradient(90deg,transparent,rgba(255,214,104,0.95),transparent)] scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-center" />
           </a>
           <span className="text-white/30">/</span>
@@ -190,39 +190,39 @@ export default function Hero() {
             href="#"
             className="group relative inline-flex items-center text-white/70 transition-all duration-300 hover:text-[#ffd86a] hover:-translate-y-1"
           >
-            <RevealText delay={1.66}>GitHub</RevealText>
+            <RevealText key={reveal ? 'rg1' : 'wait4'} delay={reveal ? 0.16 : 9999}>GitHub</RevealText>
             <span className="absolute inset-x-0 -bottom-1 h-[3px] rounded-full bg-[linear-gradient(90deg,transparent,rgba(255,214,104,0.95),transparent)] scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-center" />
           </a>
         </div>
 
         {/* ── Right: About / Skills / Projects / Contact ── */}
-        <div className="flex gap-6">
+        <div className={`flex gap-6 ${reveal ? '' : 'opacity-0'}`}>
           <a
             href="#about1"
             className="group relative inline-flex items-center text-white/70 transition-all duration-300 hover:text-[#ffd86a] hover:-translate-y-1"
           >
-            <RevealText delay={1.72}>About</RevealText>
+            <RevealText key={reveal ? 'ra1' : 'wait5'} delay={reveal ? 0.22 : 9999}>About</RevealText>
             <span className="absolute inset-x-0 -bottom-1 h-[3px] rounded-full bg-[linear-gradient(90deg,transparent,rgba(255,214,104,0.9),transparent)] scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-center" />
           </a>
           <a
             href="#skills"
             className="group relative inline-flex items-center text-white/70 transition-all duration-300 hover:text-[#ffd86a] hover:-translate-y-1"
           >
-            <RevealText delay={1.78}>Skills</RevealText>
+            <RevealText key={reveal ? 'rs1' : 'wait6'} delay={reveal ? 0.28 : 9999}>Skills</RevealText>
             <span className="absolute inset-x-0 -bottom-1 h-[3px] rounded-full bg-[linear-gradient(90deg,transparent,rgba(255,214,104,0.9),transparent)] scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-center" />
           </a>
           <a
             href="#projects"
             className="group relative inline-flex items-center text-white/70 transition-all duration-300 hover:text-[#ffd86a] hover:-translate-y-1"
           >
-            <RevealText delay={1.84}>Projects</RevealText>
+            <RevealText key={reveal ? 'rp1' : 'wait7'} delay={reveal ? 0.34 : 9999}>Projects</RevealText>
             <span className="absolute inset-x-0 -bottom-1 h-[3px] rounded-full bg-[linear-gradient(90deg,transparent,rgba(255,214,104,0.9),transparent)] scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-center" />
           </a>
           <a
             href="#contact"
             className="group relative inline-flex items-center text-white/70 transition-all duration-300 hover:text-[#ffd86a] hover:-translate-y-1"
           >
-            <RevealText delay={1.9}>Contact</RevealText>
+            <RevealText key={reveal ? 'rc1' : 'wait8'} delay={reveal ? 0.4 : 9999}>Contact</RevealText>
             <span className="absolute inset-x-0 -bottom-1 h-[3px] rounded-full bg-[linear-gradient(90deg,transparent,rgba(255,214,104,0.9),transparent)] scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-center" />
           </a>
         </div>

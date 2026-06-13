@@ -168,7 +168,7 @@ function App() {
       {/* <Navbar atTop={atTop} /> */}
 
       <div id="snap-container" className="snap-container">
-        <Hero />
+        <Hero showSplash={showSplash} />
         <About1 />
         <About2 />
         <About3 />
