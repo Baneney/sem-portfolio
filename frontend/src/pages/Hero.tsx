@@ -33,11 +33,11 @@ export default function Hero({ showSplash }: { showSplash: boolean }) {
   useEffect(() => {
     if (lineInView && !showSplash) {
       animate(progress, 1, {
-        duration: 1.4,
+        duration: 0.6,
         ease: [0.25, 0.1, 0.25, 1],
-        delay: 0.3,
+        delay: 0,
       })
-      const t = setTimeout(() => setReveal(true), 1500)
+      const t = setTimeout(() => setReveal(true), 600)
       return () => clearTimeout(t)
     }
   }, [lineInView, progress, showSplash])
