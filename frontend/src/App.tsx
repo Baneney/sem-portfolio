@@ -34,10 +34,55 @@ function App() {
   const currentPageRef = useRef(-1)
   const [showTransition, setShowTransition] = useState(false)
   const [showSplash, setShowSplash] = useState(true)
+  const splashDone = useRef(false)
+  const contentReady = useRef(false)
+
+  function tryDismissSplash() {
+    if (splashDone.current && contentReady.current) {
+      setShowSplash(false)
+    }
+  }
 
   useEffect(() => {
-    const t = setTimeout(() => setShowSplash(false), 3500)
+    const t = setTimeout(() => {
+      splashDone.current = true
+      tryDismissSplash()
+    }, 3500)
     return () => clearTimeout(t)
+  }, [])
+
+  useEffect(() => {
+    const dismiss = () => {
+      contentReady.current = true
+      tryDismissSplash()
+    }
+
+    if (document.readyState === 'complete') {
+      dismiss()
+      return
+    }
+
+    window.addEventListener('load', dismiss)
+
+    const images = document.querySelectorAll('img')
+    let pending = 0
+    images.forEach(img => {
+      if (!img.complete) {
+        pending++
+        img.addEventListener('load', () => {
+          pending--
+          if (pending <= 0) dismiss()
+        }, { once: true })
+        img.addEventListener('error', () => {
+          pending--
+          if (pending <= 0) dismiss()
+        }, { once: true })
+      }
+    })
+
+    if (pending <= 0) dismiss()
+
+    return () => window.removeEventListener('load', dismiss)
   }, [])
 
   function goToPage(index: number) {
