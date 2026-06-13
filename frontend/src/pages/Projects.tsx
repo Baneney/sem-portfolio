@@ -307,13 +307,23 @@ export default function Projects() {
       <div className="lg:hidden">
         {/* Header */}
         <div className="mb-20">
-          <div className="flex items-center gap-2 mb-3">
+          <div className="flex items-center gap-2 mb-2projects md:mb-3">
             <span className="w-1.5 h-px bg-[#ffd86a]/60" />
             <span className="text-[#ffd86a]/60 text-[10px] tracking-[0.3em] uppercase font-medium">
-              Portfolio
+              Works
             </span>
           </div>
-          <h2 className="text-4xl font-bold text-white/90 uppercase tracking-wide">
+          <h2
+            className="text-[12vw] md:text-4xl font-black leading-[0.95] tracking-[0.2rem] md:tracking-wide mb-2 md:mb-6 uppercase animate-text-fire"
+            style={{
+              background: 'linear-gradient(90deg, #d18a1e, #ffd86a, #ffffff, #f0b43a, #d18a1e)',
+              backgroundSize: '300% 100%',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+              filter: 'drop-shadow(0 0 30px rgba(255, 216, 106, 0.25))',
+            }}
+          >
             Projects
           </h2>
         </div>
