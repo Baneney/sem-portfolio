@@ -653,12 +653,16 @@ export default function Projects() {
                 <div className="flex gap-6">
                   <a
                     href={projects[selected].github}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="text-xs tracking-[0.2em] uppercase text-white/40 hover:text-[#ffd86a] transition-colors"
                   >
                     GitHub →
                   </a>
                   <a
                     href={projects[selected].live}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="text-xs tracking-[0.2em] uppercase text-[#ffd86a]/60 hover:text-[#ffd86a] transition-colors"
                   >
                     Live Demo →
