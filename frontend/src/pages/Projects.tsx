@@ -155,19 +155,13 @@ export default function Projects() {
   const [activeIdx, setActiveIdx] = useState(0)
   const [selected, setSelected] = useState<number | null>(null)
   const [pathLen, setPathLen] = useState(1200)
-  const [isMobile, setIsMobile] = useState(false)
   const svgRef = useRef<SVGSVGElement>(null)
   const containerRef = useRef<HTMLElement>(null)
   const glowDotRef = useRef<SVGCircleElement>(null)
   const glowTrailRef = useRef<SVGPathElement>(null)
   const itemsRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 768)
-    check()
-    window.addEventListener('resize', check)
-    return () => window.removeEventListener('resize', check)
-  }, [])
+  const mobileLineRef = useRef<HTMLDivElement>(null)
+  const mobileDotsRef = useRef<HTMLDivElement[]>([])
 
   const snakePath = generateSnakePath(projects.length)
 
@@ -255,6 +249,18 @@ export default function Projects() {
         dot.setAttribute('cx', String(point.x))
         dot.setAttribute('cy', String(point.y))
       }
+
+      // Mobile: animate vertical line fill + dots
+      if (mobileLineRef.current) {
+        mobileLineRef.current.style.clipPath = `inset(0 0 ${Math.max(0, (1 - progress * 1.2) * 100)}% 0)`
+      }
+      mobileDotsRef.current.forEach((dotEl, i) => {
+        if (!dotEl) return
+        const projectProgress = i / (projects.length - 1)
+        const lit = progress * 1.15 >= projectProgress
+        dotEl.style.background = lit ? '#ffd86a' : 'rgba(255,216,106,0.15)'
+        dotEl.style.boxShadow = lit ? '0 0 10px rgba(255,216,106,0.5)' : 'none'
+      })
     }
 
     wrapper.addEventListener('scroll', apply, { passive: true })
@@ -266,8 +272,8 @@ export default function Projects() {
     <section
       ref={containerRef}
       id="projects"
-      className="relative py-30 sm:py-70 px-5 sm:px-10"
-      style={{ backgroundColor: '#000', minHeight: `${(projects.length + 0.5) * PROJECT_H}px` }}
+      className="relative py-16 sm:py-70 px-5 sm:px-10"
+      style={{ backgroundColor: '#000' }}
     >
       {/* Page transition — entire section fades and slides up */}
       <motion.div
@@ -276,14 +282,78 @@ export default function Projects() {
         viewport={{ once: true, amount: 0.05 }}
         transition={{ duration: 0.9, ease: [0.25, 0.46, 0.45, 0.94] }}
       >
-      <div className="flex flex-col lg:flex-row w-full">
+      {/* ── MOBILE: Minimal timeline ── */}
+      <div className="lg:hidden">
+        {/* Header */}
+        <div className="mb-10">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="w-1.5 h-px bg-[#ffd86a]/60" />
+            <span className="text-[#ffd86a]/60 text-[10px] tracking-[0.3em] uppercase font-medium">
+              Portfolio
+            </span>
+          </div>
+          <h2 className="text-4xl font-bold text-white/90 uppercase tracking-wide">
+            Projects
+          </h2>
+        </div>
+
+        {/* Timeline */}
+        <div className="relative pl-10">
+          {/* Background line (dim) */}
+          <div className="absolute left-[11px] top-0 bottom-0 w-[2px] bg-white/[0.06]" />
+          {/* Filled line (lit) */}
+          <div
+            ref={mobileLineRef}
+            className="absolute left-[11px] top-0 bottom-0 w-[2px] bg-gradient-to-b from-[#ffd86a] via-[#ffd86a]/60 to-transparent"
+            style={{ clipPath: 'inset(0 0 100% 0)' }}
+          />
+
+          <div className="flex flex-col gap-14">
+            {projects.map((p, i) => (
+              <motion.div
+                key={p.title}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{ duration: 0.5, delay: i * 0.08, ease: 'easeOut' }}
+                className="relative cursor-pointer"
+                onClick={() => setSelected(i)}
+              >
+                {/* Dot on the line */}
+                <div
+                  ref={el => { if (el) mobileDotsRef.current[i] = el }}
+                  className="absolute left-[-31px] top-1 w-3 h-3 rounded-full bg-white/[0.06] transition-all duration-300"
+                />
+
+                {/* Number */}
+                <span className="text-[13px] tracking-wider text-[#ffd86a]/40 block mb-2">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+
+                {/* Title */}
+                <h3 className="text-3xl font-black uppercase tracking-wide text-white/90 mb-3">
+                  {p.title}
+                </h3>
+
+                {/* Description */}
+                <p className="text-white/35 text-sm leading-relaxed">
+                  {p.description}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* ── DESKTOP: Snake path layout ── */}
+      <div className="hidden lg:flex w-full">
         {/* Left — snake line + project list */}
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true, amount: 0.1 }}
           transition={{ duration: 0.8, ease: 'easeOut' }}
-          className="relative w-full lg:w-[65%] pl-5 sm:pl-10 pt-[260px]"
+          className="relative w-[65%] pl-10 pt-[260px]"
         >
           {/* SVG snake line */}
           <svg
@@ -443,7 +513,7 @@ export default function Projects() {
                 className="relative flex items-center"
                 style={{
                   height: PROJECT_H,
-                  paddingLeft: isMobile ? (isLeft ? 0 : 30) : (isLeft ? 0 : 60),
+                  paddingLeft: isLeft ? 0 : 60,
                 }}
               >
                 {/* Connector line from node to text */}
@@ -451,8 +521,8 @@ export default function Projects() {
                   className="absolute top-1/2 connector-line"
                   data-connector
                   style={{
-                    left: isMobile ? (isLeft ? 90 : 65) : (isLeft ? 180 : 130),
-                    width: isMobile ? 25 : 50,
+                    left: isLeft ? 180 : 130,
+                    width: 50,
                     height: 1,
                     background: 'rgba(255,216,106,0.1)',
                   }}
@@ -461,7 +531,7 @@ export default function Projects() {
                 <div
                   className="cursor-pointer group"
                   style={{
-                    marginLeft: isMobile ? (isLeft ? 120 : 95) : (isLeft ? 240 : 190),
+                    marginLeft: isLeft ? 240 : 190,
                     transformOrigin: 'left center',
                   }}
                   onClick={() => setSelected(i)}
@@ -494,7 +564,7 @@ export default function Projects() {
         </motion.div>
 
         {/* Right — sticky preview */}
-        <div className="hidden lg:block w-[35%] relative preview-fade-in">
+        <div className="w-[35%] relative preview-fade-in">
           <div
             className="sticky top-0 h-screen flex flex-col items-center justify-center px-8"
           >
