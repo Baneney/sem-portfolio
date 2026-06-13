@@ -148,7 +148,7 @@ export default function Skills() {
     <section
       ref={sectionRef}
       id="skills"
-      className="free-page flex items-center px-5 py-10 sm:px-10 md:px-20 overflow-hidden"
+      className="free-page flex items-start md:items-center px-5 py-10 sm:px-10 md:px-20 overflow-hidden"
     >
       {/* Background */}
       <div className="absolute inset-0 bg-[#080400]">
@@ -189,9 +189,9 @@ export default function Skills() {
 
       <div className="flex flex-col md:flex-row w-full h-full relative z-20">
         {/* Left side — bio */}
-        <div ref={leftRef} className="w-full md:w-[45%] flex flex-col justify-center md:pr-16 pb-10 md:pb-0 relative" style={{ willChange: 'transform, opacity' }}>
+        <div ref={leftRef} className="w-full md:w-[45%] flex flex-col justify-center md:pr-16 pb-4 md:pb-0 relative shrink-0" style={{ willChange: 'transform, opacity' }}>
 
-          <div className="flex items-center gap-2 mb-3">
+          <div className="flex items-center gap-2 mb-1 md:mb-3">
             <span className="w-1.5 h-px bg-[#ffd86a]/60" />
             <span className="text-[#ffd86a]/60 text-[10px] tracking-[0.3em] uppercase font-medium">
               Expertise
@@ -206,7 +206,7 @@ export default function Skills() {
           >
             <h2
               ref={titleRef}
-              className="text-[20vw] sm:text-[600%] font-black leading-[0.95] tracking-[0.3rem] sm:tracking-[1rem] mb-6 uppercase animate-text-fire"
+              className="text-[15vw] md:text-[600%] font-black leading-[0.95] tracking-[0.2rem] md:tracking-[1rem] mb-2 md:mb-6 uppercase animate-text-fire"
               style={{
                 background: 'linear-gradient(90deg, #d18a1e, #ffd86a, #ffffff, #f0b43a, #d18a1e)',
                 backgroundSize: '300% 100%',
@@ -225,7 +225,7 @@ export default function Skills() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.15, ease: 'easeOut' }}
-            className="text-white/50 text-sm leading-relaxed mb-10 max-w-lg"
+            className="hidden md:block text-white/50 text-sm leading-relaxed mb-10 max-w-lg"
           >
             Full Stack Developer &mdash; crafting digital experiences with precision and fire through elegant code and dramatic motion.
           </motion.p>
@@ -237,7 +237,7 @@ export default function Skills() {
             transition={{ duration: 0.4, delay: 0.25, ease: 'easeOut' }}
             whileHover={{ x: 4 }}
             href="#contact"
-            className="inline-flex items-center gap-2 text-xs font-semibold tracking-[0.3em] uppercase text-[#ffd86a]/80 hover:text-[#ffd86a] transition-colors group"
+            className="hidden md:inline-flex items-center gap-2 text-xs font-semibold tracking-[0.3em] uppercase text-[#ffd86a]/80 hover:text-[#ffd86a] transition-colors group"
           >
             Contact Me
             <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">→</span>
@@ -245,7 +245,17 @@ export default function Skills() {
         </div>
 
         {/* Right side — accordion */}
-        <div ref={rightRef} className="w-full md:w-[55%] flex flex-col justify-center md:pl-6 relative" style={{ willChange: 'transform, opacity' }}>
+        <div
+          ref={rightRef}
+          onWheel={e => {
+            const el = e.currentTarget
+            const atTop = el.scrollTop <= 0 && e.deltaY < 0
+            const atBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 1 && e.deltaY > 0
+            if (!atTop && !atBottom) e.stopPropagation()
+          }}
+          className="w-full md:w-[55%] flex flex-col justify-start md:justify-center md:pl-6 relative max-h-[calc(100vh-180px)] md:max-h-none overflow-y-auto md:overflow-visible scrollbar-hide"
+          style={{ willChange: 'transform, opacity', touchAction: 'pan-y' }}
+        >
           {/* Ambient decorative glows */}
           <motion.div
             animate={{ opacity: [0.3, 0.6, 0.3], scale: [1, 1.1, 1] }}

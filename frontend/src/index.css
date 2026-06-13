@@ -54,6 +54,14 @@
   position: relative;
 }
 
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
 /* Fixed background layers */
 .bg-layer {
   position: absolute;
