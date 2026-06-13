@@ -339,6 +339,11 @@
   100% { opacity: 0; transform: translateY(-140px) translateX(-5px); }
 }
 
+@keyframes mobile-dot-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.3; }
+  50%      { transform: scale(2.2); opacity: 0; }
+}
+
 /* Skill pill spark ring */
 .skill-pill {
   position: relative;

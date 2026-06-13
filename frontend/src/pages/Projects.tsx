@@ -162,6 +162,7 @@ export default function Projects() {
   const itemsRef = useRef<HTMLDivElement>(null)
   const mobileLineRef = useRef<HTMLDivElement>(null)
   const mobileDotsRef = useRef<HTMLDivElement[]>([])
+  const mobileItemsRef = useRef<HTMLDivElement[]>([])
 
   const snakePath = generateSnakePath(projects.length)
 
@@ -250,7 +251,7 @@ export default function Projects() {
         dot.setAttribute('cy', String(point.y))
       }
 
-      // Mobile: animate vertical line fill + dots
+      // Mobile: animate vertical line fill + dots + item dimming
       if (mobileLineRef.current) {
         mobileLineRef.current.style.clipPath = `inset(0 0 ${Math.max(0, (1 - progress * 1.2) * 100)}% 0)`
       }
@@ -258,8 +259,28 @@ export default function Projects() {
         if (!dotEl) return
         const projectProgress = i / (projects.length - 1)
         const lit = progress * 1.15 >= projectProgress
+        const isActive = i === clampedIdx
         dotEl.style.background = lit ? '#ffd86a' : 'rgba(255,216,106,0.15)'
         dotEl.style.boxShadow = lit ? '0 0 10px rgba(255,216,106,0.5)' : 'none'
+        dotEl.style.transform = isActive ? 'scale(1.3)' : 'scale(1)'
+        // Pulse ring
+        const pulse = dotEl.querySelector('[data-pulse]') as HTMLElement | null
+        if (pulse) {
+          pulse.style.background = isActive ? 'rgba(255,216,106,0.3)' : 'rgba(255,216,106,0)'
+          pulse.style.animation = isActive ? 'mobile-dot-pulse 2s ease-in-out infinite' : 'none'
+        }
+      })
+      // Dim inactive mobile items
+      mobileItemsRef.current.forEach((itemEl, i) => {
+        if (!itemEl) return
+        const isActive = i === clampedIdx
+        itemEl.style.opacity = isActive ? '1' : '0.2'
+        const h3 = itemEl.querySelector('h3') as HTMLElement | null
+        if (h3) h3.style.color = isActive ? '#ffffff' : 'rgba(255,255,255,0.15)'
+        const desc = itemEl.querySelector('p') as HTMLElement | null
+        if (desc) desc.style.color = isActive ? 'rgba(255,255,255,0.35)' : 'rgba(255,255,255,0.08)'
+        const num = itemEl.querySelector('span') as HTMLElement | null
+        if (num) num.style.color = isActive ? 'rgba(255,216,106,0.5)' : 'rgba(255,216,106,0.1)'
       })
     }
 
@@ -312,18 +333,24 @@ export default function Projects() {
             {projects.map((p, i) => (
               <motion.div
                 key={p.title}
+                ref={el => { if (el) mobileItemsRef.current[i] = el }}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.3 }}
                 transition={{ duration: 0.5, delay: i * 0.08, ease: 'easeOut' }}
-                className="relative cursor-pointer"
+                className="relative cursor-pointer group"
                 onClick={() => setSelected(i)}
               >
-                {/* Dot on the line */}
-                <div
-                  ref={el => { if (el) mobileDotsRef.current[i] = el }}
-                  className="absolute left-[-31px] top-1 w-3 h-3 rounded-full bg-white/[0.06] transition-all duration-300"
-                />
+                {/* Dot on the line — centered on the 2px line at left-[11px] */}
+                <div className="absolute left-[-35px] top-1 flex items-center justify-center">
+                  {/* Pulse ring — visible when lit */}
+                  <div
+                    ref={el => { if (el) mobileDotsRef.current[i] = el }}
+                    className="w-3 h-3 rounded-full bg-white/[0.06] transition-all duration-300 relative"
+                  >
+                    <span className="absolute inset-[-4px] rounded-full bg-[#ffd86a]/0 transition-all duration-300" data-pulse={i} />
+                  </div>
+                </div>
 
                 {/* Number */}
                 <span className="text-[13px] tracking-wider text-[#ffd86a]/40 block mb-2">
