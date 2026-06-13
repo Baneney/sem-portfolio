@@ -293,9 +293,34 @@ export default function Projects() {
     <section
       ref={containerRef}
       id="projects"
-      className="relative py-16 sm:py-70 px-20"
-      style={{ backgroundColor: '#000' }}
+      className="relative py-16 sm:py-70 px-5 sm:px-10"
+      style={{ backgroundColor: '#000', minHeight: `${(projects.length + 1.2) * PROJECT_H}px` }}
     >
+      {/* Fire background glows */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-[10%] right-[-10%] w-[60%] h-[50%] rounded-full bg-[#c85000]/20 blur-[120px]" />
+        <div className="absolute top-[30%] left-[-15%] w-[50%] h-[40%] rounded-full bg-[#e86000]/15 blur-[100px]" />
+        <div className="absolute bottom-[10%] right-[10%] w-[40%] h-[30%] rounded-full bg-[#ff8c00]/10 blur-[80px]" />
+      </div>
+
+      {/* Rising embers */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        {Array.from({ length: 14 }, (_, i) => (
+          <div
+            key={i}
+            className="absolute rounded-full"
+            style={{
+              left: `${5 + (i * 7) % 90}%`,
+              bottom: '-4px',
+              width: `${1.5 + (i % 3) * 0.7}px`,
+              height: `${1.5 + (i % 3) * 0.7}px`,
+              background: i % 3 === 0 ? '#ffd86a' : i % 3 === 1 ? '#ffb300' : '#ff8c00',
+              animation: `ember-rise ${2.6 + (i % 5) * 0.5}s ease-out ${i * 0.3}s infinite`,
+            }}
+          />
+        ))}
+      </div>
+
       {/* Page transition — entire section fades and slides up */}
       <motion.div
         initial={{ opacity: 0, y: 60 }}
