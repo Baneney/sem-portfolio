@@ -293,7 +293,7 @@ export default function Projects() {
     <section
       ref={containerRef}
       id="projects"
-      className="relative py-16 sm:py-70 px-5 sm:px-10"
+      className="relative py-16 sm:py-70 px-20projec"
       style={{ backgroundColor: '#000' }}
     >
       {/* Page transition — entire section fades and slides up */}
@@ -384,20 +384,44 @@ export default function Projects() {
       </div>
 
       {/* ── DESKTOP: Snake path layout ── */}
-      <div className="hidden lg:flex w-full">
+      <div className="hidden lg:flex flex-col w-full">
+        {/* Header */}
+        <div className="mb-10">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="w-1.5 h-px bg-[#ffd86a]/60" />
+            <span className="text-[#ffd86a]/60 text-[10px] tracking-[0.3em] uppercase font-medium">
+              Works
+            </span>
+          </div>
+          <h2
+            className="text-8xl font-black leading-[0.95] tracking-[1rem] mb-6 uppercase animate-text-fire"
+            style={{
+              background: 'linear-gradient(90deg, #d18a1e, #ffd86a, #ffffff, #f0b43a, #d18a1e)',
+              backgroundSize: '300% 100%',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+              filter: 'drop-shadow(0 0 30px rgba(255, 216, 106, 0.25))',
+            }}
+          >
+            Projects
+          </h2>
+        </div>
+
+        <div className="flex w-full">
         {/* Left — snake line + project list */}
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true, amount: 0.1 }}
           transition={{ duration: 0.8, ease: 'easeOut' }}
-          className="relative w-[65%] pl-10 pt-[260px]"
+          className="relative w-[65%] pt-[8%]"
         >
           {/* SVG snake line */}
           <svg
             ref={svgRef}
             viewBox={`0 0 200 ${projects.length * PROJECT_H}`}
-            className="absolute left-10 top-[260px]"
+            className="absolute top-[8%]"
             style={{
               width: 200,
               height: projects.length * PROJECT_H,
@@ -661,6 +685,7 @@ export default function Projects() {
               </motion.div>
             </AnimatePresence>
           </div>
+        </div>
         </div>
       </div>
       </motion.div>
