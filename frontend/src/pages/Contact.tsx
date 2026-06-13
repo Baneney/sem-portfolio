@@ -1,6 +1,6 @@
 import { useEffect, useRef, useCallback, useState } from 'react'
 import { motion } from 'framer-motion'
-import { Mail, ExternalLink, Check, Copy } from 'lucide-react'
+import { Mail, ExternalLink, Check, Copy, Download } from 'lucide-react'
 
 const GithubIcon = () => (
   <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
@@ -12,6 +12,12 @@ const LinkedinIcon = () => (
 const EMAIL = 'luizsemwarain@gmail.com'
 
 const links = [
+  {
+    label: "Resume",
+    href: "/sem-resume.pdf",
+    Icon: Download,
+    subtitle: "Download CV",
+  },
   {
     label: "Email",
     href: `mailto:${EMAIL}`,
@@ -205,7 +211,7 @@ function LinkCard({ link, index, onCopy, copied }: { link: typeof links[number];
     const rotateX = (y - centerY) / centerY * -8
     const rotateY = (x - centerX) / centerX * 8
 
-    card.style.transform = `perspective(600px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`
+    card.style.transform = `perspective(600px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.03)`
     card.style.setProperty('--mouse-x', `${(x / rect.width) * 100}%`)
     card.style.setProperty('--mouse-y', `${(y / rect.height) * 100}%`)
   }, [])
@@ -222,6 +228,7 @@ function LinkCard({ link, index, onCopy, copied }: { link: typeof links[number];
       href={link.href}
       target={link.href.startsWith('http') ? '_blank' : undefined}
       rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+      download={link.href.endsWith('.pdf') ? 'resume.pdf' : undefined}
       custom={index}
       initial="hidden"
       whileInView="visible"
@@ -229,47 +236,59 @@ function LinkCard({ link, index, onCopy, copied }: { link: typeof links[number];
       variants={fadeUp}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="group relative flex flex-col items-center gap-3 px-6 sm:px-8 py-6 sm:py-7 rounded-2xl border border-white/[0.06] bg-white/[0.10] hover:border-[#ffd86a]/25 transition-[border-color,background-color] duration-500 min-w-0 sm:min-w-[180px] cursor-pointer"
-      style={{ transformStyle: 'preserve-3d', willChange: 'transform', transition: 'transform 0.15s ease-out, border-color 0.5s, background-color 0.5s' }}
+      className="group relative flex flex-col items-center gap-3 px-6 sm:px-8 py-6 sm:py-7 rounded-2xl border border-[#ffd86a]/10 bg-gradient-to-b from-white/[0.08] to-white/[0.02] hover:border-[#ffd86a]/30 transition-all duration-500 min-w-0 sm:min-w-[180px] cursor-pointer overflow-hidden"
+      style={{ transformStyle: 'preserve-3d', willChange: 'transform', transition: 'transform 0.15s ease-out, border-color 0.5s, background 0.5s' }}
     >
       {/* Spotlight follow */}
       <div
         className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-        style={{ background: 'radial-gradient(circle 120px at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255,216,106,0.08), transparent)' }}
+        style={{ background: 'radial-gradient(circle 120px at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255,216,106,0.12), transparent)' }}
       />
 
-      {/* Animated border glow */}
-      <div className="absolute -inset-[1px] rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none overflow-hidden">
-        <div className="absolute inset-0 animate-[spin_4s_linear_infinite]" style={{ background: 'conic-gradient(from 0deg, transparent 0%, #ffd86a40 25%, transparent 50%, #ffd86a20 75%, transparent 100%)' }} />
-        <div className="absolute inset-[1px] rounded-2xl bg-[#080400]/80" />
-      </div>
+      {/* Top fire glow line */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[60%] h-[1px] bg-gradient-to-r from-transparent via-[#ffd86a]/40 to-transparent group-hover:w-[90%] group-hover:via-[#ffd86a]/60 transition-all duration-700" />
 
-      {/* Icon */}
-      <div className="relative text-white/30 group-hover:text-[#ffd86a] transition-colors duration-500" style={{ transform: 'translateZ(20px)' }}>
-        {copied ? <Check size={28} strokeWidth={1.5} className="text-emerald-400" /> : <link.Icon />}
+      {/* Top ember glow */}
+      <div className="absolute -top-8 left-1/2 -translate-x-1/2 w-24 h-16 bg-[#ffd86a]/0 group-hover:bg-[#ffd86a]/[0.06] blur-2xl rounded-full transition-all duration-700 pointer-events-none" />
+
+      {/* Floating ember particle */}
+      <div className="absolute top-2 right-3 w-1 h-1 rounded-full bg-[#ffd86a]/30 group-hover:bg-[#ffd86a]/70 group-hover:shadow-[0_0_8px_rgba(255,216,106,0.5)] transition-all duration-500 pointer-events-none group-hover:animate-[bounce_2s_ease-in-out_infinite]" />
+
+      {/* Icon ring */}
+      <div className="relative flex items-center justify-center w-14 h-14 rounded-xl bg-white/[0.04] border border-white/[0.06] group-hover:border-[#ffd86a]/20 group-hover:bg-[#ffd86a]/[0.06] transition-all duration-500" style={{ transform: 'translateZ(20px)' }}>
+        <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"
+          style={{ background: 'radial-gradient(circle at center, rgba(255,216,106,0.1), transparent 70%)' }}
+        />
+        {copied
+          ? <Check size={22} strokeWidth={1.5} className="text-emerald-400" />
+          : <link.Icon size={22} strokeWidth={1.5} className="text-white/40 group-hover:text-[#ffd86a] transition-colors duration-500" />
+        }
       </div>
 
       {/* Label */}
-      <span className="text-white/60 text-sm font-medium tracking-wide group-hover:text-white/90 transition-colors duration-300" style={{ transform: 'translateZ(12px)' }}>
+      <span className="text-white/50 text-sm font-medium tracking-wide group-hover:text-[#ffd86a]/90 transition-colors duration-300" style={{ transform: 'translateZ(12px)' }}>
         {link.label}
       </span>
 
       {/* Subtitle */}
-      <span className="text-white/20 text-[11px] tracking-wider group-hover:text-white/35 transition-colors duration-300" style={{ transform: 'translateZ(8px)' }}>
+      <span className="text-white/15 text-[11px] tracking-wider group-hover:text-white/35 transition-colors duration-300" style={{ transform: 'translateZ(8px)' }}>
         {link.subtitle}
       </span>
+
+      {/* Bottom shimmer line on hover */}
+      <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#ffd86a]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
 
       {/* Copy / External */}
       {onCopy ? (
         <button
           onClick={(e) => { e.preventDefault(); e.stopPropagation(); onCopy() }}
-          className="absolute top-3 right-3 p-1 rounded-md text-white/10 hover:text-[#ffd86a]/50 transition-all duration-300 hover:bg-white/[0.03]"
+          className="absolute top-3 right-3 p-1.5 rounded-lg text-white/10 hover:text-[#ffd86a]/60 transition-all duration-300 hover:bg-white/[0.04]"
         >
-          {copied ? <Check size={12} strokeWidth={1.5} /> : <Copy size={12} strokeWidth={1.5} />}
+          {copied ? <Check size={13} strokeWidth={1.5} /> : <Copy size={13} strokeWidth={1.5} />}
         </button>
       ) : (
         <ExternalLink
-          size={12}
+          size={13}
           strokeWidth={1.5}
           className="absolute top-3 right-3 text-white/10 group-hover:text-[#ffd86a]/40 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
         />
