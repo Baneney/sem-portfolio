@@ -31,7 +31,7 @@ export default function About3() {
     };
 
     const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) setIsVisible(true); },
+      ([entry]) => { setIsVisible(entry.isIntersecting); },
       { threshold: 0.3 },
     );
 
@@ -115,30 +115,30 @@ export default function About3() {
       id="about3"
       className="snap-page relative flex min-h-screen flex-col justify-end items-start px-5 sm:px-10 pb-10 overflow-hidden"
     >
-      {/* Parallax background gradients — different speeds = depth */}
-      <div className="absolute inset-0 opacity-30 pointer-events-none">
+      {/* Parallax background gradients — only visible when in view */}
+      <div className={`absolute inset-0 pointer-events-none overflow-hidden transition-all duration-300 ${isVisible ? 'opacity-100' : 'opacity-0 invisible'}`}>
         <div
           ref={orbTopRef}
-          className="absolute top-20 -left-40 w-80 h-80 bg-gradient-to-r from-[#ffd86a] to-transparent rounded-full blur-3xl animate-float-slow"
+          className="absolute top-20 left-20 w-80 h-80 bg-gradient-to-r from-[#ffd86a] to-transparent rounded-full blur-3xl animate-float-slow opacity-30"
         />
         <div
           ref={orbBottomRef}
-          className="absolute -bottom-40 -right-40 w-80 h-80 bg-gradient-to-l from-[#c85000] to-transparent rounded-full blur-3xl animate-float"
+          className="absolute bottom-20 right-20 w-80 h-80 bg-gradient-to-l from-[#c85000] to-transparent rounded-full blur-3xl animate-float opacity-30"
           style={{ animationDelay: '1s' }}
         />
       </div>
 
-      {/* Parallax glow accent lines — stretch as you scroll past */}
-      <div ref={glowLeftRef} className="absolute top-1/4 left-10 w-1 h-32 bg-gradient-to-b from-[#ffd86a] to-transparent opacity-20 rounded-full blur-sm animate-pulse" />
-      <div ref={glowRightRef} className="absolute bottom-1/4 right-10 w-1 h-32 bg-gradient-to-t from-[#c85000] to-transparent opacity-20 rounded-full blur-sm animate-pulse" style={{ animationDelay: '0.5s' }} />
+      {/* Parallax glow accent lines */}
+      <div ref={glowLeftRef} className={`absolute top-1/4 left-10 w-1 h-32 bg-gradient-to-b from-[#ffd86a] to-transparent rounded-full blur-sm animate-pulse transition-all duration-300 ${isVisible ? 'opacity-20' : 'opacity-0 invisible'}`} />
+      <div ref={glowRightRef} className={`absolute bottom-1/4 right-10 w-1 h-32 bg-gradient-to-t from-[#c85000] to-transparent rounded-full blur-sm animate-pulse transition-all duration-300 ${isVisible ? 'opacity-20' : 'opacity-0 invisible'}`} style={{ animationDelay: '0.5s' }} />
 
       {/* Radial glow effect */}
-      <div className="absolute inset-x-0 bottom-0 h-40 bg-[radial-gradient(circle,rgba(255,115,0,0.2),transparent_100%)] blur-3xl pointer-events-none" />
+      <div className={`absolute inset-x-0 bottom-0 h-40 bg-[radial-gradient(circle,rgba(255,115,0,0.15),transparent_100%)] blur-3xl pointer-events-none transition-all duration-300 ${isVisible ? 'opacity-100' : 'opacity-0 invisible'}`} />
 
-      {/* Exit glow — expands like embers as card scrolls away */}
+      {/* Exit glow — only visible when in view, fades on scroll */}
       <div
         ref={exitGlowRef}
-        className="absolute inset-x-[-20%] bottom-[-10%] h-3/4 bg-[radial-gradient(ellipse_at_center,rgba(255,200,80,0.3),rgba(200,80,0,0.15),transparent_65%)] blur-3xl pointer-events-none"
+        className={`absolute inset-x-0 bottom-0 h-1/2 bg-[radial-gradient(ellipse_at_center,rgba(255,200,80,0.15),rgba(200,80,0,0.08),transparent_65%)] blur-3xl pointer-events-none transition-all duration-300 ${isVisible ? 'opacity-100' : 'opacity-0 invisible'}`}
       />
 
       {/* Main content card — scroll parallax + mouse tilt */}

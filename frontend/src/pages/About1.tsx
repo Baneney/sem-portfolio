@@ -25,11 +25,7 @@ export default function About1() {
 
     // Trigger animation when component becomes visible
     const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-        }
-      },
+      ([entry]) => { setIsVisible(entry.isIntersecting); },
       { threshold: 0.3 }
     );
 
@@ -49,23 +45,23 @@ export default function About1() {
       className="snap-page relative flex min-h-screen flex-col justify-end items-center text-center px-5 sm:px-10 py-10 overflow-hidden"
     >
       {/* Animated background gradients */}
-      <div className="absolute inset-0 opacity-30 pointer-events-none">
-        <div className="absolute top-20 -left-40 w-80 h-80 bg-gradient-to-r from-[#ffd86a] to-transparent rounded-full blur-3xl animate-float-slow" />
+      <div className={`absolute inset-0 pointer-events-none transition-all duration-300 ${isVisible ? 'opacity-100' : 'opacity-0 invisible'}`}>
+        <div className="absolute top-20 left-20 w-80 h-80 bg-gradient-to-r from-[#ffd86a] to-transparent rounded-full blur-3xl animate-float-slow opacity-30" />
         <div
-          className="absolute -bottom-40 -right-40 w-80 h-80 bg-gradient-to-l from-[#c85000] to-transparent rounded-full blur-3xl animate-float"
+          className="absolute bottom-20 right-20 w-80 h-80 bg-gradient-to-l from-[#c85000] to-transparent rounded-full blur-3xl animate-float opacity-30"
           style={{ animationDelay: "1s" }}
         />
       </div>
 
       {/* Glowing accent elements */}
-      <div className="absolute top-1/4 left-10 w-1 h-32 bg-gradient-to-b from-[#ffd86a] to-transparent opacity-20 rounded-full blur-sm animate-pulse" />
+      <div className={`absolute top-1/4 left-10 w-1 h-32 bg-gradient-to-b from-[#ffd86a] to-transparent rounded-full blur-sm animate-pulse transition-all duration-300 ${isVisible ? 'opacity-20' : 'opacity-0 invisible'}`} />
       <div
-        className="absolute bottom-1/4 right-10 w-1 h-32 bg-gradient-to-t from-[#c85000] to-transparent opacity-20 rounded-full blur-sm animate-pulse"
+        className={`absolute bottom-1/4 right-10 w-1 h-32 bg-gradient-to-t from-[#c85000] to-transparent rounded-full blur-sm animate-pulse transition-all duration-300 ${isVisible ? 'opacity-20' : 'opacity-0 invisible'}`}
         style={{ animationDelay: "0.5s" }}
       />
 
       {/* Radial glow effect */}
-      <div className="absolute inset-x-0 bottom-0 h-40 bg-[radial-gradient(circle,rgba(255,115,0,0.2),transparent_100%)] blur-3xl pointer-events-none" />
+      <div className={`absolute inset-x-0 bottom-0 h-40 bg-[radial-gradient(circle,rgba(255,115,0,0.2),transparent_100%)] blur-3xl pointer-events-none transition-all duration-300 ${isVisible ? 'opacity-100' : 'opacity-0 invisible'}`} />
 
       {/* Main content card with enhanced styling */}
       <div

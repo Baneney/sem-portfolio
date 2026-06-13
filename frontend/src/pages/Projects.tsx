@@ -293,7 +293,7 @@ export default function Projects() {
     <section
       ref={containerRef}
       id="projects"
-      className="relative py-16 sm:py-70 px-5 sm:px-10"
+      className="relative py-16 sm:py-70 px-20 sm:px-20"
       style={{ backgroundColor: '#000', minHeight: `${(projects.length + 1.2) * PROJECT_H}px` }}
     >
       {/* Fire background glows */}
