@@ -111,7 +111,7 @@ export default function ScrollIndicator() {
 
   return (
     <div
-      className="fixed right-8 top-1/2 -translate-y-1/2 z-40 flex items-center gap-4 transition-opacity duration-300"
+      className="fixed right-4 sm:right-8 top-1/2 -translate-y-1/2 z-40 flex items-center gap-4 transition-opacity duration-300"
       style={{
         height: segments.length ? segments[segments.length - 1].top + segments[segments.length - 1].height : 0,
         opacity: activeIdx === 0 ? 0 : 1,
@@ -122,7 +122,6 @@ export default function ScrollIndicator() {
       <div className="relative" style={{ height: '100%' }}>
         {segments.map((seg, i) => {
           const isActive = i === activeIdx
-          const dotY = seg.top + seg.fill * seg.height
           return (
             <button
               key={i}
@@ -166,7 +165,7 @@ export default function ScrollIndicator() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 6 }}
             transition={{ duration: 0.25 }}
-            className="absolute right-full mr-4 -translate-y-1/2 cursor-pointer"
+            className="absolute right-full mr-4 -translate-y-1/2 cursor-pointer hidden sm:block"
             style={{ top: segments[activeIdx] ? segments[activeIdx].top + segments[activeIdx].fill * segments[activeIdx].height : 0 }}
           >
             <span className="text-[12px] tracking-[0.2em] uppercase text-white hover:text-[#ffd86a] transition-colors duration-200 whitespace-nowrap">

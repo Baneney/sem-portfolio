@@ -88,7 +88,7 @@ export default function About2() {
     <section
       ref={containerRef}
       id="about2"
-      className="snap-page relative flex min-h-screen flex-col justify-end items-end px-10 pb-10 overflow-hidden"
+      className="snap-page relative flex min-h-screen flex-col justify-end items-end px-5 sm:px-10 pb-10 overflow-hidden"
     >
       {/* Animated background gradients */}
       <div className="absolute inset-0 opacity-30 pointer-events-none">
@@ -111,7 +111,7 @@ export default function About2() {
 
       {/* Main content card */}
       <div
-        className="max-w-2xl w-full rounded-[28px] bg-[#070806]/20 p-10 shadow-[0_30px_80px_rgba(0,0,0,0.35)] backdrop-blur-md border border-[#ffd86a]/20 relative group hover-glow"
+        className="max-w-2xl w-full rounded-[28px] bg-[#070806]/20 p-6 sm:p-10 shadow-[0_30px_80px_rgba(0,0,0,0.35)] backdrop-blur-md border border-[#ffd86a]/20 relative group hover-glow"
         style={{
           transform: `perspective(1000px) rotateX(${-mousePos.y}deg) rotateY(${mousePos.x}deg) translateZ(20px)`,
           transition: 'transform 0.1s ease-out',
@@ -158,16 +158,16 @@ export default function About2() {
                 transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
                 className="space-y-3"
               >
-                <div className="flex items-start justify-between gap-4">
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1 sm:gap-4">
                   <div>
-                    <h3 className="text-white text-lg font-bold leading-tight">
+                    <h3 className="text-white text-base sm:text-lg font-bold leading-tight">
                       {internships[active].role}
                     </h3>
                     <p className="text-[#ffd86a]/70 text-sm font-medium mt-0.5">
                       {internships[active].company}
                     </p>
                   </div>
-                  <span className="text-white/25 text-[11px] tracking-wider whitespace-nowrap mt-1">
+                  <span className="text-white/25 text-[11px] tracking-wider sm:whitespace-nowrap mt-1">
                     {internships[active].period}
                   </span>
                 </div>

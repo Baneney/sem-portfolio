@@ -46,7 +46,7 @@ export default function About1() {
     <section
       ref={containerRef}
       id="about1"
-      className="snap-page relative flex min-h-screen flex-col justify-end items-center text-center px-10 py-10 overflow-hidden"
+      className="snap-page relative flex min-h-screen flex-col justify-end items-center text-center px-5 sm:px-10 py-10 overflow-hidden"
     >
       {/* Animated background gradients */}
       <div className="absolute inset-0 opacity-30 pointer-events-none">
@@ -70,7 +70,7 @@ export default function About1() {
       {/* Main content card with enhanced styling */}
       <div
         ref={cardRef}
-        className="max-w-3xl w-full rounded-[28px] bg-[#070806]/20 p-8 shadow-[0_30px_80px_rgba(0,0,0,0.35)] backdrop-blur-md border border-[#ffd86a]/20 relative group hover-glow"
+        className="max-w-3xl w-full rounded-[28px] bg-[#070806]/20 p-5 sm:p-8 shadow-[0_30px_80px_rgba(0,0,0,0.35)] backdrop-blur-md border border-[#ffd86a]/20 relative group hover-glow"
         style={{
           transform: `perspective(1000px) rotateX(${-mousePos.y}deg) rotateY(${mousePos.x}deg) translateZ(20px)`,
           transition: "transform 0.1s ease-out",
@@ -108,7 +108,7 @@ export default function About1() {
 
           {/* Description text with staggered animation */}
           <p
-            className={`flex justify-center items-center text-[#e5d4a1] leading-relaxed text-lg ${
+            className={`flex justify-center items-center text-[#e5d4a1] leading-relaxed text-base sm:text-lg ${
               isVisible ? "animate-fade-in-up delay-300" : "opacity-0"
             }`}
           >

@@ -69,9 +69,8 @@
   position: fixed;
   z-index: 10;
   pointer-events: none;
-  width: 420px;
-  max-width: 45vw;
-  height: 420px;
+  width: min(420px, 80vw);
+  height: min(420px, 80vw);
   transition: left 0.8s cubic-bezier(0.4, 0, 0.2, 1),
               top  0.8s cubic-bezier(0.4, 0, 0.2, 1),
               transform 0.8s cubic-bezier(0.4, 0, 0.2, 1),
@@ -79,8 +78,7 @@
 }
 
 .sculpture-img {
-  width: 420px;
-  max-width: 45vw;
+  width: min(420px, 80vw);
   display: block;
   filter: drop-shadow(0 0 40px rgba(180, 140, 80, 0.5)) brightness(0.7);
 }

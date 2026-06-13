@@ -26,6 +26,12 @@ const POS = [
   { x: 30, y: 56, scale: 2.3 },
 ]
 
+const POS_MOBILE = [
+  { x: 50, y: 43, scale: 1.0 },
+  { x: 65, y: 50, scale: 1.0 },
+  { x: 35, y: 50, scale: 1.0 },
+]
+
 function App() {
   const bgRefs         = useRef<(HTMLDivElement | null)[]>([])
   const sculptureRefs  = useRef<(HTMLImageElement | null)[]>([])
@@ -108,7 +114,8 @@ function App() {
         if (img) img.style.opacity = i === aboutIndex ? '1' : '0'
       })
       if (wrapperRef.current) {
-        const pos = POS[aboutIndex]
+        const isMobile = window.innerWidth < 768
+        const pos = isMobile ? POS_MOBILE[aboutIndex] : POS[aboutIndex]
         wrapperRef.current.style.opacity   = '1'
         wrapperRef.current.style.left      = `${pos.x}%`
         wrapperRef.current.style.top       = `${pos.y}%`

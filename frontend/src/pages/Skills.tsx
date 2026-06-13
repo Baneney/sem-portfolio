@@ -148,7 +148,7 @@ export default function Skills() {
     <section
       ref={sectionRef}
       id="skills"
-      className="free-page flex items-center px-20 overflow-hidden"
+      className="free-page flex items-center px-5 py-10 sm:px-10 md:px-20 overflow-hidden"
     >
       {/* Background */}
       <div className="absolute inset-0 bg-[#080400]">
@@ -187,9 +187,9 @@ export default function Skills() {
         ))}
       </div>
 
-      <div className="flex w-full h-full relative z-20">
+      <div className="flex flex-col md:flex-row w-full h-full relative z-20">
         {/* Left side — bio */}
-        <div ref={leftRef} className="w-[45%] flex flex-col justify-center pr-16 relative" style={{ willChange: 'transform, opacity' }}>
+        <div ref={leftRef} className="w-full md:w-[45%] flex flex-col justify-center md:pr-16 pb-10 md:pb-0 relative" style={{ willChange: 'transform, opacity' }}>
 
           <div className="flex items-center gap-2 mb-3">
             <span className="w-1.5 h-px bg-[#ffd86a]/60" />
@@ -206,7 +206,7 @@ export default function Skills() {
           >
             <h2
               ref={titleRef}
-              className="text-[600%] font-black leading-[0.95] tracking-[1rem] mb-6 uppercase animate-text-fire"
+              className="text-[20vw] sm:text-[600%] font-black leading-[0.95] tracking-[0.3rem] sm:tracking-[1rem] mb-6 uppercase animate-text-fire"
               style={{
                 background: 'linear-gradient(90deg, #d18a1e, #ffd86a, #ffffff, #f0b43a, #d18a1e)',
                 backgroundSize: '300% 100%',
@@ -245,7 +245,7 @@ export default function Skills() {
         </div>
 
         {/* Right side — accordion */}
-        <div ref={rightRef} className="w-[55%] flex flex-col justify-center pl-6 relative" style={{ willChange: 'transform, opacity' }}>
+        <div ref={rightRef} className="w-full md:w-[55%] flex flex-col justify-center md:pl-6 relative" style={{ willChange: 'transform, opacity' }}>
           {/* Ambient decorative glows */}
           <motion.div
             animate={{ opacity: [0.3, 0.6, 0.3], scale: [1, 1.1, 1] }}
@@ -286,7 +286,7 @@ export default function Skills() {
                   onClick={() => setOpenIndex(isOpen ? null : cat.name)}
                   className="relative w-full flex items-center justify-between py-6 text-left group"
                 >
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-3 sm:gap-4">
                     <span
                       className={`text-sm inline-block transition-all duration-300 ease-out ${
                         isOpen
@@ -296,7 +296,7 @@ export default function Skills() {
                     >
                       {cat.icon}
                     </span>
-                    <span className={`text-xl uppercase font-bold transition-all duration-300 ${isOpen ? 'text-[#ffd86a] translate-x-1' : 'text-white/80 group-hover:text-[#ffd86a] group-hover:translate-x-1'}`}>
+                    <span className={`text-base sm:text-xl uppercase font-bold transition-all duration-300 ${isOpen ? 'text-[#ffd86a] translate-x-1' : 'text-white/80 group-hover:text-[#ffd86a] group-hover:translate-x-1'}`}>
                       {cat.name}
                     </span>
                     <motion.span

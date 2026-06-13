@@ -5,7 +5,7 @@ interface SplashProps {
   onComplete: () => void
 }
 
-const embers = Array.from({ length: 24 }, (_, i) => ({
+const embers = Array.from({ length: 24 }, () => ({
   left: 30 + Math.random() * 40,
   delay: 0.6 + Math.random() * 1.4,
   duration: 1.8 + Math.random() * 1.2,

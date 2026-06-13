@@ -84,7 +84,7 @@ export default function Contact() {
     <section
       ref={sectionRef}
       id="contact"
-      className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden px-10"
+      className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden px-5 sm:px-10 py-10"
     >
       {/* Background */}
       <div className="absolute inset-0 -z-10 bg-[#080400]">
@@ -149,7 +149,7 @@ export default function Contact() {
           whileInView="visible"
           viewport={{ once: true, amount: 0.3 }}
           variants={fadeUp}
-          className="text-4xl md:text-5xl font-bold text-white/90 leading-tight mb-3"
+          className="text-3xl sm:text-4xl md:text-5xl font-bold text-white/90 leading-tight mb-3"
         >
           Let's <span className="text-[#ffd86a]">Connect</span>
         </motion.h2>
@@ -229,7 +229,7 @@ function LinkCard({ link, index, onCopy, copied }: { link: typeof links[number];
       variants={fadeUp}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="group relative flex flex-col items-center gap-3 px-8 py-7 rounded-2xl border border-white/[0.06] bg-white/[0.10] hover:border-[#ffd86a]/25 transition-[border-color,background-color] duration-500 min-w-[180px] cursor-pointer"
+      className="group relative flex flex-col items-center gap-3 px-6 sm:px-8 py-6 sm:py-7 rounded-2xl border border-white/[0.06] bg-white/[0.10] hover:border-[#ffd86a]/25 transition-[border-color,background-color] duration-500 min-w-0 sm:min-w-[180px] cursor-pointer"
       style={{ transformStyle: 'preserve-3d', willChange: 'transform', transition: 'transform 0.15s ease-out, border-color 0.5s, background-color 0.5s' }}
     >
       {/* Spotlight follow */}

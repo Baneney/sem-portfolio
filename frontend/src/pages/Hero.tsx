@@ -69,7 +69,7 @@ export default function Hero({ showSplash }: { showSplash: boolean }) {
   return (
     <section
       id="about"
-      className="snap-page relative flex flex-col justify-between px-10 md:px-16 py-10 overflow-hidden w-full"
+      className="snap-page relative flex flex-col justify-between px-5 sm:px-10 md:px-16 py-6 sm:py-10 overflow-hidden w-full"
     >
       {/* Background */}
       <div className="absolute inset-0 -z-10 bg-[#080400]">
@@ -96,7 +96,7 @@ export default function Hero({ showSplash }: { showSplash: boolean }) {
 
       {/* Mockingjay pin — right side with shine */}
       <div
-        className="absolute right-[-5%] top-[-5%] h-[137%] pointer-events-none"
+        className="absolute right-[-10%] sm:right-[-5%] top-[-5%] h-[100%] sm:h-[137%] pointer-events-none"
         style={{ zIndex: 2 }}
       >
         <PinShine src={hgPin} />
@@ -104,7 +104,7 @@ export default function Hero({ showSplash }: { showSplash: boolean }) {
 
       {/* Name + description */}
       <div
-        className="flex flex-col justify-center flex-1 w-[55%] relative"
+        className="flex flex-col justify-center flex-1 w-full sm:w-[55%] relative"
         style={{ zIndex: 3 }}
       >
         {/* decorative label */}
@@ -130,17 +130,17 @@ export default function Hero({ showSplash }: { showSplash: boolean }) {
         </div>
 
         {/* tagline */}
-        <p className="text-white/50 text-md leading-relaxed mt-5 max-w-xs">
+        <p className="text-white/50 text-sm sm:text-md leading-relaxed mt-4 sm:mt-5 max-w-xs">
           Quiet creator, <em>bringing ideas to life,</em>
-          <br />
-          through motion, detail and softness.
+          <br className="hidden sm:block" />
+          <span className="sm:hidden"> </span>through motion, detail and softness.
         </p>
       </div>
 
       {/* Bottom bar */}
       <div
         ref={bottomBarRef}
-        className="relative group flex justify-between items-center pt-6 text-xs tracking-[0.35em] uppercase text-white/60 overflow-hidden"
+        className="relative group flex justify-between items-center pt-6 text-[10px] sm:text-xs tracking-[0.2em] sm:tracking-[0.35em] uppercase text-white/60 overflow-hidden"
         style={{ zIndex: 3 }}
       >
         {/* Animated SVG draw line */}
@@ -201,7 +201,7 @@ export default function Hero({ showSplash }: { showSplash: boolean }) {
         </span>
 
         {/* ── Center: LinkedIn / GitHub ── */}
-        <div className={`flex gap-4 ${reveal ? '' : 'opacity-0'}`}>
+        <div className={`hidden sm:flex gap-4 ${reveal ? '' : 'opacity-0'}`}>
           <a
             href="#"
             className="group relative inline-flex items-center text-white/70 transition-all duration-300 hover:text-[#ffd86a] hover:-translate-y-1"
@@ -220,7 +220,7 @@ export default function Hero({ showSplash }: { showSplash: boolean }) {
         </div>
 
         {/* ── Right: About / Skills / Projects / Contact ── */}
-        <div className={`flex gap-6 ${reveal ? '' : 'opacity-0'}`}>
+        <div className={`flex gap-3 sm:gap-6 ${reveal ? '' : 'opacity-0'}`}>
           <a
             href="#about1"
             onClick={e => { e.preventDefault(); scrollToSection('about1') }}

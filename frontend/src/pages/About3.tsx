@@ -113,7 +113,7 @@ export default function About3() {
     <section
       ref={containerRef}
       id="about3"
-      className="snap-page relative flex min-h-screen flex-col justify-end items-start px-10 pb-10 overflow-hidden"
+      className="snap-page relative flex min-h-screen flex-col justify-end items-start px-5 sm:px-10 pb-10 overflow-hidden"
     >
       {/* Parallax background gradients — different speeds = depth */}
       <div className="absolute inset-0 opacity-30 pointer-events-none">
@@ -144,7 +144,7 @@ export default function About3() {
       {/* Main content card — scroll parallax + mouse tilt */}
       <div
         ref={cardRef}
-        className="max-w-2xl w-full rounded-[28px] bg-[#070806]/20 p-10 shadow-[0_30px_80px_rgba(0,0,0,0.35)] backdrop-blur-md border border-[#ffd86a]/20 relative group hover-glow"
+        className="max-w-2xl w-full rounded-[28px] bg-[#070806]/20 p-6 sm:p-10 shadow-[0_30px_80px_rgba(0,0,0,0.35)] backdrop-blur-md border border-[#ffd86a]/20 relative group hover-glow"
         style={{ willChange: 'transform, opacity' }}
       >
         {/* Border glow */}
@@ -176,7 +176,7 @@ export default function About3() {
 
           <p
             ref={descRef}
-            className={`text-[#e5d4a1] leading-relaxed text-lg ${
+            className={`text-[#e5d4a1] leading-relaxed text-base sm:text-lg ${
               isVisible ? 'animate-fade-in-up delay-300' : 'opacity-0'
             }`}
           >

@@ -155,11 +155,19 @@ export default function Projects() {
   const [activeIdx, setActiveIdx] = useState(0)
   const [selected, setSelected] = useState<number | null>(null)
   const [pathLen, setPathLen] = useState(1200)
+  const [isMobile, setIsMobile] = useState(false)
   const svgRef = useRef<SVGSVGElement>(null)
   const containerRef = useRef<HTMLElement>(null)
   const glowDotRef = useRef<SVGCircleElement>(null)
   const glowTrailRef = useRef<SVGPathElement>(null)
   const itemsRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768)
+    check()
+    window.addEventListener('resize', check)
+    return () => window.removeEventListener('resize', check)
+  }, [])
 
   const snakePath = generateSnakePath(projects.length)
 
@@ -258,7 +266,7 @@ export default function Projects() {
     <section
       ref={containerRef}
       id="projects"
-      className="relative py-70 px-10"
+      className="relative py-30 sm:py-70 px-5 sm:px-10"
       style={{ backgroundColor: '#000', minHeight: `${(projects.length + 0.5) * PROJECT_H}px` }}
     >
       {/* Page transition — entire section fades and slides up */}
@@ -268,14 +276,14 @@ export default function Projects() {
         viewport={{ once: true, amount: 0.05 }}
         transition={{ duration: 0.9, ease: [0.25, 0.46, 0.45, 0.94] }}
       >
-      <div className="flex w-full">
+      <div className="flex flex-col lg:flex-row w-full">
         {/* Left — snake line + project list */}
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true, amount: 0.1 }}
           transition={{ duration: 0.8, ease: 'easeOut' }}
-          className="relative w-[65%] pl-10 pt-[260px]"
+          className="relative w-full lg:w-[65%] pl-5 sm:pl-10 pt-[260px]"
         >
           {/* SVG snake line */}
           <svg
@@ -435,7 +443,7 @@ export default function Projects() {
                 className="relative flex items-center"
                 style={{
                   height: PROJECT_H,
-                  paddingLeft: isLeft ? 0 : 60,
+                  paddingLeft: isMobile ? (isLeft ? 0 : 30) : (isLeft ? 0 : 60),
                 }}
               >
                 {/* Connector line from node to text */}
@@ -443,8 +451,8 @@ export default function Projects() {
                   className="absolute top-1/2 connector-line"
                   data-connector
                   style={{
-                    left: isLeft ? 180 : 130,
-                    width: 50,
+                    left: isMobile ? (isLeft ? 90 : 65) : (isLeft ? 180 : 130),
+                    width: isMobile ? 25 : 50,
                     height: 1,
                     background: 'rgba(255,216,106,0.1)',
                   }}
@@ -453,7 +461,7 @@ export default function Projects() {
                 <div
                   className="cursor-pointer group"
                   style={{
-                    marginLeft: isLeft ? 240 : 190,
+                    marginLeft: isMobile ? (isLeft ? 120 : 95) : (isLeft ? 240 : 190),
                     transformOrigin: 'left center',
                   }}
                   onClick={() => setSelected(i)}
@@ -486,7 +494,7 @@ export default function Projects() {
         </motion.div>
 
         {/* Right — sticky preview */}
-        <div className="w-[35%] relative preview-fade-in">
+        <div className="hidden lg:block w-[35%] relative preview-fade-in">
           <div
             className="sticky top-0 h-screen flex flex-col items-center justify-center px-8"
           >
@@ -586,7 +594,7 @@ export default function Projects() {
 
               {/* Header image */}
               <div
-                className="w-full h-56 rounded-t-2xl relative overflow-hidden"
+                className="w-full h-40 sm:h-56 rounded-t-2xl relative overflow-hidden"
               >
                 <img
                   src={projects[selected].image}
@@ -603,10 +611,10 @@ export default function Projects() {
               </div>
 
               {/* Content */}
-              <div className="px-10 pb-10 -mt-16 relative z-10">
+              <div className="px-5 sm:px-10 pb-8 sm:pb-10 -mt-16 relative z-10">
                 <div className="flex items-end justify-between mb-4">
                   <div>
-                    <h3 className="text-4xl font-bold text-white uppercase tracking-wide">
+                    <h3 className="text-2xl sm:text-4xl font-bold text-white uppercase tracking-wide">
                       {projects[selected].title}
                     </h3>
                     <span className="text-[#ffd86a]/50 text-sm">{projects[selected].year}</span>
@@ -622,7 +630,7 @@ export default function Projects() {
                   <h4 className="text-xs tracking-[0.2em] uppercase text-[#ffd86a]/40 mb-4">
                     Key Features
                   </h4>
-                  <ul className="grid grid-cols-2 gap-3">
+                  <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {projects[selected].highlights.map(h => (
                       <li key={h} className="flex items-start gap-2 text-sm text-white/40">
                         <span className="text-[#ffd86a]/40 mt-0.5">✦</span>
