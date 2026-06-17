@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { AnimatePresence, useScroll, useTransform, useSpring, motion } from 'framer-motion'
+import { AnimatePresence, useScroll, useTransform, useSpring, useMotionValueEvent, motion } from 'framer-motion'
 import cornucopia from './assets/cornucopia.jpeg'
 import stonePlatformLeft from './assets/stone-platform-left.jpeg'
 import stonePlatformRight from './assets/stone-platform-right.jpeg'
@@ -28,6 +28,7 @@ function App() {
   const [showSplash, setShowSplash] = useState(true)
   const splashDone = useRef(false)
   const contentReady = useRef(false)
+  const scrollLockedRef = useRef(false)
 
   // Scroll tracking for Katniss transition
   const { scrollYProgress } = useScroll({
@@ -49,7 +50,12 @@ function App() {
   // GLOBAL BACKGROUND STATE
   // We use the same frameValue to drive a single unified background layer
   // This prevents the 'cut-off' look by ensuring there's only one master background
-  const globalBgOpacity = useTransform(frameValue, [-10, -5, 2, 10, 15], [0, 1, 1, 1, 0])
+  const globalBgOpacity = useTransform(frameValue, [-10, -5, 2, 20, 25], [0, 1, 1, 1, 0])
+
+  // Lock scroll during katniss phase — prevent scrolling past About1
+  useMotionValueEvent(frameValue, "change", (latest) => {
+    scrollLockedRef.current = latest < 25
+  })
 
   function tryDismissSplash() {
     if (splashDone.current && contentReady.current) {
@@ -139,6 +145,18 @@ function App() {
       const scrollEl = container!
       const scrollTop = scrollEl.scrollTop
       const vh = window.innerHeight
+
+      // Lock scroll at About1 during katniss phase
+      if (scrollLockedRef.current) {
+        const about1El = document.getElementById('about1')
+        if (about1El) {
+          const about1Top = about1El.offsetTop
+          if (scrollTop > about1Top) {
+            scrollEl.scrollTop = about1Top
+            return
+          }
+        }
+      }
 
       const sections = ['about', 'katniss-section', 'about1', 'about2', 'about3', 'skills', 'projects', 'contact']
       let currentIndex = 0
