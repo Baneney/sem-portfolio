@@ -185,7 +185,7 @@ function App() {
       {/* ── Unified Cinematic Background Layer ── */}
       {/* This layer exists globally and morphs opacities to ensure no hard edges or cut-offs */}
       <motion.div 
-        className="fixed inset-0 bg-[#080400] z-[18] pointer-events-none"
+        className="fixed inset-0 bg-black z-[18] pointer-events-none"
         style={{ opacity: globalBgOpacity }}
       />
 
