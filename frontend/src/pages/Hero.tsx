@@ -1,7 +1,7 @@
 import hgPin from '../assets/hg-big-pin.png'
 import FireCanvas from '../components/FireCanvas'
 import PinShine from '../components/PinShine'
-import { motion, useInView, useMotionValue, useTransform, animate, useScroll, useSpring } from 'framer-motion'
+import { motion, useInView, useMotionValue, useMotionTemplate, useTransform, animate, useScroll, useSpring } from 'framer-motion'
 import { useRef, useEffect, useState } from 'react'
 
 function RevealText({ children, delay, className = '' }: { children: React.ReactNode; delay: number; className?: string }) {
@@ -54,6 +54,11 @@ export default function Hero({ showSplash, containerRef: scrollContainerRef }: {
   const bgBlur = useTransform(smoothExit, [0, 1], [0, 30])
   const fireScale = useTransform(smoothExit, [0, 1], [1, 3])
 
+  // Mask for bottom-to-top fade — fully opaque at rest, fades from bottom as you scroll
+  const maskStop = useTransform(smoothExit, [0, 1], [100, 0])
+  const maskEdge = useTransform(smoothExit, v => Math.max(0, 100 - v * 125))
+  const maskImage = useMotionTemplate`linear-gradient(to bottom, black 0%, black ${maskEdge}%, transparent ${maskStop}%, transparent 100%)`
+
   useEffect(() => {
     const container = scrollContainerRef.current
     if (!container) return
@@ -85,10 +90,11 @@ export default function Hero({ showSplash, containerRef: scrollContainerRef }: {
   }
 
   return (
-    <section
+    <motion.section
       ref={sectionRef}
       id="about"
       className="section-page relative flex flex-col justify-between px-5 sm:px-10 md:px-16 py-6 sm:py-10 overflow-hidden w-full"
+      style={{ WebkitMaskImage: maskImage, maskImage: maskImage }}
     >
       {/* Background with deep zoom exit */}
       <motion.div 
@@ -338,6 +344,6 @@ export default function Hero({ showSplash, containerRef: scrollContainerRef }: {
           </a>
         </div>
       </motion.div>
-    </section>
+    </motion.section>
   );
 }
