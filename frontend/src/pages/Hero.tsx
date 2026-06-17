@@ -54,10 +54,10 @@ export default function Hero({ showSplash, containerRef: scrollContainerRef }: {
   const bgBlur = useTransform(smoothExit, [0, 1], [0, 30])
   const fireScale = useTransform(smoothExit, [0, 1], [1, 3])
 
-  // Mask for bottom-to-top fade — fully opaque at rest, fades from bottom as you scroll
+  // Bottom-to-top fade mask — nothing at rest, grows as you scroll
   const maskStop = useTransform(smoothExit, [0, 1], [100, 0])
-  const maskEdge = useTransform(smoothExit, v => Math.max(0, 100 - v * 125))
-  const maskImage = useMotionTemplate`linear-gradient(to bottom, black 0%, black ${maskEdge}%, transparent ${maskStop}%, transparent 100%)`
+  const maskEdge = useTransform(smoothExit, v => Math.max(0, 100 - v * 112))
+  const maskImage = useMotionTemplate`linear-gradient(to bottom, black ${maskEdge}%, transparent ${maskStop}%, transparent 100%)`
 
   useEffect(() => {
     const container = scrollContainerRef.current
