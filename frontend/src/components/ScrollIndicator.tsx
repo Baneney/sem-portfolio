@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 
 const sections = [
   { id: 'about', label: 'Home' },
+  { id: 'katniss-section', label: 'The Games', hidden: true },
   { id: 'about1', label: 'About' },
   { id: 'about2', label: 'Experience' },
   { id: 'about3', label: 'Philosophy' },
@@ -15,6 +16,7 @@ interface Segment {
   top: number
   height: number
   fill: number
+  hidden?: boolean
 }
 
 export default function ScrollIndicator() {
@@ -41,12 +43,16 @@ export default function ScrollIndicator() {
     const vh = container.clientHeight
     const totalTrack = vh * 0.7
     const gap = 6
-    const totalGaps = gap * (sections.length - 1)
+    
+    // Count only visible sections for gaps
+    const visibleCount = sections.filter(s => !s.hidden).length
+    const totalGaps = gap * (visibleCount - 1)
     const availableTrack = totalTrack - totalGaps
 
     // Build segments
     let cursor = 0
     const segs: Segment[] = measured.map((h, i) => {
+      const isHidden = sections[i].hidden
       const segH = Math.max(8, (h / totalSectionH) * availableTrack)
 
       // How much of total scroll does this section cover?
@@ -62,8 +68,10 @@ export default function ScrollIndicator() {
       }
       fill = Math.max(0, Math.min(1, fill))
 
-      const seg: Segment = { top: cursor, height: segH, fill }
-      cursor += segH + gap
+      const seg: Segment = { top: cursor, height: segH, fill, hidden: isHidden }
+      if (!isHidden) {
+        cursor += segH + gap
+      }
       return seg
     })
 
@@ -101,28 +109,14 @@ export default function ScrollIndicator() {
     const container = document.getElementById('snap-container')
     const el = document.getElementById(sections[index].id)
     if (!container || !el) return
-    const isSnapPage = index <= 3
-    if (!isSnapPage) container.style.scrollSnapType = 'none'
     container.scrollTo({ top: el.offsetTop, behavior: 'smooth' })
-    if (!isSnapPage) {
-      const targetTop = el.offsetTop
-      const checkReached = () => {
-        const diff = Math.abs(container.scrollTop - targetTop)
-        if (diff < 5) {
-          container.style.scrollSnapType = 'y mandatory'
-          return
-        }
-        requestAnimationFrame(checkReached)
-      }
-      requestAnimationFrame(checkReached)
-    }
   }
 
   return (
     <div
       className="fixed right-4 sm:right-8 top-1/2 -translate-y-1/2 z-40 flex items-center gap-4 transition-opacity duration-300"
       style={{
-        height: segments.length ? segments[segments.length - 1].top + segments[segments.length - 1].height : 0,
+        height: segments.length ? segments.filter(s => !s.hidden).reduce((acc, s) => acc + s.height + 6, 0) - 6 : 0,
         opacity: activeIdx === 0 ? 0 : 1,
         pointerEvents: activeIdx === 0 ? 'none' : 'auto',
       }}
@@ -130,6 +124,7 @@ export default function ScrollIndicator() {
       {/* Segmented track */}
       <div className="relative" style={{ height: '100%' }}>
         {segments.map((seg, i) => {
+          if (seg.hidden) return null
           const isActive = i === activeIdx
           return (
             <button
@@ -167,20 +162,22 @@ export default function ScrollIndicator() {
 
         {/* Label — follows the active dot */}
         <AnimatePresence mode="wait">
-          <motion.button
-            key={activeIdx}
-            onClick={() => scrollTo(activeIdx)}
-            initial={{ opacity: 0, x: 6 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 6 }}
-            transition={{ duration: 0.25 }}
-            className="absolute right-full mr-4 -translate-y-1/2 cursor-pointer hidden sm:block"
-            style={{ top: segments[activeIdx] ? segments[activeIdx].top + segments[activeIdx].fill * segments[activeIdx].height : 0 }}
-          >
-            <span className="text-[12px] tracking-[0.2em] uppercase text-white hover:text-[#ffd86a] transition-colors duration-200 whitespace-nowrap">
-              {sections[activeIdx].label}
-            </span>
-          </motion.button>
+          {!sections[activeIdx]?.hidden && (
+            <motion.button
+              key={activeIdx}
+              onClick={() => scrollTo(activeIdx)}
+              initial={{ opacity: 0, x: 6 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 6 }}
+              transition={{ duration: 0.25 }}
+              className="absolute right-full mr-4 -translate-y-1/2 cursor-pointer hidden sm:block"
+              style={{ top: segments[activeIdx] ? segments[activeIdx].top + segments[activeIdx].fill * segments[activeIdx].height : 0 }}
+            >
+              <span className="text-[12px] tracking-[0.2em] uppercase text-white hover:text-[#ffd86a] transition-colors duration-200 whitespace-nowrap">
+                {sections[activeIdx].label}
+              </span>
+            </motion.button>
+          )}
         </AnimatePresence>
       </div>
     </div>

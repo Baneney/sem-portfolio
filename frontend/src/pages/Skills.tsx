@@ -148,7 +148,7 @@ export default function Skills() {
     <section
       ref={sectionRef}
       id="skills"
-      className="free-page flex items-start md:items-center px-5 py-10 sm:px-10 md:px-20 overflow-hidden"
+      className="section-page flex items-start md:items-center px-5 py-10 sm:px-10 md:px-20 overflow-hidden"
     >
       {/* Background */}
       <div className="absolute inset-0 bg-[#080400]">

@@ -24,8 +24,16 @@
     linear-gradient(to top, rgba(8,4,0,0.2) 0%, transparent 15%);
 }
 
+html, body {
+  background-color: #080400;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* App.tsx handles internal scroll */
+}
+
 * {
   font-family: 'SuiGeneris', serif;
+  box-sizing: border-box;
 }
 
 /* Custom scrollbar */
@@ -43,32 +51,20 @@
 
 .snap-container {
   scrollbar-width: none;
-}
-
-/* Scroll snap container */
-.snap-container {
   height: 100vh;
   overflow-y: scroll;
-  scroll-snap-type: y mandatory;
   scroll-behavior: smooth;
   position: relative;
   z-index: 20;
 }
 
-.snap-page {
-  height: 100vh;
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
+.section-page {
+  min-height: 100vh;
   position: relative;
 }
 
-.snap-page-dark {
+.section-page-dark {
   background-color: #0a0a0a;
-}
-
-.free-page {
-  height: 100vh;
-  position: relative;
 }
 
 .scrollbar-hide {
@@ -86,32 +82,6 @@
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  transition: opacity 0.8s ease;
-}
-
-/* Sculpture */
-.sculpture-float {
-  position: fixed;
-  z-index: 10;
-  pointer-events: none;
-  width: min(420px, 80vw);
-  height: min(420px, 80vw);
-  transition: left 0.8s cubic-bezier(0.4, 0, 0.2, 1),
-              top  0.8s cubic-bezier(0.4, 0, 0.2, 1),
-              transform 0.8s cubic-bezier(0.4, 0, 0.2, 1),
-              opacity 0.8s ease;
-}
-
-.sculpture-img {
-  width: min(420px, 80vw);
-  display: block;
-  filter: drop-shadow(0 0 40px rgba(180, 140, 80, 0.5)) brightness(0.7);
-}
-
-.sculpture-layer {
-  position: absolute;
-  top: 0;
-  left: 0;
   transition: opacity 0.8s ease;
 }
 
@@ -444,6 +414,68 @@
 
 .modal-scrollbar {
   scrollbar-width: none;
+}
+
+/* ========== CERTIFICATES — SHIMMER SWEEP ========== */
+
+@keyframes cert-shimmer {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* ========== KATNISS TRANSITION — Hero → About1 ========== */
+
+@keyframes katniss-flash {
+  0%   { opacity: 0; background: radial-gradient(circle at 35% 50%, rgba(255,255,255,0.9) 0%, rgba(255,220,100,0.6) 20%, rgba(255,140,0,0.2) 50%, transparent 70%); }
+  15%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes katniss-flash-glow {
+  0%   { opacity: 0; transform: scale(0.5); }
+  20%  { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.5); }
+}
+
+.katniss-wipe-line {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, #ffd86a 20%, #fff5c0 50%, #ffd86a 80%, transparent 100%);
+  box-shadow: 0 0 12px rgba(255,216,106,0.8), 0 0 30px rgba(255,160,0,0.5), 0 0 60px rgba(255,140,0,0.3);
+  animation: katniss-wipe 0.8s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+}
+
+@keyframes katniss-wipe {
+  0%   { transform: scaleX(0); transform-origin: left; opacity: 1; }
+  60%  { transform: scaleX(1); transform-origin: left; opacity: 1; }
+  80%  { transform: scaleX(1); opacity: 0.8; }
+  100% { transform: scaleX(1); opacity: 0; }
+}
+
+.katniss-wipe-glow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,216,106,0.15) 40%, rgba(255,160,0,0.1) 60%, transparent 100%);
+  animation: katniss-wipe-glow 0.8s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+}
+
+@keyframes katniss-wipe-glow {
+  0%   { opacity: 0; }
+  30%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes katniss-spark {
+  0%   { opacity: 0; transform: translate(0, 0) scale(1); }
+  10%  { opacity: 1; }
+  50%  { opacity: 0.7; }
+  100% { opacity: 0; transform: translate(var(--spark-x), var(--spark-y)) scale(0.2); }
 }
 
 

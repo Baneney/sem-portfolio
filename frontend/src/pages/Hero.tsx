@@ -1,7 +1,7 @@
 import hgPin from '../assets/hg-big-pin.png'
 import FireCanvas from '../components/FireCanvas'
 import PinShine from '../components/PinShine'
-import { motion, useInView, useMotionValue, useTransform, animate } from 'framer-motion'
+import { motion, useInView, useMotionValue, useTransform, animate, useScroll, useSpring } from 'framer-motion'
 import { useRef, useEffect, useState } from 'react'
 
 function RevealText({ children, delay, className = '' }: { children: React.ReactNode; delay: number; className?: string }) {
@@ -23,7 +23,8 @@ function RevealText({ children, delay, className = '' }: { children: React.React
   )
 }
 
-export default function Hero({ showSplash }: { showSplash: boolean }) {
+export default function Hero({ showSplash, containerRef: scrollContainerRef }: { showSplash: boolean, containerRef: React.RefObject<HTMLDivElement | null> }) {
+  const sectionRef = useRef<HTMLElement>(null)
   const bottomBarRef = useRef<HTMLDivElement>(null)
   const lineInView = useInView(bottomBarRef, { once: true, amount: 0.5 })
   const progress = useMotionValue(0)
@@ -31,8 +32,30 @@ export default function Hero({ showSplash }: { showSplash: boolean }) {
   const [reveal, setReveal] = useState(false)
   const animationsDone = useRef(false)
 
+  // Exit Parallax Logic - lukebaffait inspired zoom
+  const { scrollYProgress } = useScroll({
+    container: scrollContainerRef,
+    target: sectionRef,
+    offset: ["start start", "end start"]
+  })
+
+  const smoothExit = useSpring(scrollYProgress, { stiffness: 45, damping: 25 })
+
+  // Dramatic Departure Transforms
+  const textY = useTransform(smoothExit, [0, 1], [0, -600])
+  const textScale = useTransform(smoothExit, [0, 1], [1, 1.4])
+  const textOpacity = useTransform(smoothExit, [0, 0.6], [1, 0])
+  
+  const pinX = useTransform(smoothExit, [0, 1], [0, 600])
+  const pinScale = useTransform(smoothExit, [0, 1], [1, 2.5])
+  const pinOpacity = useTransform(smoothExit, [0, 0.7], [1, 0])
+  
+  const bgOpacity = useTransform(smoothExit, [0, 1], [1, 0])
+  const bgBlur = useTransform(smoothExit, [0, 1], [0, 30])
+  const fireScale = useTransform(smoothExit, [0, 1], [1, 3])
+
   useEffect(() => {
-    const container = document.getElementById('snap-container')
+    const container = scrollContainerRef.current
     if (!container) return
 
     if (showSplash || !animationsDone.current) {
@@ -52,40 +75,33 @@ export default function Hero({ showSplash }: { showSplash: boolean }) {
       }, 650)
       return () => clearTimeout(t)
     }
-  }, [lineInView, progress, showSplash])
+  }, [lineInView, progress, showSplash, scrollContainerRef])
 
   function scrollToSection(id: string) {
-    const container = document.getElementById('snap-container')
+    const container = scrollContainerRef.current
     const el = document.getElementById(id)
     if (!container || !el) return
-    const isSnapPage = ['about', 'about1', 'about2', 'about3'].includes(id)
-    if (!isSnapPage) container.style.scrollSnapType = 'none'
     container.scrollTo({ top: el.offsetTop, behavior: 'smooth' })
-    if (!isSnapPage) {
-      const targetTop = el.offsetTop
-      const checkReached = () => {
-        const diff = Math.abs(container.scrollTop - targetTop)
-        if (diff < 5) {
-          container.style.scrollSnapType = 'y mandatory'
-          return
-        }
-        requestAnimationFrame(checkReached)
-      }
-      requestAnimationFrame(checkReached)
-    }
   }
 
   return (
     <section
+      ref={sectionRef}
       id="about"
-      className="snap-page relative flex flex-col justify-between px-5 sm:px-10 md:px-16 py-6 sm:py-10 overflow-hidden w-full"
+      className="section-page relative flex flex-col justify-between px-5 sm:px-10 md:px-16 py-6 sm:py-10 overflow-hidden w-full"
     >
-      {/* Background */}
-      <div className="absolute inset-0 -z-10 bg-[#080400]">
-        {/* Fire container — change translateX to move fire left/right, translateY to move up/down */}
-        <div
+      {/* Background with deep zoom exit */}
+      <motion.div 
+        className="absolute inset-0 -z-10 bg-[#080400]"
+        style={{ opacity: bgOpacity, filter: `blur(${bgBlur}px)` }}
+      >
+        {/* Fire container */}
+        <motion.div
           className="absolute inset-0"
-          style={{ transform: "translateX(6%)" }}
+          style={{ 
+            transform: "translateX(6%)",
+            scale: fireScale,
+          }}
         >
           <div className="absolute top-[0%] right-[-20%] w-[90%] h-[100%] rounded-full bg-[#c85000]/80 blur-[120px]" />
           <div className="absolute top-[5%] right-[-10%] w-[65%] h-[85%] rounded-full bg-[#e86000]/70 blur-[70px]" />
@@ -93,28 +109,28 @@ export default function Hero({ showSplash }: { showSplash: boolean }) {
           <div className="absolute top-[18%] right-[8%] w-[30%] h-[55%] rounded-full bg-[#ffb300]/70 blur-[20px]" />
           <div className="absolute top-[22%] right-[14%] w-[18%] h-[40%] rounded-full bg-[#ffd700]/80 blur-[10px]" />
           <div className="absolute top-[27%] right-[19%] w-[8%] h-[22%] rounded-full bg-[#fff5c0]/60 blur-[5px]" />
-        </div>
+        </motion.div>
         {/* dark crush — left */}
         <div className="absolute inset-0 bg-gradient-to-r from-[#080400] from-30% via-[#080400]/70 via-50% to-transparent" />
         {/* dark top & bottom */}
         <div className="absolute inset-0 bg-gradient-to-b from-[#080400]/80 via-transparent to-[#080400]/80" />
-      </div>
+      </motion.div>
 
       {/* Fire canvas — bottom left */}
       <FireCanvas />
 
-      {/* Mockingjay pin — right side with shine */}
-      <div
+      {/* Mockingjay pin — dramatic zoom past camera */}
+      <motion.div
         className="absolute right-[-10%] sm:right-[-5%] top-[-5%] h-[100%] sm:h-[137%] pointer-events-none"
-        style={{ zIndex: 2 }}
+        style={{ zIndex: 2, x: pinX, scale: pinScale, opacity: pinOpacity }}
       >
         <PinShine src={hgPin} />
-      </div>
+      </motion.div>
 
-      {/* Name + description */}
-      <div
+      {/* Name + description — cinematic upward drift and scale */}
+      <motion.div
         className="flex flex-col justify-end sm:justify-center flex-1 w-full sm:w-[55%] relative mb-7 sm:mb-0"
-        style={{ zIndex: 3 }}
+        style={{ zIndex: 3, y: textY, scale: textScale, opacity: textOpacity }}
       >
         {/* decorative label */}
         <div className="flex items-center gap-3 mb-4">
@@ -145,13 +161,13 @@ export default function Hero({ showSplash }: { showSplash: boolean }) {
           <span className="sm:hidden"> </span>through motion, detail and
           softness.
         </p>
-      </div>
+      </motion.div>
 
-      {/* Bottom bar */}
-      <div
+      {/* Bottom bar — smooth downward exit */}
+      <motion.div
         ref={bottomBarRef}
+        style={{ zIndex: 3, y: useTransform(smoothExit, [0, 1], [0, 400]), opacity: textOpacity }}
         className="relative group flex justify-between items-center pt-[15px] sm:pt-6 text-[10px] sm:text-xs tracking-[0.2em] sm:tracking-[0.35em] uppercase text-white/60 overflow-hidden"
-        style={{ zIndex: 3 }}
       >
         {/* Animated SVG draw line */}
         <svg
@@ -321,7 +337,7 @@ export default function Hero({ showSplash }: { showSplash: boolean }) {
             <span className="absolute inset-x-0 -bottom-1 h-[3px] rounded-full bg-[linear-gradient(90deg,transparent,rgba(255,214,104,0.9),transparent)] scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-center" />
           </a>
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 }

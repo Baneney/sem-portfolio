@@ -1,11 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
-import { AnimatePresence } from 'framer-motion'
+import { AnimatePresence, useScroll, useTransform, useMotionValueEvent, useSpring, motion } from 'framer-motion'
 import cornucopia from './assets/cornucopia.jpeg'
 import stonePlatformLeft from './assets/stone-platform-left.jpeg'
 import stonePlatformRight from './assets/stone-platform-right.jpeg'
-import cornucopiaCenter from './assets/cornucopia-center.png'
-import cornucopiaLeft from './assets/cornucopia-left.png'
-import cornucopiaRight from './assets/cornucopia-right.png'
 import Hero from './pages/Hero'
 import About1 from './pages/About1'
 import About2 from './pages/About2'
@@ -16,34 +13,52 @@ import Contact from './pages/Contact'
 import ScrollIndicator from './components/ScrollIndicator'
 import Splash from './components/Splash'
 import Chatbot from './components/Chatbot'
+import ArrowTransition from './components/ArrowTransition'
 
-// Pages 1, 2, 3 = About1, About2, About3
-const bgImages   = [cornucopia, stonePlatformLeft, stonePlatformRight]
-const sculptures = [cornucopiaCenter, cornucopiaLeft, cornucopiaRight]
-
-const POS = [
-  { x: 49, y: 43, scale: 1.3 },
-  { x: 70, y: 55, scale: 2.3 },
-  { x: 30, y: 56, scale: 2.3 },
-]
-
-const POS_MOBILE = [
-  { x: 50, y: 43, scale: 1.0 },
-  { x: 65, y: 50, scale: 1.0 },
-  { x: 35, y: 50, scale: 1.0 },
-]
+const bgImages = [cornucopia, stonePlatformLeft, stonePlatformRight]
 
 function App() {
   const bgRefs         = useRef<(HTMLDivElement | null)[]>([])
-  const sculptureRefs  = useRef<(HTMLImageElement | null)[]>([])
-  const wrapperRef     = useRef<HTMLDivElement>(null)
   const bgContainerRef = useRef<HTMLDivElement>(null)
+  const snapContainerRef = useRef<HTMLDivElement>(null)
+  const transitionRef = useRef<HTMLDivElement>(null)
+  
   const currentPageRef = useRef(-1)
   const [showTransition, setShowTransition] = useState(false)
   const [showSplash, setShowSplash] = useState(true)
-  const [hideSculpture, setHideSculpture] = useState(window.innerWidth < 768)
+  const [isTransitionActive, setIsTransitionActive] = useState(false)
   const splashDone = useRef(false)
   const contentReady = useRef(false)
+
+  // Scroll tracking for Katniss transition
+  const { scrollYProgress } = useScroll({
+    container: snapContainerRef,
+    target: transitionRef,
+    offset: ["start end", "end start"]
+  })
+
+  // Smooth progress with weighted spring
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 45, 
+    damping: 35,
+    restDelta: 0.001
+  })
+
+  // Map smooth progress to frames
+  const frameValue = useTransform(smoothProgress, [0, 0.9], [-10, 25])
+
+  useMotionValueEvent(frameValue, "change", (latest) => {
+    // Only mount ArrowTransition when we are actually scrolling through it
+    const active = latest >= -8 && latest <= 22
+    if (active !== isTransitionActive) {
+      setIsTransitionActive(active)
+    }
+  })
+
+  // GLOBAL BACKGROUND STATE
+  // We use the same frameValue to drive a single unified background layer
+  // This prevents the 'cut-off' look by ensuring there's only one master background
+  const globalBgOpacity = useTransform(frameValue, [-10, -5, 2, 13, 20], [0, 1, 1, 1, 0])
 
   function tryDismissSplash() {
     if (splashDone.current && contentReady.current) {
@@ -98,65 +113,55 @@ function App() {
     if (index === prevIndex) return
     currentPageRef.current = index
 
-    const aboutIndex = index - 1 // about pages 1,2,3 → 0,1,2
-    const isAbout = aboutIndex >= 0 && aboutIndex < 3
+    // Precise Background Control (About Pages)
+    const about1Pos = document.getElementById('about1')?.offsetTop || 0
+    const about2Pos = document.getElementById('about2')?.offsetTop || 0
+    const about3Pos = document.getElementById('about3')?.offsetTop || 0
+    const vh = window.innerHeight
 
-    // Cinematic flourish when leaving About3 for Skills
-    const wasAbout = prevIndex >= 1 && prevIndex <= 3
-    if (wasAbout && !isAbout && prevIndex === 3) {
-      setShowTransition(true)
-      setTimeout(() => setShowTransition(false), 1700)
+    const scrollTop = snapContainerRef.current?.scrollTop || 0
+    
+    let activeAbout = -1
+    if (Math.abs(scrollTop - about1Pos) < vh / 2) activeAbout = 0
+    else if (Math.abs(scrollTop - about2Pos) < vh / 2) activeAbout = 1
+    else if (Math.abs(scrollTop - about3Pos) < vh / 2) activeAbout = 2
+
+    if (activeAbout !== -1) {
+      bgRefs.current.forEach((bg, i) => {
+        if (bg) bg.style.opacity = i === activeAbout ? '1' : '0'
+      })
     }
 
-    if (isAbout) {
-      bgRefs.current.forEach((bg, i) => {
-        if (bg) bg.style.opacity = i === aboutIndex ? '1' : '0'
-      })
-      sculptureRefs.current.forEach((img, i) => {
-        if (img) img.style.opacity = i === aboutIndex ? '1' : '0'
-      })
-      if (wrapperRef.current) {
-        const isMobile = window.innerWidth < 768
-        const pos = isMobile ? POS_MOBILE[aboutIndex] : POS[aboutIndex]
-        wrapperRef.current.style.opacity   = '1'
-        wrapperRef.current.style.left      = `${pos.x}%`
-        wrapperRef.current.style.top       = `${pos.y}%`
-        wrapperRef.current.style.transform = `translate(-50%, -50%) scale(${pos.scale})`
-      }
-    } else {
-      if (wrapperRef.current) wrapperRef.current.style.opacity = '0'
+    // Skills transition trigger
+    const skillsPos = document.getElementById('skills')?.offsetTop || 9999
+    if (index >= 5 && Math.abs(scrollTop - skillsPos) < vh / 2 && prevIndex < index) {
+      setShowTransition(true)
+      setTimeout(() => setShowTransition(false), 1700)
     }
   }
 
   useEffect(() => {
-    const container = document.getElementById('snap-container')
+    const container = snapContainerRef.current
     if (!container) return
 
-    goToPage(0)
-
-    const handleScroll = () => {
-      const scrollTop = container.scrollTop
+    function handleScroll() {
+      const scrollEl = container!
+      const scrollTop = scrollEl.scrollTop
       const vh = window.innerHeight
-      const index = Math.round(scrollTop / vh)
 
-      if (index >= 3) {
-        container.style.scrollSnapType = 'none'
-      } else {
-        container.style.scrollSnapType = 'y mandatory'
+      const sections = ['about', 'katniss-section', 'about1', 'about2', 'about3', 'skills', 'projects', 'contact']
+      let currentIndex = 0
+      for (let i = 0; i < sections.length; i++) {
+        const el = document.getElementById(sections[i])
+        if (el && scrollTop >= el.offsetTop - vh / 2) {
+          currentIndex = i
+        }
       }
-
-      goToPage(index)
+      goToPage(currentIndex)
     }
 
-    container.addEventListener('scroll', handleScroll, { passive: true })
-
-    const handleResize = () => setHideSculpture(window.innerWidth < 768)
-    window.addEventListener('resize', handleResize)
-
-    return () => {
-      container.removeEventListener('scroll', handleScroll)
-      window.removeEventListener('resize', handleResize)
-    }
+    container.addEventListener('scroll', handleScroll)
+    return () => container.removeEventListener('scroll', handleScroll)
   }, [])
 
   return (
@@ -165,6 +170,20 @@ function App() {
       <AnimatePresence>
         {showSplash && (
           <Splash onComplete={() => setShowSplash(false)} />
+        )}
+      </AnimatePresence>
+
+      {/* ── Unified Cinematic Background Layer ── */}
+      {/* This layer exists globally and morphs opacities to ensure no hard edges or cut-offs */}
+      <motion.div 
+        className="fixed inset-0 bg-[#080400] z-[80] pointer-events-none"
+        style={{ opacity: globalBgOpacity }}
+      />
+
+      {/* Katniss arrow-shooting transition — high performance canvas */}
+      <AnimatePresence>
+        {isTransitionActive && (
+          <ArrowTransition currentFrameValue={frameValue} />
         )}
       </AnimatePresence>
 
@@ -184,28 +203,6 @@ function App() {
         ))}
         <div className="absolute inset-0 bg-black/50" style={{ zIndex: 1 }} />
       </div>
-
-      {/* Sculpture — About pages only, hidden on mobile */}
-      {!hideSculpture && (
-      <div
-        ref={wrapperRef}
-        className="sculpture-float"
-        style={{ opacity: 0,
-                 left: `${POS[0].x}%`, top: `${POS[0].y}%`,
-                 transform: `translate(-50%, -50%) scale(${POS[0].scale})` }}
-      >
-        {sculptures.map((src, i) => (
-          <img
-            key={i}
-            ref={el => { sculptureRefs.current[i] = el }}
-            src={src}
-            alt=""
-            className="sculpture-img sculpture-layer"
-            style={{ opacity: i === 0 ? 1 : 0 }}
-          />
-        ))}
-      </div>
-      )}
 
       {/* Page transition overlay — About3 → Skills */}
       {showTransition && (
@@ -228,11 +225,19 @@ function App() {
         </div>
       )}
 
-      {/* <Navbar atTop={atTop} /> */}
+      <div id="snap-container" className="snap-container" ref={snapContainerRef}>
+        <Hero showSplash={showSplash} containerRef={snapContainerRef} />
+        
+        {/* Transition Spacer */}
+        <section 
+          id="katniss-section"
+          ref={transitionRef} 
+          className="relative w-full h-[250vh] pointer-events-none"
+          style={{ zIndex: 5 }}
+        >
+        </section>
 
-      <div id="snap-container" className="snap-container">
-        <Hero showSplash={showSplash} />
-        <About1 />
+        <About1 scrollProgress={frameValue} />
         <About2 />
         <About3 />
         <Skills />
