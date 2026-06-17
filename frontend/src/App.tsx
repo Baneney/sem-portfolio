@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { AnimatePresence, useScroll, useTransform, useMotionValueEvent, useSpring, motion } from 'framer-motion'
+import { AnimatePresence, useScroll, useTransform, useSpring, motion } from 'framer-motion'
 import cornucopia from './assets/cornucopia.jpeg'
 import stonePlatformLeft from './assets/stone-platform-left.jpeg'
 import stonePlatformRight from './assets/stone-platform-right.jpeg'
@@ -26,7 +26,6 @@ function App() {
   const currentPageRef = useRef(-1)
   const [showTransition, setShowTransition] = useState(false)
   const [showSplash, setShowSplash] = useState(true)
-  const [isTransitionActive, setIsTransitionActive] = useState(false)
   const splashDone = useRef(false)
   const contentReady = useRef(false)
 
@@ -46,14 +45,6 @@ function App() {
 
   // Map smooth progress to frames
   const frameValue = useTransform(smoothProgress, [0, 0.9], [-10, 25])
-
-  useMotionValueEvent(frameValue, "change", (latest) => {
-    // Only mount ArrowTransition when we are actually scrolling through it
-    const active = latest >= -8 && latest <= 22
-    if (active !== isTransitionActive) {
-      setIsTransitionActive(active)
-    }
-  })
 
   // GLOBAL BACKGROUND STATE
   // We use the same frameValue to drive a single unified background layer
@@ -176,16 +167,12 @@ function App() {
       {/* ── Unified Cinematic Background Layer ── */}
       {/* This layer exists globally and morphs opacities to ensure no hard edges or cut-offs */}
       <motion.div 
-        className="fixed inset-0 bg-[#080400] z-[80] pointer-events-none"
+        className="fixed inset-0 bg-[#080400] z-[18] pointer-events-none"
         style={{ opacity: globalBgOpacity }}
       />
 
-      {/* Katniss arrow-shooting transition — high performance canvas */}
-      <AnimatePresence>
-        {isTransitionActive && (
-          <ArrowTransition currentFrameValue={frameValue} />
-        )}
-      </AnimatePresence>
+      {/* Katniss arrow-shooting transition — always mounted behind snap-container */}
+      <ArrowTransition currentFrameValue={frameValue} />
 
       {/* Fixed backgrounds — About pages only */}
       <div

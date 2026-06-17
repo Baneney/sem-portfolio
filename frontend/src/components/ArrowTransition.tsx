@@ -68,8 +68,8 @@ export default function ArrowTransition({ currentFrameValue }: ArrowTransitionPr
       const subFrame = clamped % 1
       const nextFrameIdx = Math.min(frameIdx + 1, 14)
 
-      // Entrance: -10 to 2 -> 0 to 1
-      const entrance = Math.max(0, Math.min(1, (latest + 8) / 8))
+      // Entrance: -25 to 0 -> 0 to 1 (visible early during hero scroll)
+      const entrance = Math.max(0, Math.min(1, (latest + 25) / 25))
       // Exit: 13 to 19 -> 1 to 0
       const exit = Math.max(0, Math.min(1, 1 - (latest - 13) / 6))
       
@@ -94,10 +94,9 @@ export default function ArrowTransition({ currentFrameValue }: ArrowTransitionPr
         const flyPastScale = 1 + (1 - exit) * 2.5
         const totalScale = approachScale * flyPastScale
         
-        const blur = (1 - entrance) * 40 + (1 - exit) * 15
+        const blur = (1 - entrance) * 10 + (1 - exit) * 15
         containerRef.current.style.transform = `scale(${totalScale}) translate(${springX.get()}px, ${springY.get()}px)`
         containerRef.current.style.filter = `blur(${blur}px)`
-        containerRef.current.style.opacity = `${entrance * exit}`
       }
     })
 
@@ -127,7 +126,10 @@ export default function ArrowTransition({ currentFrameValue }: ArrowTransitionPr
   }, [mouseX, mouseY])
 
   return (
-    <div className="fixed inset-0 z-[90] pointer-events-none overflow-hidden flex items-center justify-center">
+    <motion.div 
+      className="fixed inset-0 pointer-events-none overflow-hidden flex items-center justify-center"
+      style={{ zIndex: useTransform(currentFrameValue, [-10, 0, 1, 19], [19, 19, 90, 90]) }}
+    >
       {/* 
           REMOVED: The solid bg-layer here was causing the 'cut-off' look. 
           The background is now managed globally in App.tsx to ensure a seamless blend.
@@ -138,8 +140,8 @@ export default function ArrowTransition({ currentFrameValue }: ArrowTransitionPr
         className="absolute top-1/2 left-[35%] -translate-x-1/2 -translate-y-1/2 w-[160vw] h-[160vw] rounded-full"
         style={{
           background: 'radial-gradient(circle, rgba(255,180,50,0.3) 0%, rgba(200,80,0,0.08) 40%, transparent 70%)',
-          opacity: useTransform(currentFrameValue, [-8, 2], [0, 1]),
-          scale: useTransform(currentFrameValue, [-8, 2], [0.4, 1.4]),
+          opacity: useTransform(currentFrameValue, [-25, 0], [0, 1]),
+          scale: useTransform(currentFrameValue, [-25, 0], [0.4, 1.4]),
           filter: 'blur(100px)',
           mixBlendMode: 'screen' // Additive blending prevents hard edges
         }}
@@ -159,8 +161,8 @@ export default function ArrowTransition({ currentFrameValue }: ArrowTransitionPr
       {/* Cinematic Vignette - Global depth */}
       <motion.div 
         className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_30%,rgba(0,0,0,0.8)_100%)]"
-        style={{ opacity: useTransform(currentFrameValue, [-8, 2], [0, 1]) }}
+        style={{ opacity: useTransform(currentFrameValue, [-25, 0], [0, 1]) }}
       />
-    </div>
+    </motion.div>
   )
 }
