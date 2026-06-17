@@ -128,7 +128,10 @@ export default function ArrowTransition({ currentFrameValue }: ArrowTransitionPr
   return (
     <motion.div 
       className="fixed inset-0 pointer-events-none overflow-hidden flex items-center justify-center"
-      style={{ zIndex: useTransform(currentFrameValue, [-10, 0, 1, 19], [19, 19, 90, 90]) }}
+      style={{ 
+        zIndex: useTransform(currentFrameValue, [-10, 0, 1, 19], [19, 19, 90, 90]),
+        opacity: useTransform(currentFrameValue, [17, 19], [1, 0])
+      }}
     >
       {/* 
           REMOVED: The solid bg-layer here was causing the 'cut-off' look. 
@@ -140,7 +143,7 @@ export default function ArrowTransition({ currentFrameValue }: ArrowTransitionPr
         className="absolute top-1/2 left-[35%] -translate-x-1/2 -translate-y-1/2 w-[160vw] h-[160vw] rounded-full"
         style={{
           background: 'radial-gradient(circle, rgba(255,180,50,0.3) 0%, rgba(200,80,0,0.08) 40%, transparent 70%)',
-          opacity: useTransform(currentFrameValue, [-25, 0], [0, 1]),
+          opacity: useTransform(currentFrameValue, [-25, 0, 13, 19], [0, 1, 1, 0]),
           scale: useTransform(currentFrameValue, [-25, 0], [0.4, 1.4]),
           filter: 'blur(100px)',
           mixBlendMode: 'screen' // Additive blending prevents hard edges
@@ -161,7 +164,7 @@ export default function ArrowTransition({ currentFrameValue }: ArrowTransitionPr
       {/* Cinematic Vignette - Global depth */}
       <motion.div 
         className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_30%,rgba(0,0,0,0.8)_100%)]"
-        style={{ opacity: useTransform(currentFrameValue, [-25, 0], [0, 1]) }}
+        style={{ opacity: useTransform(currentFrameValue, [-25, 0, 13, 19], [0, 1, 1, 0]) }}
       />
     </motion.div>
   )

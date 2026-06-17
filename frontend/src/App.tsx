@@ -49,7 +49,7 @@ function App() {
   // GLOBAL BACKGROUND STATE
   // We use the same frameValue to drive a single unified background layer
   // This prevents the 'cut-off' look by ensuring there's only one master background
-  const globalBgOpacity = useTransform(frameValue, [-10, -5, 2, 13, 20], [0, 1, 1, 1, 0])
+  const globalBgOpacity = useTransform(frameValue, [-10, -5, 2, 10, 15], [0, 1, 1, 1, 0])
 
   function tryDismissSplash() {
     if (splashDone.current && contentReady.current) {
