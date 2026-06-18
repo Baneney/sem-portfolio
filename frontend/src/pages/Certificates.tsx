@@ -58,6 +58,7 @@ export default function Certificates({ containerRef }: { containerRef: React.Ref
   const contentY = useTransform(smoothExit, [0.3, 0.9], [0, -100])
   const contentBlur = useTransform(smoothExit, [0.4, 0.8], [0, 15])
 
+  
   return (
     <motion.section
       ref={sectionRef}
