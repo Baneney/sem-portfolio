@@ -427,6 +427,15 @@ html, body {
 
 /* ========== CERTIFICATES — SHIMMER SWEEP ========== */
 
+@keyframes carousel-rotate {
+  from { transform: perspective(1000px) rotateX(-10deg) rotateY(0deg); }
+  to { transform: perspective(1000px) rotateX(-10deg) rotateY(360deg); }
+}
+
+.animate-carousel-rotate {
+  animation: carousel-rotate linear infinite;
+}
+
 @keyframes cert-shimmer {
   0%   { transform: translateX(-100%); }
   100% { transform: translateX(100%); }

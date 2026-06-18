@@ -1,5 +1,4 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useState } from 'react';
 
 interface Certificate {
   id: number;
@@ -12,68 +11,65 @@ interface CertificateCarouselProps {
 }
 
 const CertificateCarousel: React.FC<CertificateCarouselProps> = ({ certificates }) => {
+  const [isHovered, setIsHovered] = useState(false);
   const quantity = certificates.length;
 
   return (
     <div className="relative w-full h-[500px] flex items-center justify-center overflow-hidden">
       <div 
-        className="relative w-[180px] h-[250px] transform-style-3d"
+        className="relative w-[200px] h-[280px] transform-style-3d transition-transform duration-700"
         style={{
           perspective: '1000px',
         }}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
       >
-        <motion.div
-          className="relative w-full h-full transform-style-3d"
-          animate={{
-            rotateY: [0, 360],
-          }}
-          transition={{
-            duration: 25,
-            repeat: Infinity,
-            ease: "linear",
-          }}
+        <div
+          className="relative w-full h-full transform-style-3d animate-carousel-rotate"
           style={{
             // CSS variables for the inner math
             ['--quantity' as any]: quantity,
-            ['--w' as any]: '180px',
-            ['--h' as any]: '250px',
-            ['--translateZ' as any]: 'calc(var(--w) * 1.5 + 50px)', // Adjust radius
-            ['--rotateX' as any]: '-10deg',
+            ['--w' as any]: '200px',
+            ['--h' as any]: '280px',
+            ['--translateZ' as any]: '350px',
+            animationPlayState: isHovered ? 'paused' : 'running',
+            animationDuration: '30s',
           }}
         >
           {certificates.map((cert, index) => (
             <div
               key={cert.id}
-              className="absolute inset-0 rounded-xl overflow-hidden border-2 border-[#ffd86a]/30 backdrop-blur-sm shadow-[0_0_20px_rgba(255,216,106,0.2)]"
+              className="absolute inset-0 rounded-2xl overflow-hidden border-2 border-[#ffd86a]/30 backdrop-blur-md shadow-[0_0_30px_rgba(255,216,106,0.15)] cursor-pointer transition-all duration-500 hover:border-[#ffd86a]/60 hover:shadow-[0_0_50px_rgba(255,216,106,0.3)] hover:scale-110"
               style={{
                 ['--index' as any]: index,
                 transform: `rotateY(calc((360deg / var(--quantity)) * var(--index))) translateZ(var(--translateZ))`,
                 background: cert.image 
                   ? 'none' 
-                  : 'radial-gradient(circle, rgba(255,216,106,0.1) 0%, rgba(200,80,0,0.1) 80%, rgba(200,80,0,0.2) 100%)',
+                  : 'radial-gradient(circle at center, rgba(255,216,106,0.15) 0%, rgba(200,80,0,0.05) 100%)',
               }}
             >
               {cert.image ? (
                 <img 
                   src={cert.image} 
                   alt={cert.title} 
-                  className="w-full h-full object-cover grayscale-[30%] hover:grayscale-0 transition-all duration-500"
+                  className="w-full h-full object-cover grayscale-[20%] hover:grayscale-0 transition-all duration-700"
                 />
               ) : (
-                <div className="w-full h-full flex items-center justify-center p-4 text-center">
-                   <span className="text-[#ffd86a]/40 text-xs font-bold uppercase tracking-widest">{cert.title}</span>
+                <div className="w-full h-full flex items-center justify-center p-6 text-center bg-black/40">
+                   <span className="text-[#ffd86a]/60 text-sm font-bold uppercase tracking-[0.2em]">{cert.title}</span>
                 </div>
               )}
               
-              {/* Overlay Glow */}
-              <div className="absolute inset-0 bg-gradient-to-t from-[#ffd86a]/10 to-transparent pointer-events-none" />
+              {/* Internal Glow */}
+              <div className="absolute inset-0 bg-gradient-to-tr from-[#ffd86a]/10 via-transparent to-transparent pointer-events-none" />
+              <div className="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity duration-700 bg-[radial-gradient(circle_at_center,rgba(255,216,106,0.1)_0%,transparent_70%)]" />
             </div>
           ))}
-        </motion.div>
+        </div>
       </div>
       
-      {/* Background radial glow */}
-      <div className="absolute inset-0 bg-radial-gradient from-[#ffd86a]/5 via-transparent to-transparent pointer-events-none" />
+      {/* Dynamic Background Glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#ffd86a]/5 rounded-full blur-[120px] pointer-events-none" />
     </div>
   );
 };
