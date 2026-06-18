@@ -35,7 +35,7 @@ export default function Certificates({ containerRef }: { containerRef: React.Ref
     <motion.section
       ref={sectionRef}
       id="certificates"
-      className="section-page relative min-h-screen flex flex-col items-center justify-center overflow-hidden bg-[#080400]"
+      className="section-page relative min-h-screen flex flex-col items-center justify-center overflow-hidden bg-[#080400] py-40"
     >
       {/* Edge Gradients for seamless connection */}
       <div className="absolute top-0 left-0 right-0 h-[40vh] bg-gradient-to-b from-[#080400] via-[#080400]/90 to-transparent z-[15] pointer-events-none" />
