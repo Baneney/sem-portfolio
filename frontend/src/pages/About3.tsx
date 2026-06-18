@@ -1,192 +1,153 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef } from 'react'
+import { motion, useScroll, useSpring, useTransform, useMotionTemplate } from 'framer-motion'
 
-export default function About3() {
-  const containerRef  = useRef<HTMLDivElement>(null);
-  const cardRef       = useRef<HTMLDivElement>(null);
-  const orbTopRef     = useRef<HTMLDivElement>(null);
-  const orbBottomRef  = useRef<HTMLDivElement>(null);
-  const glowLeftRef   = useRef<HTMLDivElement>(null);
-  const glowRightRef  = useRef<HTMLDivElement>(null);
-  const exitGlowRef   = useRef<HTMLDivElement>(null);
-  const labelRef      = useRef<HTMLParagraphElement>(null);
-  const headingRef    = useRef<HTMLHeadingElement>(null);
-  const descRef       = useRef<HTMLParagraphElement>(null);
+export default function About3({ containerRef }: { containerRef: React.RefObject<HTMLDivElement | null> }) {
+  const sectionRef = useRef<HTMLElement>(null)
 
-  const [isVisible, setIsVisible] = useState(false);
+  // Entry parallax
+  const { scrollYProgress } = useScroll({
+    container: containerRef,
+    target: sectionRef,
+    offset: ["start end", "end start"]
+  })
+  const smooth = useSpring(scrollYProgress, { stiffness: 40, damping: 30 })
 
-  const mouseRef  = useRef({ x: 0, y: 0 });
-  const progress  = useRef(0);
+  // Exit transforms
+  const { scrollYProgress: exitProgress } = useScroll({
+    container: containerRef,
+    target: sectionRef,
+    offset: ["start start", "end start"]
+  })
+  const smoothExit = useSpring(exitProgress, { stiffness: 45, damping: 25 })
 
-  useEffect(() => {
-    const el = containerRef.current;
-    const snap = document.getElementById('snap-container');
-    if (!el) return;
+  const contentY = useTransform(smoothExit, [0, 1], [0, -200])
+  const contentScale = useTransform(smoothExit, [0, 1], [1, 1.15])
+  const contentOpacity = useTransform(smoothExit, [0, 0.7], [1, 0])
 
-    const onMouse = (e: MouseEvent) => {
-      const r = el.getBoundingClientRect();
-      mouseRef.current = {
-        x: (e.clientX - r.left - r.width  / 2) * 0.02,
-        y: (e.clientY - r.top  - r.height / 2) * 0.02,
-      };
-    };
+  const maskStop = useTransform(smoothExit, [0, 1], [100, 0])
+  const maskEdge = useTransform(smoothExit, v => Math.max(0, 100 - v * 112))
+  const maskImage = useMotionTemplate`linear-gradient(to bottom, black ${maskEdge}%, transparent ${maskStop}%, transparent 100%)`
 
-    const observer = new IntersectionObserver(
-      ([entry]) => { setIsVisible(entry.isIntersecting); },
-      { threshold: 0.3 },
-    );
-
-    const apply = () => {
-      const p = progress.current;
-      const m = mouseRef.current;
-
-      // Card — moves up, tilts back, scales down, fades
-      if (cardRef.current) {
-        const ty   = -p * 45;
-        const rx   = -m.y - p * 12;
-        const sc   = 1 - p * 0.1;
-        const op   = Math.max(0, 1 - p * 1.5);
-        cardRef.current.style.transform =
-          `perspective(1000px) rotateX(${rx}deg) rotateY(${m.x}deg) translateZ(20px) translateY(${ty}px) scale(${sc})`;
-        cardRef.current.style.opacity = String(op);
-      }
-
-      // Background orbs — drift at different speeds (parallax depth)
-      if (orbTopRef.current) {
-        orbTopRef.current.style.transform = `translate(${-p * 18}px, ${-p * 30}px)`;
-        orbTopRef.current.style.opacity   = String(Math.max(0, 0.3 - p * 0.2));
-      }
-      if (orbBottomRef.current) {
-        orbBottomRef.current.style.transform = `translate(${p * 25}px, ${p * 45}px)`;
-        orbBottomRef.current.style.opacity   = String(Math.max(0, 0.3 - p * 0.2));
-      }
-
-      // Glow lines — stretch vertically and dissolve
-      if (glowLeftRef.current) {
-        glowLeftRef.current.style.transform = `scaleY(${1 + p * 2})`;
-        glowLeftRef.current.style.opacity   = String(Math.max(0, 0.2 - p * 0.15));
-      }
-      if (glowRightRef.current) {
-        glowRightRef.current.style.transform = `scaleY(${1 + p * 2})`;
-        glowRightRef.current.style.opacity   = String(Math.max(0, 0.2 - p * 0.15));
-      }
-
-      // Exit glow — expands as card scrolls away
-      if (exitGlowRef.current) {
-        exitGlowRef.current.style.opacity   = String(Math.min(1, p * 3));
-        exitGlowRef.current.style.transform = `scale(${0.6 + p * 0.8})`;
-      }
-
-      // Text — staggered drift (label slow, heading medium, desc fast)
-      if (labelRef.current) {
-        labelRef.current.style.transform = `translateY(${-p * 25}px)`;
-        labelRef.current.style.opacity   = String(Math.max(0, 1 - p * 1.8));
-      }
-      if (headingRef.current) {
-        headingRef.current.style.transform = `translateY(${-p * 35}px)`;
-        headingRef.current.style.opacity   = String(Math.max(0, 1 - p * 1.4));
-      }
-      if (descRef.current) {
-        descRef.current.style.transform = `translateY(${-p * 50}px)`;
-        descRef.current.style.opacity   = String(Math.max(0, 1 - p * 1.1));
-      }
-    };
-
-    const onScroll = () => {
-      if (!el) return;
-      const r = el.getBoundingClientRect();
-      progress.current = Math.max(0, Math.min(1.5, -r.top / window.innerHeight));
-      apply();
-    };
-
-    observer.observe(el);
-    el.addEventListener('mousemove', onMouse);
-    snap?.addEventListener('scroll', onScroll, { passive: true });
-
-    return () => {
-      observer.disconnect();
-      el.removeEventListener('mousemove', onMouse);
-      snap?.removeEventListener('scroll', onScroll);
-    };
-  }, []);
+  const orb1Y = useTransform(smooth, [0, 1], [50, -50])
+  const orb2Y = useTransform(smooth, [0, 1], [-40, 40])
 
   return (
-    <section
-      ref={containerRef}
+    <motion.section
+      ref={sectionRef}
       id="about3"
-      className="section-page relative flex min-h-screen flex-col justify-end items-start px-5 sm:px-10 pb-10 overflow-hidden"
+      className="section-page relative min-h-screen flex items-center justify-center overflow-hidden"
+      style={{ WebkitMaskImage: maskImage, maskImage: maskImage }}
     >
-      {/* Noise + amber vignette overlays */}
+      {/* Noise + amber vignette */}
       <div className="noise-texture absolute inset-0 pointer-events-none z-[1]" style={{ opacity: 0.15 }} />
       <div className="amber-vignette absolute inset-0 pointer-events-none z-[1]" />
 
-      {/* Parallax background gradients — only visible when in view */}
-      <div className={`absolute inset-0 pointer-events-none overflow-hidden transition-all duration-300 ${isVisible ? 'opacity-100' : 'opacity-0 invisible'}`}>
-        <div
-          ref={orbTopRef}
-          className="absolute top-20 left-20 w-80 h-80 bg-gradient-to-r from-[#ffd86a] to-transparent rounded-full blur-3xl animate-float-slow opacity-30"
-        />
-        <div
-          ref={orbBottomRef}
-          className="absolute bottom-20 right-20 w-80 h-80 bg-gradient-to-l from-[#c85000] to-transparent rounded-full blur-3xl animate-float opacity-30"
-          style={{ animationDelay: '1s' }}
-        />
-      </div>
-
-      {/* Parallax glow accent lines */}
-      <div ref={glowLeftRef} className={`absolute top-1/4 left-10 w-1 h-32 bg-gradient-to-b from-[#ffd86a] to-transparent rounded-full blur-sm animate-pulse transition-all duration-300 ${isVisible ? 'opacity-20' : 'opacity-0 invisible'}`} />
-      <div ref={glowRightRef} className={`absolute bottom-1/4 right-10 w-1 h-32 bg-gradient-to-t from-[#c85000] to-transparent rounded-full blur-sm animate-pulse transition-all duration-300 ${isVisible ? 'opacity-20' : 'opacity-0 invisible'}`} style={{ animationDelay: '0.5s' }} />
-
-      {/* Radial glow effect */}
-      <div className={`absolute inset-x-0 bottom-0 h-40 bg-[radial-gradient(circle,rgba(255,115,0,0.15),transparent_100%)] blur-3xl pointer-events-none transition-all duration-300 ${isVisible ? 'opacity-100' : 'opacity-0 invisible'}`} />
-
-      {/* Exit glow — only visible when in view, fades on scroll */}
-      <div
-        ref={exitGlowRef}
-        className={`absolute inset-x-0 bottom-0 h-1/2 bg-[radial-gradient(ellipse_at_center,rgba(255,200,80,0.15),rgba(200,80,0,0.08),transparent_65%)] blur-3xl pointer-events-none transition-all duration-300 ${isVisible ? 'opacity-100' : 'opacity-0 invisible'}`}
+      {/* Radial glow expand */}
+      <motion.div
+        className="absolute w-[80vw] h-[80vw] rounded-full pointer-events-none"
+        style={{
+          background: 'radial-gradient(circle, rgba(255,180,50,0.12) 0%, rgba(200,80,0,0.04) 40%, transparent 70%)',
+        }}
+        initial={{ scale: 0.4, opacity: 0 }}
+        whileInView={{ scale: 1.5, opacity: 0.25 }}
+        viewport={{ once: true, amount: 0.3 }}
+        transition={{ duration: 1.5, ease: 'easeOut' }}
       />
 
-      {/* Main content card — scroll parallax + mouse tilt */}
-      <div
-        ref={cardRef}
-        className="max-w-2xl w-full rounded-[24px] bg-[#070806]/80 p-6 sm:p-8 shadow-[0_20px_60px_rgba(0,0,0,0.3)] backdrop-blur-md border border-[#ffd86a]/20 relative overflow-hidden"
-        style={{ willChange: 'transform, opacity' }}
+      {/* Fire glow orb — left, parallax */}
+      <motion.div
+        className="absolute w-[40vw] h-[40vw] rounded-full pointer-events-none"
+        style={{
+          background: 'radial-gradient(circle, rgba(255,140,0,0.08) 0%, transparent 60%)',
+          y: orb1Y,
+          top: '15%',
+          left: '5%',
+        }}
+      />
+
+      {/* Fire glow orb — right, parallax */}
+      <motion.div
+        className="absolute w-[30vw] h-[30vw] rounded-full pointer-events-none"
+        style={{
+          background: 'radial-gradient(circle, rgba(200,80,0,0.06) 0%, transparent 60%)',
+          y: orb2Y,
+          bottom: '20%',
+          right: '8%',
+        }}
+      />
+
+      {/* Content — exit transforms */}
+      <motion.div
+        className="relative z-10 text-center px-5 max-w-3xl"
+        style={{ y: contentY, scale: contentScale, opacity: contentOpacity }}
       >
-        {/* Corner glows */}
-        <div className="absolute -top-20 -right-20 w-40 h-40 bg-[#ffd86a]/8 rounded-full blur-[60px]" />
-        <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-[#c85000]/8 rounded-full blur-[60px]" />
+        {/* Label */}
+        <motion.p
+          className="text-[#c9952a] text-xs tracking-[0.3em] uppercase mb-5"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.5 }}
+          transition={{ duration: 0.5 }}
+        >
+          What drives me
+        </motion.p>
 
-        {/* Content wrapper — staggered text parallax */}
-        <div className="flex flex-col items-start z-10 space-y-4 text-left">
-          <p
-            ref={labelRef}
-            className={`text-[#e5d4a1] text-sm font-medium tracking-widest uppercase mb-3 ${
-              isVisible ? 'animate-fade-in-down delay-100' : 'opacity-0'
-            }`}
-          >
-            What drives me
+        {/* Heading */}
+        <motion.h2
+          className="text-[9vw] sm:text-[6vw] font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#ffd86a] via-[#f0b43a] to-[#d18a1e] uppercase tracking-[0.08em] mb-10 leading-none"
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.5 }}
+          transition={{ duration: 0.6, delay: 0.15 }}
+        >
+          Philosophy
+        </motion.h2>
+
+        {/* Quote body */}
+        <motion.blockquote
+          className="relative"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.5 }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+        >
+          {/* Opening quote mark */}
+          <span className="absolute -top-8 left-1/2 -translate-x-1/2 text-[#ffd86a]/15 text-6xl font-serif leading-none pointer-events-none">
+            &ldquo;
+          </span>
+
+          <p className="text-[#e5d4a1]/60 text-base sm:text-lg leading-relaxed max-w-xl mx-auto italic">
+            I believe great software is built at the intersection of technical excellence
+            and human empathy. Every line of code is an opportunity to make someone's
+            life a little easier.
           </p>
 
-          <h2
-            ref={headingRef}
-            className={`text-[190%] font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#ffd86a] via-[#f0b43a] to-[#d18a1e] mb-4 uppercase tracking-[0.2em] animate-glow ${
-              isVisible ? 'animate-scale-in delay-200' : 'opacity-0'
-            }`}
-          >
-            Philosophy
-          </h2>
+          {/* Closing quote mark */}
+          <span className="absolute -bottom-4 left-1/2 -translate-x-1/2 text-[#ffd86a]/15 text-6xl font-serif leading-none pointer-events-none">
+            &rdquo;
+          </span>
+        </motion.blockquote>
 
-          <p
-            ref={descRef}
-            className={`text-[#e5d4a1] leading-relaxed text-base sm:text-lg ${
-              isVisible ? 'animate-fade-in-up delay-300' : 'opacity-0'
-            }`}
-          >
-            I believe great software is built at the intersection of technical excellence and human empathy.
-            Every line of code is an opportunity to make someone's life a little easier.
-          </p>
-        </div>
-      </div>
+        {/* Bottom accent line */}
+        <motion.div
+          className="mx-auto mt-14 h-px bg-gradient-to-r from-transparent via-[#ffd86a]/30 to-transparent"
+          initial={{ width: 0, opacity: 0 }}
+          whileInView={{ width: 100, opacity: 1 }}
+          viewport={{ once: true, amount: 0.5 }}
+          transition={{ duration: 0.6, delay: 0.5 }}
+        />
 
-    </section>
-  );
+        {/* Signature */}
+        <motion.p
+          className="mt-8 text-[#c9952a]/40 text-[10px] tracking-[0.4em] uppercase"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true, amount: 0.5 }}
+          transition={{ duration: 0.5, delay: 0.7 }}
+        >
+          — Sem Luiz Warain
+        </motion.p>
+      </motion.div>
+    </motion.section>
+  )
 }

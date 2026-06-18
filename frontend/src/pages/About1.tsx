@@ -1,140 +1,145 @@
-import { useEffect, useRef, useState } from 'react';
-import { motion, useTransform } from 'framer-motion';
+import { useRef } from 'react'
+import { motion, useScroll, useSpring, useTransform, useMotionTemplate } from 'framer-motion'
 
-interface MousePos {
-  x: number;
-  y: number;
+const wordVariants = {
+  hidden: { opacity: 0, y: 40, filter: 'blur(8px)' },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    filter: 'blur(0px)',
+    transition: { delay: i * 0.12, duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] as const },
+  }),
 }
 
-export default function About1({ scrollProgress }: { scrollProgress?: any }) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const cardRef = useRef<HTMLDivElement>(null);
-  const [mousePos, setMousePos] = useState<MousePos>({ x: 0, y: 0 });
-  const [isVisible, setIsVisible] = useState(false);
+export default function About1({ containerRef }: { containerRef: React.RefObject<HTMLDivElement | null> }) {
+  const sectionRef = useRef<HTMLElement>(null)
 
-  // OVERLAPPING REVEAL LOGIC
-  // We trigger strictly while Katniss is zooming out
-  // Phase 1: Reveal starts (Frame 11)
-  // Phase 2: Fully solid (Frame 17)
-  const revealOpacity = useTransform(scrollProgress || 0, [11, 17], [0, 1]);
-  const revealScale = useTransform(scrollProgress || 0, [11, 17], [0.95, 1]);
-  const revealY = useTransform(scrollProgress || 0, [11, 17], [40, 0]);
-  const revealBlur = useTransform(scrollProgress || 0, [11, 17], [10, 0]);
+  // Entry parallax
+  const { scrollYProgress } = useScroll({
+    container: containerRef,
+    target: sectionRef,
+    offset: ["start end", "end start"]
+  })
+  const smooth = useSpring(scrollYProgress, { stiffness: 40, damping: 30 })
 
-  // Mouse tracking for parallax effect
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
+  // Exit transforms — hero pattern
+  const { scrollYProgress: exitProgress } = useScroll({
+    container: containerRef,
+    target: sectionRef,
+    offset: ["start start", "end start"]
+  })
+  const smoothExit = useSpring(exitProgress, { stiffness: 45, damping: 25 })
 
-    const handleMouseMove = (e: MouseEvent) => {
-      const rect = container.getBoundingClientRect();
-      const x = (e.clientX - rect.left - rect.width / 2) * 0.02;
-      const y = (e.clientY - rect.top - rect.height / 2) * 0.02;
-      setMousePos({ x, y });
-    };
+  const contentY = useTransform(smoothExit, [0, 1], [0, -200])
+  const contentScale = useTransform(smoothExit, [0, 1], [1, 1.15])
+  const contentOpacity = useTransform(smoothExit, [0, 0.7], [1, 0])
 
-    // Trigger animation when component becomes visible
-    const observer = new IntersectionObserver(
-      ([entry]) => { setIsVisible(entry.isIntersecting); },
-      { threshold: 0.3 }
-    );
+  // Bottom-to-top fade mask
+  const maskStop = useTransform(smoothExit, [0, 1], [100, 0])
+  const maskEdge = useTransform(smoothExit, v => Math.max(0, 100 - v * 112))
+  const maskImage = useMotionTemplate`linear-gradient(to bottom, black ${maskEdge}%, transparent ${maskStop}%, transparent 100%)`
 
-    observer.observe(container);
-    container.addEventListener('mousemove', handleMouseMove);
-
-    return () => {
-      container.removeEventListener('mousemove', handleMouseMove);
-      observer.disconnect();
-    };
-  }, []);
+  const words = ["I", "build", "things", "that", "move."]
 
   return (
-    <section
-      ref={containerRef}
+    <motion.section
+      ref={sectionRef}
       id="about1"
-      className="section-page relative flex min-h-screen flex-col justify-end items-center text-center px-5 sm:px-10 py-10 overflow-hidden"
+      className="section-page relative min-h-screen flex items-center justify-center overflow-hidden"
+      style={{ WebkitMaskImage: maskImage, maskImage: maskImage }}
     >
-      {/* Noise + amber vignette overlays */}
+      {/* Noise + amber vignette */}
       <div className="noise-texture absolute inset-0 pointer-events-none z-[1]" style={{ opacity: 0.15 }} />
       <div className="amber-vignette absolute inset-0 pointer-events-none z-[1]" />
 
-      {/* Cinematic Sequential Reveal Wrapper */}
-      <motion.div 
-        className="relative z-10 w-full flex flex-col items-center will-change-transform"
-        style={{ 
-          opacity: revealOpacity, 
-          scale: revealScale, 
-          y: revealY,
-          filter: `blur(${revealBlur}px)` 
+      {/* Fire glow orb — parallax drift */}
+      <motion.div
+        className="absolute w-[60vw] h-[60vw] rounded-full pointer-events-none"
+        style={{
+          background: 'radial-gradient(circle, rgba(255,140,0,0.12) 0%, rgba(200,80,0,0.04) 50%, transparent 70%)',
+          y: useTransform(smooth, [0, 1], [100, -100]),
+          x: useTransform(smooth, [0, 1], [-30, 30]),
+          top: '20%',
+          left: '20%',
         }}
-      >
-        {/* Animated background gradients */}
-        <div className={`absolute inset-0 pointer-events-none transition-all duration-300 ${isVisible ? 'opacity-100' : 'opacity-0 invisible'}`}>
-          <div className="absolute top-20 left-20 w-80 h-80 bg-gradient-to-r from-[#ffd86a] to-transparent rounded-full blur-3xl animate-float-slow opacity-30" />
-          <div
-            className="absolute bottom-20 right-20 w-80 h-80 bg-gradient-to-l from-[#c85000] to-transparent rounded-full blur-3xl animate-float opacity-30"
-            style={{ animationDelay: "1s" }}
-          />
-        </div>
+      />
 
-        {/* Glowing accent elements */}
-        <div className={`absolute top-1/4 left-10 w-1 h-32 bg-gradient-to-b from-[#ffd86a] to-transparent rounded-full blur-sm animate-pulse transition-all duration-300 ${isVisible ? 'opacity-20' : 'opacity-0 invisible'}`} />
-        <div
-          className={`absolute bottom-1/4 right-10 w-1 h-32 bg-gradient-to-t from-[#c85000] to-transparent rounded-full blur-sm animate-pulse transition-all duration-300 ${isVisible ? 'opacity-20' : 'opacity-0 invisible'}`}
-          style={{ animationDelay: "0.5s" }}
+      {/* Second glow orb */}
+      <motion.div
+        className="absolute w-[40vw] h-[40vw] rounded-full pointer-events-none"
+        style={{
+          background: 'radial-gradient(circle, rgba(255,180,50,0.08) 0%, rgba(200,100,0,0.03) 50%, transparent 70%)',
+          y: useTransform(smooth, [0, 1], [-60, 60]),
+          bottom: '10%',
+          right: '10%',
+        }}
+      />
+
+      {/* Content — exit transforms */}
+      <motion.div
+        className="relative z-10 text-center px-5"
+        style={{ y: contentY, scale: contentScale, opacity: contentOpacity }}
+      >
+        {/* Gold accent line */}
+        <motion.div
+          className="mx-auto mb-8 h-px bg-gradient-to-r from-transparent via-[#ffd86a]/40 to-transparent"
+          initial={{ width: 0, opacity: 0 }}
+          whileInView={{ width: 120, opacity: 1 }}
+          viewport={{ once: true, amount: 0.5 }}
+          transition={{ duration: 0.8, ease: 'easeOut' }}
         />
 
-        {/* Radial glow effect */}
-        <div className={`absolute inset-x-0 bottom-0 h-40 bg-[radial-gradient(circle,rgba(255,115,0,0.2),transparent_100%)] blur-3xl pointer-events-none transition-all duration-300 ${isVisible ? 'opacity-100' : 'opacity-0 invisible'}`} />
-
-        {/* Main content card with enhanced styling */}
-        <div
-          ref={cardRef}
-          className="max-w-3xl w-full rounded-[24px] bg-[#070806]/80 p-6 sm:p-8 shadow-[0_20px_60px_rgba(0,0,0,0.3)] backdrop-blur-md border border-[#ffd86a]/20 relative overflow-hidden"
-          style={{
-            transform: `perspective(1000px) rotateX(${-mousePos.y}deg) rotateY(${mousePos.x}deg) translateZ(20px)`,
-            transition: "transform 0.1s ease-out",
-          }}
+        {/* Label */}
+        <motion.p
+          className="text-[#c9952a] text-xs tracking-[0.3em] uppercase mb-6"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.5 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
         >
-          {/* Corner glows */}
-          <div className="absolute -top-20 -right-20 w-40 h-40 bg-[#ffd86a]/8 rounded-full blur-[60px]" />
-          <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-[#c85000]/8 rounded-full blur-[60px]" />
+          Who I am
+        </motion.p>
 
-          {/* Content wrapper */}
-          <div className="relative z-10 space-y-4">
-            {/* Label with animation */}
-            <p
-              className={`text-[#e5d4a1] text-sm font-medium tracking-widest uppercase mb-3 ${
-                isVisible ? "animate-fade-in-down delay-100" : "opacity-0"
-              }`}
+        {/* Word-by-word statement */}
+        <div className="flex flex-wrap justify-center gap-x-3 sm:gap-x-5 gap-y-2">
+          {words.map((word, i) => (
+            <motion.span
+              key={i}
+              className="text-[7vw] sm:text-[5vw] font-bold text-white/90 leading-none"
+              variants={wordVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.5 }}
+              custom={i}
             >
-              Who I am
-            </p>
-
-            {/* Main heading with enhanced gradient and glow */}
-            <h2
-              className={`text-[190%] font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#ffd86a] via-[#f0b43a] to-[#d18a1e] mb-4 uppercase tracking-[0.2em] animate-glow ${
-                isVisible ? "animate-scale-in delay-200" : "opacity-0"
-              }`}
-            >
-              About Me
-            </h2>
-
-            {/* Description text with staggered animation */}
-            <p
-              className={`flex justify-center items-center text-[#e5d4a1] leading-relaxed text-base sm:text-lg ${
-                isVisible ? "animate-fade-in-up delay-300" : "opacity-0"
-              }`}
-            >
-              I'm Sem Luiz Warain — a Full Stack Developer who blends technology
-              and design to create polished digital experiences. I build web
-              applications, interactive projects, and intuitive interfaces with a
-              mindset that every output represents my craft, where good design is
-              the foundation of great results.
-            </p>
-          </div>
+              {word}
+            </motion.span>
+          ))}
         </div>
+
+        {/* Intro paragraph */}
+        <motion.p
+          className="mt-10 sm:mt-14 text-[#e5d4a1]/60 text-sm sm:text-base leading-relaxed max-w-lg mx-auto"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.5 }}
+          transition={{ duration: 0.6, delay: 0.8 }}
+        >
+          I'm Sem Luiz Warain — a Full Stack Developer who blends technology
+          and design to create polished digital experiences. I build web
+          applications, interactive projects, and intuitive interfaces with a
+          mindset that every output represents my craft.
+        </motion.p>
+
+        {/* Bottom accent line */}
+        <motion.div
+          className="mx-auto mt-10 h-px bg-gradient-to-r from-transparent via-[#c85000]/30 to-transparent"
+          initial={{ width: 0, opacity: 0 }}
+          whileInView={{ width: 80, opacity: 1 }}
+          viewport={{ once: true, amount: 0.5 }}
+          transition={{ duration: 0.6, delay: 1 }}
+        />
       </motion.div>
-    </section>
-  );
+    </motion.section>
+  )
 }

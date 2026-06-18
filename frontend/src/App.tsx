@@ -242,9 +242,9 @@ function App() {
         >
         </section>
 
-        <About1 scrollProgress={frameValue} />
-        <About2 />
-        <About3 />
+        <About1 containerRef={snapContainerRef} />
+        <About2 containerRef={snapContainerRef} />
+        <About3 containerRef={snapContainerRef} />
         <Skills />
         <Projects />
         <Contact />
