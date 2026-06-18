@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { motion, useScroll, useSpring, useTransform, useMotionTemplate } from 'framer-motion'
+import { motion, useScroll, useSpring, useTransform } from 'framer-motion'
 
 const wordVariants = {
   hidden: { opacity: 0, y: 40, filter: 'blur(8px)' },
@@ -38,7 +38,7 @@ export default function About1({ containerRef }: { containerRef: React.RefObject
     <motion.section
       ref={sectionRef}
       id="about1"
-      className="section-page relative min-h-screen flex items-center justify-center overflow-hidden"
+      className="section-page relative min-h-screen flex items-center justify-center overflow-hidden px-30 py-20"
     >
       {/* Noise + amber vignette */}
       <div className="noise-texture absolute inset-0 pointer-events-none z-[1]" style={{ opacity: 0.15 }} />

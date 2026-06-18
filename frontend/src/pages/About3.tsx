@@ -29,7 +29,7 @@ export default function About3({ containerRef }: { containerRef: React.RefObject
     <motion.section
       ref={sectionRef}
       id="about3"
-      className="section-page relative min-h-screen flex items-center justify-center overflow-hidden"
+      className="section-page relative min-h-screen flex items-center justify-center overflow-hidden py-20 px-30"
     >
       {/* Noise + amber vignette */}
       <div className="noise-texture absolute inset-0 pointer-events-none z-[1]" style={{ opacity: 0.15 }} />

@@ -43,20 +43,24 @@ export default function About2({ containerRef }: { containerRef: React.RefObject
     <motion.section
       ref={sectionRef}
       id="about2"
-      className="section-page relative min-h-screen flex flex-col items-center justify-center overflow-hidden px-5 sm:px-10"
+      className="section-page relative min-h-screen flex flex-col items-center justify-center overflow-hidden px-30 sm:px-30 py-30"
     >
       {/* Noise + amber vignette */}
-      <div className="noise-texture absolute inset-0 pointer-events-none z-[1]" style={{ opacity: 0.15 }} />
+      <div
+        className="noise-texture absolute inset-0 pointer-events-none z-[1]"
+        style={{ opacity: 0.15 }}
+      />
       <div className="amber-vignette absolute inset-0 pointer-events-none z-[1]" />
 
       {/* Fire glow orb — parallax */}
       <motion.div
         className="absolute w-[50vw] h-[50vw] rounded-full pointer-events-none"
         style={{
-          background: 'radial-gradient(circle, rgba(255,140,0,0.1) 0%, transparent 60%)',
+          background:
+            "radial-gradient(circle, rgba(255,140,0,0.1) 0%, transparent 60%)",
           y: useTransform(smooth, [0, 1], [80, -80]),
-          top: '10%',
-          right: '5%',
+          top: "10%",
+          right: "5%",
         }}
       />
 
@@ -64,10 +68,11 @@ export default function About2({ containerRef }: { containerRef: React.RefObject
       <motion.div
         className="absolute w-[35vw] h-[35vw] rounded-full pointer-events-none"
         style={{
-          background: 'radial-gradient(circle, rgba(200,80,0,0.08) 0%, transparent 60%)',
+          background:
+            "radial-gradient(circle, rgba(200,80,0,0.08) 0%, transparent 60%)",
           y: useTransform(smooth, [0, 1], [-50, 50]),
-          bottom: '15%',
-          left: '10%',
+          bottom: "15%",
+          left: "10%",
         }}
       />
 
@@ -76,7 +81,9 @@ export default function About2({ containerRef }: { containerRef: React.RefObject
         className="relative z-10 text-center mb-16"
         style={{ opacity: contentOpacity }}
       >
-        <p className="text-[#c9952a] text-xs tracking-[0.3em] uppercase mb-3">My path</p>
+        <p className="text-[#c9952a] text-xs tracking-[0.3em] uppercase mb-3">
+          My path
+        </p>
         <h2 className="text-[4vw] sm:text-[3vw] font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#ffd86a] via-[#f0b43a] to-[#d18a1e] uppercase tracking-[0.15em]">
           Experience
         </h2>
@@ -89,17 +96,14 @@ export default function About2({ containerRef }: { containerRef: React.RefObject
           <motion.div
             className="w-px bg-gradient-to-b from-[#ffd86a]/40 via-[#ffd86a]/20 to-transparent"
             initial={{ height: 0 }}
-            whileInView={{ height: '100%' }}
+            whileInView={{ height: "100%" }}
             viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 1.2, ease: 'easeOut' }}
+            transition={{ duration: 1.2, ease: "easeOut" }}
           />
         </div>
 
         {/* Cards — exit transforms on wrapper */}
-        <motion.div
-          className="space-y-24"
-          style={{ opacity: contentOpacity }}
-        >
+        <motion.div className="space-y-24" style={{ opacity: contentOpacity }}>
           {internships.map((item, i) => (
             <div key={i} className="relative">
               {/* Timeline dot */}
@@ -108,16 +112,26 @@ export default function About2({ containerRef }: { containerRef: React.RefObject
                 initial={{ scale: 0 }}
                 whileInView={{ scale: 1 }}
                 viewport={{ once: true, amount: 0.5 }}
-                transition={{ delay: 0.3, type: 'spring', stiffness: 300, damping: 15 }}
+                transition={{
+                  delay: 0.3,
+                  type: "spring",
+                  stiffness: 300,
+                  damping: 15,
+                }}
                 style={{
-                  boxShadow: '0 0 16px rgba(255,216,106,0.6), 0 0 32px rgba(255,140,0,0.3)',
+                  boxShadow:
+                    "0 0 16px rgba(255,216,106,0.6), 0 0 32px rgba(255,140,0,0.3)",
                 }}
               />
 
               {/* Card */}
               <motion.div
-                className={`relative w-full sm:w-[45%] ${i === 0 ? 'sm:mr-auto sm:pr-12' : 'sm:ml-auto sm:pl-12'}`}
-                initial={{ opacity: 0, x: i === 0 ? -80 : 80, rotateZ: i === 0 ? -3 : 3 }}
+                className={`relative w-full sm:w-[45%] ${i === 0 ? "sm:mr-auto sm:pr-12" : "sm:ml-auto sm:pl-12"}`}
+                initial={{
+                  opacity: 0,
+                  x: i === 0 ? -80 : 80,
+                  rotateZ: i === 0 ? -3 : 3,
+                }}
                 whileInView={{ opacity: 1, x: 0, rotateZ: 0 }}
                 viewport={{ once: true, amount: 0.3 }}
                 transition={{ duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] }}
@@ -127,13 +141,24 @@ export default function About2({ containerRef }: { containerRef: React.RefObject
                   <div className="absolute -top-16 -right-16 w-32 h-32 bg-[#ffd86a]/5 rounded-full blur-[50px]" />
                   <div className="absolute -bottom-16 -left-16 w-32 h-32 bg-[#c85000]/5 rounded-full blur-[50px]" />
 
-                  <p className="text-[#c9952a] text-xs tracking-wider uppercase mb-2">{item.period}</p>
-                  <h3 className="text-white/90 font-bold text-lg mb-1">{item.role}</h3>
-                  <p className="text-[#ffd86a]/50 text-sm mb-3">{item.company}</p>
-                  <p className="text-[#e5d4a1]/50 text-sm leading-relaxed mb-4">{item.description}</p>
+                  <p className="text-[#c9952a] text-xs tracking-wider uppercase mb-2">
+                    {item.period}
+                  </p>
+                  <h3 className="text-white/90 font-bold text-lg mb-1">
+                    {item.role}
+                  </h3>
+                  <p className="text-[#ffd86a]/50 text-sm mb-3">
+                    {item.company}
+                  </p>
+                  <p className="text-[#e5d4a1]/50 text-sm leading-relaxed mb-4">
+                    {item.description}
+                  </p>
                   <div className="flex flex-wrap gap-2">
-                    {item.tags.map(tag => (
-                      <span key={tag} className="text-[10px] px-2 py-0.5 rounded-full border border-[#ffd86a]/15 text-[#ffd86a]/40">
+                    {item.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="text-[10px] px-2 py-0.5 rounded-full border border-[#ffd86a]/15 text-[#ffd86a]/40"
+                      >
                         {tag}
                       </span>
                     ))}
@@ -145,5 +170,5 @@ export default function About2({ containerRef }: { containerRef: React.RefObject
         </motion.div>
       </div>
     </motion.section>
-  )
+  );
 }
