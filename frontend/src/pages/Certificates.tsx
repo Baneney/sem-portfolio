@@ -3,14 +3,14 @@ import { motion, useScroll, useSpring, useTransform } from 'framer-motion'
 import CertificateCarousel from '../components/CertificateCarousel'
 
 const certificates = [
-  { id: 1, title: "Certificate 1", image: "https://picsum.photos/400/600?random=1" },
-  { id: 2, title: "Certificate 2", image: "https://picsum.photos/400/600?random=2" },
-  { id: 3, title: "Certificate 3", image: "https://picsum.photos/400/600?random=3" },
-  { id: 4, title: "Certificate 4", image: "https://picsum.photos/400/600?random=4" },
-  { id: 5, title: "Certificate 5", image: "https://picsum.photos/400/600?random=5" },
-  { id: 6, title: "Certificate 6", image: "https://picsum.photos/400/600?random=6" },
-  { id: 7, title: "Certificate 7", image: "https://picsum.photos/400/600?random=7" },
-  { id: 8, title: "Certificate 8", image: "https://picsum.photos/400/600?random=8" },
+  { id: 1, title: "Certificate 1", description: "Comprehensive course on web development foundations.", image: "https://picsum.photos/400/600?random=1" },
+  { id: 2, title: "Certificate 2", description: "Advanced React patterns and performance optimization.", image: "https://picsum.photos/400/600?random=2" },
+  { id: 3, title: "Certificate 3", description: "TypeScript mastery for enterprise-scale applications.", image: "https://picsum.photos/400/600?random=3" },
+  { id: 4, title: "Certificate 4", description: "Cloud architecture and deployment strategies.", image: "https://picsum.photos/400/600?random=4" },
+  { id: 5, title: "Certificate 5", description: "UI/UX design principles and user-centric interfaces.", image: "https://picsum.photos/400/600?random=5" },
+  { id: 6, title: "Certificate 6", description: "Backend development with Node.js and PostgreSQL.", image: "https://picsum.photos/400/600?random=6" },
+  { id: 7, title: "Certificate 7", description: "Mobile app development with React Native.", image: "https://picsum.photos/400/600?random=7" },
+  { id: 8, title: "Certificate 8", description: "Data structures and algorithms in JavaScript.", image: "https://picsum.photos/400/600?random=8" },
 ]
 
 export default function Certificates({ containerRef }: { containerRef: React.RefObject<HTMLDivElement | null> }) {
