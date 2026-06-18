@@ -52,13 +52,17 @@ export default function Certificates({ containerRef }: { containerRef: React.Ref
     offset: ["start start", "end start"]
   })
   const smoothExit = useSpring(exitProgress, { stiffness: 45, damping: 25 })
-  const contentOpacity = useTransform(smoothExit, [0, 0.7], [1, 0])
+  const contentOpacity = useTransform(smoothExit, [0.3, 0.9], [1, 0])
+  const contentScale = useTransform(smoothExit, [0.3, 0.9], [1, 0.6])
+  const contentRotateX = useTransform(smoothExit, [0.3, 0.9], [0, -30])
+  const contentY = useTransform(smoothExit, [0.3, 0.9], [0, -100])
+  const contentBlur = useTransform(smoothExit, [0.4, 0.8], [0, 15])
 
   return (
     <motion.section
       ref={sectionRef}
       id="certificates"
-      className="section-page relative min-h-screen flex flex-col items-center justify-center overflow-hidden bg-[#080400] py-40"
+      className="section-page relative min-h-screen flex flex-col items-center justify-center overflow-hidden bg-[#080400] py-90 transform-style-3d"
     >
       {/* Edge Gradients for seamless connection */}
       <div className="absolute top-0 left-0 right-0 h-[40vh] bg-gradient-to-b from-[#080400] via-[#080400]/90 to-transparent z-[15] pointer-events-none" />
@@ -103,7 +107,13 @@ export default function Certificates({ containerRef }: { containerRef: React.Ref
 
       <motion.div 
         className="relative z-10 w-full flex flex-col items-center"
-        style={{ opacity: contentOpacity }}
+        style={{ 
+          opacity: contentOpacity,
+          scale: contentScale,
+          rotateX: contentRotateX,
+          y: contentY,
+          filter: useTransform(contentBlur, (v) => `blur(${v}px)`)
+        }}
       >
         <CertificateCarousel certificates={certificates} />
       </motion.div>
