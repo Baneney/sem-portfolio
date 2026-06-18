@@ -2,16 +2,33 @@ import { useRef } from 'react'
 import { motion, useScroll, useSpring, useTransform } from 'framer-motion'
 import CertificateCarousel from '../components/CertificateCarousel'
 
+import Nasa from "../assets/certs/Nasa Spaceup Challenge.png";
+import networking from "../assets/certs/Networking Basics.png";
+import dataScience from "../assets/certs/Introduction to Data Science.png";
+
 const certificates = [
-  { id: 1, title: "Certificate 1", description: "Comprehensive course on web development foundations.", image: "https://picsum.photos/400/600?random=1" },
-  { id: 2, title: "Certificate 2", description: "Advanced React patterns and performance optimization.", image: "https://picsum.photos/400/600?random=2" },
-  { id: 3, title: "Certificate 3", description: "TypeScript mastery for enterprise-scale applications.", image: "https://picsum.photos/400/600?random=3" },
-  { id: 4, title: "Certificate 4", description: "Cloud architecture and deployment strategies.", image: "https://picsum.photos/400/600?random=4" },
-  { id: 5, title: "Certificate 5", description: "UI/UX design principles and user-centric interfaces.", image: "https://picsum.photos/400/600?random=5" },
-  { id: 6, title: "Certificate 6", description: "Backend development with Node.js and PostgreSQL.", image: "https://picsum.photos/400/600?random=6" },
-  { id: 7, title: "Certificate 7", description: "Mobile app development with React Native.", image: "https://picsum.photos/400/600?random=7" },
-  { id: 8, title: "Certificate 8", description: "Data structures and algorithms in JavaScript.", image: "https://picsum.photos/400/600?random=8" },
-]
+  {
+    id: 1,
+    title: "Networking Basics",
+    description:
+      "This certificate shows that I the holder learned the basic concepts of computer networking, including how networks work, common network devices, and how data is shared between computers.",
+    image: networking,
+  },
+  {
+    id: 2,
+    title: "Nasa Space Up Challenge (2024)",
+    description:
+      "Recognized for participating in NASA’s global hackathon, solving real-world challenges through innovation and teamwork.",
+    image: Nasa,
+  },
+  {
+    id: 3,
+    title: "Introduction to Data Science",
+    description:
+      "Certified through Cisco Networking Academy in Introduction to Data Science, gaining knowledge in data analysis, insights, and data-driven technologies.",
+    image: dataScience,
+  }
+];
 
 export default function Certificates({ containerRef }: { containerRef: React.RefObject<HTMLDivElement | null> }) {
   const sectionRef = useRef<HTMLElement>(null)

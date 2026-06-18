@@ -12,16 +12,35 @@ interface CertificateCarouselProps {
   certificates: Certificate[];
 }
 
-const CertificateCarousel: React.FC<CertificateCarouselProps> = ({ certificates }) => {
+const CertificateCarousel: React.FC<CertificateCarouselProps> = ({ certificates: inputCertificates }) => {
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [isHovered, setIsHovered] = useState(false);
   
+  // To keep the carousel symmetrical, we ensure at least 8 items.
+  // We fill empty slots with "Coming Soon" placeholders.
+  const MIN_ITEMS = 8;
+  const certificates = [...inputCertificates];
+  
+  if (certificates.length < MIN_ITEMS) {
+    const remaining = MIN_ITEMS - certificates.length;
+    for (let i = 0; i < remaining; i++) {
+      certificates.push({
+        id: -1 - i, // Unique negative ID for placeholders
+        title: "Coming Soon",
+        description: "New certifications and achievements will be added here soon. Stay tuned!",
+      });
+    }
+  }
+
   const quantity = certificates.length;
   const selectedCert = certificates.find(c => c.id === selectedId);
 
   return (
-    <div className="relative w-full min-h-[600px] flex items-center justify-center overflow-visible px-4 md:px-10">
-      <div className={`flex flex-col md:flex-row items-center justify-center gap-10 transition-all duration-700 w-full ${selectedId ? 'md:translate-x-[-10%]' : ''}`}>
+    <div 
+      className="relative w-full min-h-[600px] flex items-center justify-center overflow-visible px-4 md:px-10 cursor-default"
+      onClick={() => setSelectedId(null)}
+    >
+      <div className={`relative z-20 flex flex-col md:flex-row items-center justify-center gap-10 transition-all duration-700 w-full ${selectedId ? 'md:translate-x-[-10%]' : ''}`}>
         
         {/* Carousel Section */}
         <div 
@@ -47,17 +66,21 @@ const CertificateCarousel: React.FC<CertificateCarouselProps> = ({ certificates 
             {certificates.map((cert, index) => {
               const isSelected = selectedId === cert.id;
               const isAnySelected = selectedId !== null;
+              const isPlaceholder = cert.id < 0;
               
               return (
                 <div
                   key={cert.id}
-                  onClick={() => setSelectedId(isSelected ? null : cert.id)}
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent root onClick (dismissal)
+                    setSelectedId(isSelected ? null : cert.id);
+                  }}
                   className={`absolute inset-0 rounded-2xl overflow-hidden border-2 transition-all duration-700 cursor-pointer group
                     ${isSelected 
                       ? 'border-[#ffd86a] shadow-[0_0_50px_rgba(255,216,106,0.4)] z-50 scale-125' 
-                      : 'border-[#ffd86a]/30 backdrop-blur-md shadow-[0_0_30px_rgba(255,216,106,0.15)] hover:border-[#ffd86a]/60 hover:shadow-[0_0_50px_rgba(255,216,106,0.3)] hover:scale-110'
+                      : `border-[#ffd86a]/50 backdrop-blur-xl shadow-[0_0_30px_rgba(255,216,106,0.15)] hover:border-[#ffd86a]/80 hover:shadow-[0_0_50px_rgba(255,216,106,0.3)] hover:scale-110 ${isPlaceholder ? 'opacity-60 hover:opacity-100' : ''}`
                     }
-                    ${isAnySelected && !isSelected ? 'opacity-0 pointer-events-none' : 'opacity-100'}
+                    ${isAnySelected && !isSelected ? 'opacity-0 pointer-events-none' : ''}
                   `}
                   style={{
                     ['--index' as any]: index,
@@ -66,9 +89,11 @@ const CertificateCarousel: React.FC<CertificateCarouselProps> = ({ certificates 
                       : `rotateY(calc((360deg / var(--quantity)) * var(--index))) translateZ(var(--translateZ))`,
                     background: cert.image 
                       ? 'black' 
-                      : 'radial-gradient(circle at center, rgba(255,216,106,0.15) 0%, rgba(200,80,0,0.05) 100%)',
+                      : 'radial-gradient(circle at center, rgba(255,216,106,0.25) 0%, rgba(200,80,0,0.15) 100%)',
                   }}
                 >
+                  {/* Base card fill to ensure it's not too transparent */}
+                  <div className="absolute inset-0 bg-black/60 z-[-1]" />
                   {cert.image ? (
                     <img 
                       src={cert.image} 
@@ -105,6 +130,7 @@ const CertificateCarousel: React.FC<CertificateCarouselProps> = ({ certificates 
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 50 }}
               transition={{ duration: 0.5, ease: "easeOut" }}
+              onClick={(e) => e.stopPropagation()} // Prevent root onClick (dismissal)
               className="flex flex-col max-w-md bg-black/40 backdrop-blur-xl p-8 rounded-3xl border border-[#ffd86a]/20 shadow-[0_0_50px_rgba(0,0,0,0.5)]"
             >
               <motion.h2 
@@ -125,23 +151,19 @@ const CertificateCarousel: React.FC<CertificateCarouselProps> = ({ certificates 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
-                className="text-white/70 text-lg leading-relaxed mb-8"
+                className="text-white/70 text-lg leading-relaxed mb-4"
               >
                 {selectedCert.description}
               </motion.p>
               
-              <motion.button
+              <motion.p
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.6 }}
-                onClick={() => setSelectedId(null)}
-                className="self-start px-6 py-2 rounded-full border border-[#ffd86a]/30 text-[#ffd86a] hover:bg-[#ffd86a]/10 transition-colors duration-300 flex items-center gap-2 group"
+                className="text-[#ffd86a]/40 text-sm italic"
               >
-                <span>Back to Carousel</span>
-                <svg className="w-4 h-4 transition-transform group-hover:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </motion.button>
+                Click anywhere outside to go back
+              </motion.p>
             </motion.div>
           )}
         </AnimatePresence>
