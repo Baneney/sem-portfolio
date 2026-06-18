@@ -46,16 +46,23 @@ function App() {
   })
 
   // Map smooth progress to frames
-  const frameValue = useTransform(smoothProgress, [0, 0.9], [-10, 25])
+  // We stretch the range so frame 25 (the peak/fade start) happens later
+  const frameValue = useTransform(smoothProgress, [0, 1], [-10, 32])
 
   // GLOBAL BACKGROUND STATE
-  // We use the same frameValue to drive a single unified background layer
-  // This prevents the 'cut-off' look by ensuring there's only one master background
-  const globalBgOpacity = useTransform(frameValue, [-10, -5, 2, 20, 25], [0, 1, 1, 1, 0])
+  // Fade out the transition overlays as we reach the end of the sequence
+  const globalBgOpacity = useTransform(frameValue, [-10, -5, 2, 25, 30], [0, 1, 1, 1, 0])
 
   // Lock scroll during katniss phase — prevent scrolling past About1
   useMotionValueEvent(frameValue, "change", (latest) => {
-    scrollLockedRef.current = latest < 25
+    // We unlock at 28 to ensure the assets have mostly faded out
+    const isLocked = latest < 28
+    scrollLockedRef.current = isLocked
+    
+    if (snapContainerRef.current) {
+      // Disable smooth scroll during lock to prevent coasting past the limit
+      snapContainerRef.current.style.scrollBehavior = isLocked ? 'auto' : 'smooth'
+    }
   })
 
   function tryDismissSplash() {
@@ -70,6 +77,28 @@ function App() {
       tryDismissSplash()
     }, 3500)
     return () => clearTimeout(t)
+  }, [])
+
+  useEffect(() => {
+    const container = snapContainerRef.current
+    if (!container) return
+
+    // Proactive wheel/touch interception to prevent over-scroll
+    function handleWheel(e: WheelEvent) {
+      if (scrollLockedRef.current) {
+        const scrollTop = container!.scrollTop
+        const about1Top = document.getElementById('about1')?.offsetTop || 0
+        
+        // Strictly prevent scrolling past the start of About1 while locked
+        if (scrollTop >= about1Top && e.deltaY > 0) {
+          e.preventDefault()
+          container!.scrollTop = about1Top
+        }
+      }
+    }
+
+    container.addEventListener('wheel', handleWheel, { passive: false })
+    return () => container.removeEventListener('wheel', handleWheel)
   }, [])
 
   useEffect(() => {
@@ -147,7 +176,7 @@ function App() {
       const scrollTop = scrollEl.scrollTop
       const vh = window.innerHeight
 
-      // Lock scroll at About1 during katniss phase
+      // Snap lock at About1 during katniss phase
       if (scrollLockedRef.current) {
         const about1El = document.getElementById('about1')
         if (about1El) {
@@ -239,11 +268,11 @@ function App() {
       >
         <Hero showSplash={showSplash} containerRef={snapContainerRef} />
 
-        {/* Transition Spacer */}
+        {/* Transition Spacer — slightly taller to account for more frames */}
         <section
           id="katniss-section"
           ref={transitionRef}
-          className="relative w-full h-[250vh] pointer-events-none"
+          className="relative w-full h-[300vh] pointer-events-none"
           style={{ zIndex: 5 }}
         ></section>
 
