@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { motion, useScroll, useSpring, useTransform, useMotionTemplate } from 'framer-motion'
+import { motion, useScroll, useSpring, useTransform } from 'framer-motion'
 
 export default function About3({ containerRef }: { containerRef: React.RefObject<HTMLDivElement | null> }) {
   const sectionRef = useRef<HTMLElement>(null)
@@ -29,11 +29,11 @@ export default function About3({ containerRef }: { containerRef: React.RefObject
     <motion.section
       ref={sectionRef}
       id="about3"
-      className="section-page relative min-h-screen flex items-center justify-center overflow-hidden py-20 px-30"
+      className="section-page relative min-h-screen flex items-center justify-center overflow-hidden"
     >
-      {/* Noise + amber vignette */}
-      <div className="noise-texture absolute inset-0 pointer-events-none z-[1]" style={{ opacity: 0.15 }} />
+      {/* amber vignette */}
       <div className="amber-vignette absolute inset-0 pointer-events-none z-[1]" />
+
 
       {/* Radial glow expand */}
       <motion.div
@@ -100,25 +100,25 @@ export default function About3({ containerRef }: { containerRef: React.RefObject
 
         {/* Quote body */}
         <motion.blockquote
-          className="relative"
+          className="relative max-w-2xl mx-auto px-10"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.5 }}
           transition={{ duration: 0.6, delay: 0.3 }}
         >
           {/* Opening quote mark */}
-          <span className="absolute -top-8 left-1/2 -translate-x-1/2 text-[#ffd86a]/15 text-6xl font-serif leading-none pointer-events-none">
+          <span className="absolute top-0 left-0 text-[#ffd86a]/10 text-8xl font-serif leading-none pointer-events-none select-none">
             &ldquo;
           </span>
 
-          <p className="text-[#e5d4a1]/60 text-base sm:text-lg leading-relaxed max-w-xl mx-auto italic">
+          <p className="relative z-10 text-[#e5d4a1]/60 text-base sm:text-lg leading-relaxed italic py-6">
             I believe great software is built at the intersection of technical excellence
             and human empathy. Every line of code is an opportunity to make someone's
             life a little easier.
           </p>
 
           {/* Closing quote mark */}
-          <span className="absolute -bottom-4 left-1/2 -translate-x-1/2 text-[#ffd86a]/15 text-6xl font-serif leading-none pointer-events-none">
+          <span className="absolute bottom-0 right-0 text-[#ffd86a]/10 text-8xl font-serif leading-none pointer-events-none select-none">
             &rdquo;
           </span>
         </motion.blockquote>

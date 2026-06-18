@@ -38,11 +38,11 @@ export default function About1({ containerRef }: { containerRef: React.RefObject
     <motion.section
       ref={sectionRef}
       id="about1"
-      className="section-page relative min-h-screen flex items-center justify-center overflow-hidden px-30 py-20"
+      className="section-page relative min-h-screen flex items-center justify-center overflow-hidden"
     >
-      {/* Noise + amber vignette */}
-      <div className="noise-texture absolute inset-0 pointer-events-none z-[1]" style={{ opacity: 0.15 }} />
+      {/* amber vignette */}
       <div className="amber-vignette absolute inset-0 pointer-events-none z-[1]" />
+
 
       {/* Fire glow orb — parallax drift */}
       <motion.div

@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { motion, useScroll, useSpring, useTransform, useMotionTemplate } from 'framer-motion'
+import { motion, useScroll, useSpring, useTransform } from 'framer-motion'
 
 const internships = [
   {
@@ -45,11 +45,7 @@ export default function About2({ containerRef }: { containerRef: React.RefObject
       id="about2"
       className="section-page relative min-h-screen flex flex-col items-center justify-center overflow-hidden px-30 sm:px-30 py-30"
     >
-      {/* Noise + amber vignette */}
-      <div
-        className="noise-texture absolute inset-0 pointer-events-none z-[1]"
-        style={{ opacity: 0.15 }}
-      />
+      {/* amber vignette */}
       <div className="amber-vignette absolute inset-0 pointer-events-none z-[1]" />
 
       {/* Fire glow orb — parallax */}

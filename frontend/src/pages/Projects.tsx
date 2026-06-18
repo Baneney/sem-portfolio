@@ -294,7 +294,7 @@ export default function Projects() {
       ref={containerRef}
       id="projects"
       className="relative py-16 sm:py-70 px-20 sm:px-20"
-      style={{ backgroundColor: '#000', minHeight: `${(projects.length + 1.2) * PROJECT_H}px` }}
+      style={{ backgroundColor: '#080400', minHeight: `${(projects.length + 1.2) * PROJECT_H}px` }}
     >
       {/* Fire background glows */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">

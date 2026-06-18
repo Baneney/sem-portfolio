@@ -7,6 +7,7 @@ import Hero from './pages/Hero'
 import About1 from './pages/About1'
 import About2 from './pages/About2'
 import About3 from './pages/About3'
+import Certificates from './pages/Certificates'
 import Skills from './pages/Skills'
 import Projects from './pages/Projects'
 import Contact from './pages/Contact'
@@ -158,7 +159,7 @@ function App() {
         }
       }
 
-      const sections = ['about', 'katniss-section', 'about1', 'about2', 'about3', 'skills', 'projects', 'contact']
+      const sections = ['about', 'katniss-section', 'about1', 'about2', 'about3', 'skills', 'certificates', 'projects', 'contact']
       let currentIndex = 0
       for (let i = 0; i < sections.length; i++) {
         const el = document.getElementById(sections[i])
@@ -175,16 +176,13 @@ function App() {
 
   return (
     <div className="text-gray-300 font-sans">
-
       <AnimatePresence>
-        {showSplash && (
-          <Splash onComplete={() => setShowSplash(false)} />
-        )}
+        {showSplash && <Splash onComplete={() => setShowSplash(false)} />}
       </AnimatePresence>
 
       {/* ── Unified Cinematic Background Layer ── */}
       {/* This layer exists globally and morphs opacities to ensure no hard edges or cut-offs */}
-      <motion.div 
+      <motion.div
         className="fixed inset-0 bg-black z-[18] pointer-events-none"
         style={{ opacity: globalBgOpacity }}
       />
@@ -201,7 +199,9 @@ function App() {
         {bgImages.map((src, i) => (
           <div
             key={i}
-            ref={el => { bgRefs.current[i] = el }}
+            ref={(el) => {
+              bgRefs.current[i] = el;
+            }}
             className="bg-layer"
             style={{ backgroundImage: `url(${src})`, opacity: i === 0 ? 1 : 0 }}
           />
@@ -216,7 +216,9 @@ function App() {
           <div className="absolute inset-x-0 bottom-0 h-3/4 bg-gradient-to-t from-[#ff8c00]/25 via-[#c85000]/12 to-transparent blur-3xl animate-transition-fire" />
           <div className="absolute inset-x-0 bottom-0 h-full">
             {[...Array(14)].map((_, i) => (
-              <div key={i} className="absolute bottom-0 rounded-full bg-[#ffd86a] animate-transition-ember"
+              <div
+                key={i}
+                className="absolute bottom-0 rounded-full bg-[#ffd86a] animate-transition-ember"
                 style={{
                   left: `${8 + i * 6.5}%`,
                   width: `${2 + (i % 3)}px`,
@@ -230,31 +232,34 @@ function App() {
         </div>
       )}
 
-      <div id="snap-container" className="snap-container" ref={snapContainerRef}>
+      <div
+        id="snap-container"
+        className="snap-container"
+        ref={snapContainerRef}
+      >
         <Hero showSplash={showSplash} containerRef={snapContainerRef} />
-        
+
         {/* Transition Spacer */}
-        <section 
+        <section
           id="katniss-section"
-          ref={transitionRef} 
+          ref={transitionRef}
           className="relative w-full h-[250vh] pointer-events-none"
           style={{ zIndex: 5 }}
-        >
-        </section>
+        ></section>
 
         <About1 containerRef={snapContainerRef} />
         <About2 containerRef={snapContainerRef} />
         <About3 containerRef={snapContainerRef} />
         <Skills />
+        <Certificates containerRef={snapContainerRef} />
         <Projects />
         <Contact />
       </div>
 
       <ScrollIndicator />
       {!showSplash && <Chatbot />}
-
     </div>
-  )
+  );
 }
 
 export default App
