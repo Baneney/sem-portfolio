@@ -20,13 +20,7 @@ export default function About3({ containerRef }: { containerRef: React.RefObject
   })
   const smoothExit = useSpring(exitProgress, { stiffness: 45, damping: 25 })
 
-  const contentY = useTransform(smoothExit, [0, 1], [0, -200])
-  const contentScale = useTransform(smoothExit, [0, 1], [1, 1.15])
   const contentOpacity = useTransform(smoothExit, [0, 0.7], [1, 0])
-
-  const maskStop = useTransform(smoothExit, [0, 1], [100, 0])
-  const maskEdge = useTransform(smoothExit, v => Math.max(0, 100 - v * 112))
-  const maskImage = useMotionTemplate`linear-gradient(to bottom, black ${maskEdge}%, transparent ${maskStop}%, transparent 100%)`
 
   const orb1Y = useTransform(smooth, [0, 1], [50, -50])
   const orb2Y = useTransform(smooth, [0, 1], [-40, 40])
@@ -36,7 +30,6 @@ export default function About3({ containerRef }: { containerRef: React.RefObject
       ref={sectionRef}
       id="about3"
       className="section-page relative min-h-screen flex items-center justify-center overflow-hidden"
-      style={{ WebkitMaskImage: maskImage, maskImage: maskImage }}
     >
       {/* Noise + amber vignette */}
       <div className="noise-texture absolute inset-0 pointer-events-none z-[1]" style={{ opacity: 0.15 }} />
@@ -79,7 +72,7 @@ export default function About3({ containerRef }: { containerRef: React.RefObject
       {/* Content — exit transforms */}
       <motion.div
         className="relative z-10 text-center px-5 max-w-3xl"
-        style={{ y: contentY, scale: contentScale, opacity: contentOpacity }}
+        style={{ opacity: contentOpacity }}
       >
         {/* Label */}
         <motion.p

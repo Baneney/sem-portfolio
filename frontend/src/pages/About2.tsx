@@ -37,20 +37,13 @@ export default function About2({ containerRef }: { containerRef: React.RefObject
   })
   const smoothExit = useSpring(exitProgress, { stiffness: 45, damping: 25 })
 
-  const contentY = useTransform(smoothExit, [0, 1], [0, -200])
-  const contentScale = useTransform(smoothExit, [0, 1], [1, 1.15])
   const contentOpacity = useTransform(smoothExit, [0, 0.7], [1, 0])
-
-  const maskStop = useTransform(smoothExit, [0, 1], [100, 0])
-  const maskEdge = useTransform(smoothExit, v => Math.max(0, 100 - v * 112))
-  const maskImage = useMotionTemplate`linear-gradient(to bottom, black ${maskEdge}%, transparent ${maskStop}%, transparent 100%)`
 
   return (
     <motion.section
       ref={sectionRef}
       id="about2"
       className="section-page relative min-h-screen flex flex-col items-center justify-center overflow-hidden px-5 sm:px-10"
-      style={{ WebkitMaskImage: maskImage, maskImage: maskImage }}
     >
       {/* Noise + amber vignette */}
       <div className="noise-texture absolute inset-0 pointer-events-none z-[1]" style={{ opacity: 0.15 }} />
@@ -81,7 +74,7 @@ export default function About2({ containerRef }: { containerRef: React.RefObject
       {/* Content — exit transforms */}
       <motion.div
         className="relative z-10 text-center mb-16"
-        style={{ y: contentY, scale: contentScale, opacity: contentOpacity }}
+        style={{ opacity: contentOpacity }}
       >
         <p className="text-[#c9952a] text-xs tracking-[0.3em] uppercase mb-3">My path</p>
         <h2 className="text-[4vw] sm:text-[3vw] font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#ffd86a] via-[#f0b43a] to-[#d18a1e] uppercase tracking-[0.15em]">
@@ -105,7 +98,7 @@ export default function About2({ containerRef }: { containerRef: React.RefObject
         {/* Cards — exit transforms on wrapper */}
         <motion.div
           className="space-y-24"
-          style={{ y: contentY, opacity: contentOpacity }}
+          style={{ opacity: contentOpacity }}
         >
           {internships.map((item, i) => (
             <div key={i} className="relative">
