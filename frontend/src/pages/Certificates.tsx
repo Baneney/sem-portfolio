@@ -10,6 +10,8 @@ const certificates = [
   {
     id: 1,
     title: "Networking Basics",
+    issuer: "Cisco Networking Academy",
+    date: "2024",
     description:
       "This certificate shows that I the holder learned the basic concepts of computer networking, including how networks work, common network devices, and how data is shared between computers.",
     image: networking,
@@ -17,6 +19,8 @@ const certificates = [
   {
     id: 2,
     title: "Nasa Space Up Challenge (2024)",
+    issuer: "NASA",
+    date: "2024",
     description:
       "Recognized for participating in NASA’s global hackathon, solving real-world challenges through innovation and teamwork.",
     image: Nasa,
@@ -24,6 +28,8 @@ const certificates = [
   {
     id: 3,
     title: "Introduction to Data Science",
+    issuer: "Cisco Networking Academy",
+    date: "2024",
     description:
       "Certified through Cisco Networking Academy in Introduction to Data Science, gaining knowledge in data analysis, insights, and data-driven technologies.",
     image: dataScience,

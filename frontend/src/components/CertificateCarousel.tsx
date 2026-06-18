@@ -6,6 +6,8 @@ interface Certificate {
   image?: string;
   title: string;
   description: string;
+  issuer?: string;
+  date?: string;
 }
 
 interface CertificateCarouselProps {
@@ -16,8 +18,6 @@ const CertificateCarousel: React.FC<CertificateCarouselProps> = ({ certificates:
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [isHovered, setIsHovered] = useState(false);
   
-  // To keep the carousel symmetrical, we ensure at least 8 items.
-  // We fill empty slots with "Coming Soon" placeholders.
   const MIN_ITEMS = 8;
   const certificates = [...inputCertificates];
   
@@ -25,9 +25,11 @@ const CertificateCarousel: React.FC<CertificateCarouselProps> = ({ certificates:
     const remaining = MIN_ITEMS - certificates.length;
     for (let i = 0; i < remaining; i++) {
       certificates.push({
-        id: -1 - i, // Unique negative ID for placeholders
+        id: -1 - i,
         title: "Coming Soon",
-        description: "New certifications and achievements will be added here soon. Stay tuned!",
+        issuer: "Future Milestone",
+        date: "2024",
+        description: "Continually learning and expanding my expertise. New certifications will be showcased here as they are earned.",
       });
     }
   }
@@ -40,27 +42,37 @@ const CertificateCarousel: React.FC<CertificateCarouselProps> = ({ certificates:
       className="relative w-full min-h-[600px] flex items-center justify-center overflow-visible px-4 md:px-10 cursor-default"
       onClick={() => setSelectedId(null)}
     >
-      <div className={`relative z-20 flex flex-col md:flex-row items-center justify-center gap-10 transition-all duration-700 w-full ${selectedId ? 'md:translate-x-[-10%]' : ''}`}>
+      {/* Dynamic Glow following the selected card */}
+      <AnimatePresence>
+        {selectedId && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            className="absolute left-1/2 top-1/2 -translate-x-[75%] -translate-y-1/2 w-[450px] h-[450px] bg-[#ffd86a]/10 rounded-full blur-[120px] z-0 pointer-events-none"
+          />
+        )}
+      </AnimatePresence>
+
+      <div className={`relative z-20 flex flex-col md:flex-row items-center justify-center gap-12 md:gap-24 transition-all duration-1000 ease-[cubic-bezier(0.23,1,0.32,1)] w-full ${selectedId ? 'md:translate-x-[-8%]' : ''}`}>
         
         {/* Carousel Section */}
         <div 
-          className="relative w-[280px] h-[400px] flex items-center justify-center transform-style-3d transition-all duration-700"
-          style={{
-            perspective: '1000px',
-          }}
+          className="relative w-[300px] h-[420px] flex items-center justify-center transform-style-3d transition-all duration-700"
+          style={{ perspective: '1200px' }}
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
         >
           <div
-            className={`relative w-[200px] h-[280px] transform-style-3d ${!selectedId ? 'animate-carousel-rotate' : ''} transition-transform duration-1000`}
+            className={`relative w-[220px] h-[310px] transform-style-3d ${!selectedId ? 'animate-carousel-rotate' : ''} transition-transform duration-1000 ease-[cubic-bezier(0.23,1,0.32,1)]`}
             style={{
               ['--quantity' as any]: quantity,
-              ['--w' as any]: '200px',
-              ['--h' as any]: '280px',
-              ['--translateZ' as any]: selectedId ? '0px' : '350px',
+              ['--w' as any]: '220px',
+              ['--h' as any]: '310px',
+              ['--translateZ' as any]: selectedId ? '0px' : '380px',
               animationPlayState: (isHovered || selectedId) ? 'paused' : 'running',
-              animationDuration: '30s',
-              transform: selectedId ? 'rotateY(0deg)' : undefined,
+              animationDuration: '40s',
+              transform: selectedId ? 'rotateY(0deg) rotateX(8deg)' : undefined,
             }}
           >
             {certificates.map((cert, index) => {
@@ -72,105 +84,115 @@ const CertificateCarousel: React.FC<CertificateCarouselProps> = ({ certificates:
                 <div
                   key={cert.id}
                   onClick={(e) => {
-                    e.stopPropagation(); // Prevent root onClick (dismissal)
+                    e.stopPropagation();
                     setSelectedId(isSelected ? null : cert.id);
                   }}
                   className={`absolute inset-0 rounded-2xl overflow-hidden border-2 transition-all duration-700 cursor-pointer group
                     ${isSelected 
-                      ? 'border-[#ffd86a] shadow-[0_0_50px_rgba(255,216,106,0.4)] z-50 scale-125' 
-                      : `border-[#ffd86a]/50 backdrop-blur-xl shadow-[0_0_30px_rgba(255,216,106,0.15)] hover:border-[#ffd86a]/80 hover:shadow-[0_0_50px_rgba(255,216,106,0.3)] hover:scale-110 ${isPlaceholder ? 'opacity-60 hover:opacity-100' : ''}`
+                      ? 'border-[#ffd86a] shadow-[0_0_60px_rgba(255,216,106,0.4)] z-50 scale-125' 
+                      : `border-[#ffd86a]/40 backdrop-blur-xl shadow-[0_0_30px_rgba(255,216,106,0.1)] hover:border-[#ffd86a]/80 hover:shadow-[0_0_50px_rgba(255,216,106,0.3)] hover:scale-110 ${isPlaceholder ? 'opacity-40 hover:opacity-100' : ''}`
                     }
-                    ${isAnySelected && !isSelected ? 'opacity-0 pointer-events-none' : ''}
+                    ${isAnySelected && !isSelected ? 'opacity-0 pointer-events-none scale-90 translate-y-10' : ''}
                   `}
                   style={{
                     ['--index' as any]: index,
                     transform: isSelected 
-                      ? 'translateZ(140px)' 
+                      ? 'translateZ(180px) translateY(-10px)' 
                       : `rotateY(calc((360deg / var(--quantity)) * var(--index))) translateZ(var(--translateZ))`,
                     background: cert.image 
                       ? 'black' 
-                      : 'radial-gradient(circle at center, rgba(255,216,106,0.25) 0%, rgba(200,80,0,0.15) 100%)',
+                      : 'radial-gradient(circle at center, rgba(255,216,106,0.15) 0%, rgba(200,80,0,0.1) 100%)',
                   }}
                 >
-                  {/* Base card fill to ensure it's not too transparent */}
                   <div className="absolute inset-0 bg-black/60 z-[-1]" />
                   {cert.image ? (
                     <img 
                       src={cert.image} 
                       alt={cert.title} 
-                      className={`w-full h-full object-cover transition-all duration-700 ${isSelected ? 'grayscale-0' : 'grayscale-[20%] group-hover:grayscale-0'}`}
+                      className={`w-full h-full object-cover transition-all duration-1000 ${isSelected ? 'grayscale-0 scale-105' : 'grayscale-[40%] group-hover:grayscale-0 group-hover:scale-105'}`}
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center p-6 text-center bg-black/40">
-                       <span className="text-[#ffd86a]/60 text-sm font-bold uppercase tracking-[0.2em]">{cert.title}</span>
+                       <span className="text-[#ffd86a]/50 text-[10px] font-bold uppercase tracking-[0.4em]">{cert.title}</span>
                     </div>
                   )}
                   
-                  {/* Shimmer Sweep */}
+                  {/* Subtle Reflection */}
+                  <div className="absolute inset-0 bg-gradient-to-tr from-white/5 via-transparent to-transparent opacity-40 pointer-events-none" />
+                  
+                  {/* Shimmer on Hover */}
                   <div className="absolute inset-0 w-full h-full opacity-0 group-hover:opacity-100 pointer-events-none overflow-hidden z-10">
-                    <div 
-                      className="absolute inset-0 w-[200%] h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-20 -translate-x-full animate-[cert-shimmer_1.5s_infinite]" 
-                    />
+                    <div className="absolute inset-0 w-[200%] h-full bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-20 -translate-x-full animate-[cert-shimmer_2.5s_infinite]" />
                   </div>
-
-                  {/* Internal Glow */}
-                  <div className="absolute inset-0 bg-gradient-to-tr from-[#ffd86a]/10 via-transparent to-transparent pointer-events-none z-0" />
-                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 bg-[radial-gradient(circle_at_center,rgba(255,216,106,0.1)_0%,transparent_70%)] pointer-events-none z-0" />
                 </div>
               );
             })}
           </div>
         </div>
 
-        {/* Details Section */}
+        {/* Floating Details Section */}
         <AnimatePresence>
           {selectedCert && (
             <motion.div
-              initial={{ opacity: 0, x: 50 }}
+              initial={{ opacity: 0, x: 80 }}
               animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 50 }}
-              transition={{ duration: 0.5, ease: "easeOut" }}
-              onClick={(e) => e.stopPropagation()} // Prevent root onClick (dismissal)
-              className="flex flex-col max-w-md bg-black/40 backdrop-blur-xl p-8 rounded-3xl border border-[#ffd86a]/20 shadow-[0_0_50px_rgba(0,0,0,0.5)]"
+              exit={{ opacity: 0, x: 40 }}
+              transition={{ duration: 0.8, ease: [0.23, 1, 0.32, 1] }}
+              onClick={(e) => e.stopPropagation()}
+              className="flex flex-col w-full max-w-md relative"
             >
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="flex items-center gap-4 mb-4 text-[#ffd86a]/60 text-[10px] font-bold uppercase tracking-[0.4em]"
+              >
+                <span>{selectedCert.issuer || "Certification"}</span>
+                <span className="w-1 h-1 rounded-full bg-[#ffd86a]/30" />
+                <span>{selectedCert.date}</span>
+              </motion.div>
+
               <motion.h2 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="text-4xl font-bold text-[#ffd86a] mb-4 tracking-tight"
+                transition={{ delay: 0.3 }}
+                className="text-5xl font-bold text-[#ffd86a] mb-8 leading-tight tracking-tight drop-shadow-[0_0_20px_rgba(255,216,106,0.2)]"
               >
                 {selectedCert.title}
               </motion.h2>
+
               <motion.div 
                 initial={{ width: 0 }}
-                animate={{ width: '60px' }}
-                transition={{ delay: 0.3, duration: 0.8 }}
-                className="h-1 bg-gradient-to-r from-[#ffd86a] to-transparent mb-6"
+                animate={{ width: '40px' }}
+                transition={{ delay: 0.4, duration: 1 }}
+                className="h-[1px] bg-[#ffd86a]/50 mb-8"
               />
+
               <motion.p 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-                className="text-white/70 text-lg leading-relaxed mb-4"
+                transition={{ delay: 0.5 }}
+                className="text-white/60 text-lg leading-relaxed font-light italic"
               >
-                {selectedCert.description}
+                "{selectedCert.description}"
               </motion.p>
               
-              <motion.p
+              <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 0.6 }}
-                className="text-[#ffd86a]/40 text-sm italic"
+                transition={{ delay: 0.8 }}
+                className="mt-12 flex items-center gap-3 text-[#ffd86a] text-[9px] uppercase tracking-[0.5em] font-bold"
               >
-                Click anywhere outside to go back
-              </motion.p>
+                <div className="w-8 h-[1px] bg-[#ffd86a]/20" />
+                Click anywhere to dismiss
+              </motion.div>
             </motion.div>
           )}
         </AnimatePresence>
       </div>
       
       {/* Dynamic Background Glow */}
-      <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#ffd86a]/5 rounded-full blur-[120px] pointer-events-none transition-opacity duration-1000 ${selectedId ? 'opacity-40' : 'opacity-100'}`} />
+      <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-[#ffd86a]/5 rounded-full blur-[140px] pointer-events-none transition-opacity duration-1000 ${selectedId ? 'opacity-30' : 'opacity-100'}`} />
     </div>
   );
 };
