@@ -3,14 +3,14 @@ import { motion, useScroll, useSpring, useTransform } from 'framer-motion'
 import CertificateCarousel from '../components/CertificateCarousel'
 
 const certificates = [
-  { id: 1, title: "Certificate 1" },
-  { id: 2, title: "Certificate 2" },
-  { id: 3, title: "Certificate 3" },
-  { id: 4, title: "Certificate 4" },
-  { id: 5, title: "Certificate 5" },
-  { id: 6, title: "Certificate 6" },
-  { id: 7, title: "Certificate 7" },
-  { id: 8, title: "Certificate 8" },
+  { id: 1, title: "Certificate 1", image: "https://picsum.photos/400/600?random=1" },
+  { id: 2, title: "Certificate 2", image: "https://picsum.photos/400/600?random=2" },
+  { id: 3, title: "Certificate 3", image: "https://picsum.photos/400/600?random=3" },
+  { id: 4, title: "Certificate 4", image: "https://picsum.photos/400/600?random=4" },
+  { id: 5, title: "Certificate 5", image: "https://picsum.photos/400/600?random=5" },
+  { id: 6, title: "Certificate 6", image: "https://picsum.photos/400/600?random=6" },
+  { id: 7, title: "Certificate 7", image: "https://picsum.photos/400/600?random=7" },
+  { id: 8, title: "Certificate 8", image: "https://picsum.photos/400/600?random=8" },
 ]
 
 export default function Certificates({ containerRef }: { containerRef: React.RefObject<HTMLDivElement | null> }) {

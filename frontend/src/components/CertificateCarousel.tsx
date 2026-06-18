@@ -39,12 +39,12 @@ const CertificateCarousel: React.FC<CertificateCarouselProps> = ({ certificates 
           {certificates.map((cert, index) => (
             <div
               key={cert.id}
-              className="absolute inset-0 rounded-2xl overflow-hidden border-2 border-[#ffd86a]/30 backdrop-blur-md shadow-[0_0_30px_rgba(255,216,106,0.15)] cursor-pointer transition-all duration-500 hover:border-[#ffd86a]/60 hover:shadow-[0_0_50px_rgba(255,216,106,0.3)] hover:scale-110"
+              className="absolute inset-0 rounded-2xl overflow-hidden border-2 border-[#ffd86a]/30 backdrop-blur-md shadow-[0_0_30px_rgba(255,216,106,0.15)] cursor-pointer transition-all duration-500 hover:border-[#ffd86a]/60 hover:shadow-[0_0_50px_rgba(255,216,106,0.3)] hover:scale-110 group"
               style={{
                 ['--index' as any]: index,
                 transform: `rotateY(calc((360deg / var(--quantity)) * var(--index))) translateZ(var(--translateZ))`,
                 background: cert.image 
-                  ? 'none' 
+                  ? 'black' 
                   : 'radial-gradient(circle at center, rgba(255,216,106,0.15) 0%, rgba(200,80,0,0.05) 100%)',
               }}
             >
@@ -52,7 +52,7 @@ const CertificateCarousel: React.FC<CertificateCarouselProps> = ({ certificates 
                 <img 
                   src={cert.image} 
                   alt={cert.title} 
-                  className="w-full h-full object-cover grayscale-[20%] hover:grayscale-0 transition-all duration-700"
+                  className="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700"
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center p-6 text-center bg-black/40">
@@ -60,9 +60,16 @@ const CertificateCarousel: React.FC<CertificateCarouselProps> = ({ certificates 
                 </div>
               )}
               
+              {/* Shimmer Sweep */}
+              <div className="absolute inset-0 w-full h-full opacity-0 group-hover:opacity-100 pointer-events-none overflow-hidden z-10">
+                <div 
+                  className="absolute inset-0 w-[200%] h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-20 -translate-x-full animate-[cert-shimmer_1.5s_infinite]" 
+                />
+              </div>
+
               {/* Internal Glow */}
-              <div className="absolute inset-0 bg-gradient-to-tr from-[#ffd86a]/10 via-transparent to-transparent pointer-events-none" />
-              <div className="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity duration-700 bg-[radial-gradient(circle_at_center,rgba(255,216,106,0.1)_0%,transparent_70%)]" />
+              <div className="absolute inset-0 bg-gradient-to-tr from-[#ffd86a]/10 via-transparent to-transparent pointer-events-none z-0" />
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 bg-[radial-gradient(circle_at_center,rgba(255,216,106,0.1)_0%,transparent_70%)] pointer-events-none z-0" />
             </div>
           ))}
         </div>
