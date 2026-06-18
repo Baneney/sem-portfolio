@@ -86,15 +86,17 @@ export default function About3({ containerRef }: { containerRef: React.RefObject
         </motion.p>
 
         {/* Heading */}
-        <motion.h2
-          className="text-[9vw] sm:text-[6vw] font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#ffd86a] via-[#f0b43a] to-[#d18a1e] uppercase tracking-[0.08em] mb-10 leading-none"
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.5 }}
-          transition={{ duration: 0.6, delay: 0.15 }}
-        >
-          Philosophy
-        </motion.h2>
+        <div className="text-center">
+          <motion.h2
+            className="inline-block text-[9vw] sm:text-[4vw] font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#ffd86a] via-[#f0b43a] to-[#d18a1e] uppercase tracking-[0.08em] mb-10 leading-tight px-[0.2em] mr-[-0.08em]"
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.5 }}
+            transition={{ duration: 0.6, delay: 0.15 }}
+          >
+            Philosophy
+          </motion.h2>
+        </div>
 
         {/* Quote body */}
         <motion.blockquote

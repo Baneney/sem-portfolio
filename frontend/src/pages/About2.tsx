@@ -84,7 +84,7 @@ export default function About2({ containerRef }: { containerRef: React.RefObject
         <p className="text-[#c9952a] text-xs tracking-[0.3em] uppercase mb-3">
           My path
         </p>
-        <h2 className="text-[4vw] sm:text-[3vw] font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#ffd86a] via-[#f0b43a] to-[#d18a1e] uppercase tracking-[0.15em]">
+        <h2 className="text-[4vw]  font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#ffd86a] via-[#f0b43a] to-[#d18a1e] uppercase tracking-[0.15em]">
           Experience
         </h2>
       </motion.div>
