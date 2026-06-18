@@ -39,12 +39,6 @@ const certificates = [
 export default function Certificates({ containerRef }: { containerRef: React.RefObject<HTMLDivElement | null> }) {
   const sectionRef = useRef<HTMLElement>(null)
 
-  const { scrollYProgress } = useScroll({
-    container: containerRef,
-    target: sectionRef,
-    offset: ["start end", "end start"]
-  })
-  const smooth = useSpring(scrollYProgress, { stiffness: 40, damping: 30 })
   
   const { scrollYProgress: exitProgress } = useScroll({
     container: containerRef,
