@@ -85,9 +85,10 @@ const projectItems: SproutItem[] = [
 // Interactive sprout element for the bio keywords
 function InteractiveSprout({ text, items, sproutHovered, setSproutHovered }: { text: string; items: SproutItem[]; sproutHovered: string | null; setSproutHovered: (v: string | null) => void }) {
   const isThisHovered = sproutHovered === text;
+  const isDimmed = sproutHovered !== null && !isThisHovered;
   return (
     <span
-      className={`relative inline-block cursor-help font-bold text-[#ffd86a] underline decoration-[#ffd86a]/40 decoration-wavy underline-offset-4 hover:decoration-[#ffd86a] transition-all duration-300 ${isThisHovered ? '!opacity-100 !blur-none' : ''}`}
+      className={`relative inline-block cursor-help font-bold text-[#ffd86a] underline decoration-[#ffd86a]/40 decoration-wavy underline-offset-4 hover:decoration-[#ffd86a] transition-all duration-300 ${isThisHovered ? '!opacity-100 !blur-none' : ''} ${isDimmed ? 'opacity-10 blur-sm' : ''}`}
       onMouseEnter={() => setSproutHovered(text)}
       onMouseLeave={() => setSproutHovered(null)}
     >
