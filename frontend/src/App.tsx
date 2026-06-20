@@ -30,6 +30,7 @@ function App() {
   const splashDone = useRef(false)
   const contentReady = useRef(false)
   const scrollLockedRef = useRef(false)
+  const programmaticScrollRef = useRef(false)
 
   // Scroll tracking for Katniss transition
   const { scrollYProgress } = useScroll({
@@ -85,6 +86,8 @@ function App() {
 
     // Proactive wheel/touch interception to prevent over-scroll
     function handleWheel(e: WheelEvent) {
+      // Any user scroll input clears the programmatic flag
+      programmaticScrollRef.current = false
       if (scrollLockedRef.current) {
         const scrollTop = container!.scrollTop
         const about1Top = document.getElementById('about1')?.offsetTop || 0
@@ -167,6 +170,14 @@ function App() {
     }
   }
 
+  function scrollToSection(id: string) {
+    const container = snapContainerRef.current
+    const el = document.getElementById(id)
+    if (!container || !el) return
+    programmaticScrollRef.current = true
+    container.scrollTo({ top: el.offsetTop, behavior: 'smooth' })
+  }
+
   useEffect(() => {
     const container = snapContainerRef.current
     if (!container) return
@@ -176,8 +187,8 @@ function App() {
       const scrollTop = scrollEl.scrollTop
       const vh = window.innerHeight
 
-      // Snap lock at About1 during katniss phase
-      if (scrollLockedRef.current) {
+      // Snap lock at About1 during katniss phase — but allow programmatic navigation
+      if (scrollLockedRef.current && !programmaticScrollRef.current) {
         const about1El = document.getElementById('about1')
         if (about1El) {
           const about1Top = about1El.offsetTop
@@ -266,7 +277,7 @@ function App() {
         className="snap-container"
         ref={snapContainerRef}
       >
-        <Hero showSplash={showSplash} containerRef={snapContainerRef} />
+        <Hero showSplash={showSplash} containerRef={snapContainerRef} scrollToSection={scrollToSection} />
 
         {/* Transition Spacer — slightly taller to account for more frames */}
         <section
@@ -285,7 +296,7 @@ function App() {
         <Contact />
       </div>
 
-      <ScrollIndicator />
+      <ScrollIndicator scrollToSection={scrollToSection} />
       {!showSplash && <Chatbot />}
     </div>
   );

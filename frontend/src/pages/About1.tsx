@@ -271,7 +271,7 @@ export default function About1({
     <motion.section
       ref={sectionRef}
       id="about1"
-      className="section-page relative min-h-screen flex items-center justify-center overflow-hidden bg-[#080400]"
+      className="section-page relative min-h-screen flex items-center justify-center overflow-hidden bg-[#080400] px-20"
     >
       {/* Dynamic Cursor Canvas Trail */}
       <canvas

@@ -27,7 +27,7 @@ const categories = [
   {
     name: "Backend",
     icon: "✦",
-    skills: ["Node.js", "Python", "Flask", "ASP.NET", "Django", ""],
+    skills: ["Node.js", "Python", "Flask", "ASP.NET", "Django"],
   },
   {
     name: "Databases",

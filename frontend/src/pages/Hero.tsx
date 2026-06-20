@@ -23,7 +23,7 @@ function RevealText({ children, delay, className = '' }: { children: React.React
   )
 }
 
-export default function Hero({ showSplash, containerRef: scrollContainerRef }: { showSplash: boolean, containerRef: React.RefObject<HTMLDivElement | null> }) {
+export default function Hero({ showSplash, containerRef: scrollContainerRef, scrollToSection }: { showSplash: boolean, containerRef: React.RefObject<HTMLDivElement | null>, scrollToSection: (id: string) => void }) {
   const sectionRef = useRef<HTMLElement>(null)
   const bottomBarRef = useRef<HTMLDivElement>(null)
   const lineInView = useInView(bottomBarRef, { once: true, amount: 0.5 })
@@ -81,13 +81,6 @@ export default function Hero({ showSplash, containerRef: scrollContainerRef }: {
       return () => clearTimeout(t)
     }
   }, [lineInView, progress, showSplash, scrollContainerRef])
-
-  function scrollToSection(id: string) {
-    const container = scrollContainerRef.current
-    const el = document.getElementById(id)
-    if (!container || !el) return
-    container.scrollTo({ top: el.offsetTop, behavior: 'smooth' })
-  }
 
   return (
     <motion.section

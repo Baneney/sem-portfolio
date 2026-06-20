@@ -20,7 +20,7 @@ interface Segment {
   hidden?: boolean
 }
 
-export default function ScrollIndicator() {
+export default function ScrollIndicator({ scrollToSection }: { scrollToSection?: (id: string) => void }) {
   const [activeIdx, setActiveIdx] = useState(0)
   const [segments, setSegments] = useState<Segment[]>([])
 
@@ -107,10 +107,15 @@ export default function ScrollIndicator() {
   }, [compute])
 
   const scrollTo = (index: number) => {
-    const container = document.getElementById('snap-container')
-    const el = document.getElementById(sections[index].id)
-    if (!container || !el) return
-    container.scrollTo({ top: el.offsetTop, behavior: 'smooth' })
+    const id = sections[index].id
+    if (scrollToSection) {
+      scrollToSection(id)
+    } else {
+      const container = document.getElementById('snap-container')
+      const el = document.getElementById(id)
+      if (!container || !el) return
+      container.scrollTo({ top: el.offsetTop, behavior: 'smooth' })
+    }
   }
 
   return (
