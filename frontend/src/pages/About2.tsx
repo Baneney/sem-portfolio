@@ -90,7 +90,7 @@ export default function About2({ containerRef }: { containerRef: React.RefObject
     <motion.section
       ref={sectionRef}
       id="about2"
-      className="section-page relative min-h-screen flex flex-col items-center justify-center overflow-hidden px-6 sm:px-16 py-20 bg-[#080400]"
+      className="section-page relative min-h-screen flex flex-col items-center justify-center overflow-hidden px-20 sm:px-16 py-20 bg-[#080400]"
     >
       {/* Fire background glows — centre-right heavy (chapter 2 of 3) */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">

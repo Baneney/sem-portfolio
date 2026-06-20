@@ -5,7 +5,8 @@ interface Sparkle {
   left: number;
   top: number;
   size: number;
-  colorIndex: number;
+  color: string;
+  shadow: string;
   duration: number;
   delay: number;
   dx: number;
@@ -30,6 +31,7 @@ interface SproutItem {
 }
 
 const SPARKLE_COLORS = ["#ffd86a", "#ffb300", "#ff8c00"];
+const SPARKLE_SHADOWS = ["rgba(255,216,106,0.8)", "rgba(255,179,0,0.7)", "rgba(255,140,0,0.6)"];
 
 const wordVariants = {
   hidden: { opacity: 0, y: 40, filter: "blur(8px)" },
@@ -49,7 +51,8 @@ const sparkles: Sparkle[] = Array.from({ length: 28 }, (_, i) => ({
   left: 5 + ((i * 8.3) % 90),
   top: 5 + ((i * 11) % 90),
   size: 1.5 + (i % 4) * 1.1,
-  colorIndex: i % 3,
+  color: SPARKLE_COLORS[i % 3],
+  shadow: SPARKLE_SHADOWS[i % 3],
   duration: 2.5 + (i % 5) * 0.8,
   delay: i * 0.22,
   dx: Math.cos((i / 28) * Math.PI * 2) * (10 + (i % 5) * 9),
@@ -93,8 +96,8 @@ function InteractiveSprout({ text, items }: { text: string; items: SproutItem[] 
         {hovered && (
           <span className="absolute inset-0 pointer-events-none z-30">
             {items.map((item, idx) => {
-              const x = Math.cos((item.angle * Math.PI) / 180) * item.radius;
-              const y = Math.sin((item.angle * Math.PI) / 180) * item.radius;
+              const startX = Math.cos((item.angle * Math.PI) / 180) * item.radius;
+              const startY = Math.sin((item.angle * Math.PI) / 180) * item.radius;
               return (
                 <motion.span
                   key={idx}
@@ -102,17 +105,14 @@ function InteractiveSprout({ text, items }: { text: string; items: SproutItem[] 
                   initial={{ scale: 0, x: 0, y: 0, opacity: 0 }}
                   animate={{
                     scale: 1,
-                    x,
-                    y,
+                    x: startX,
                     opacity: 1,
-                    y: [y, y - 3, y], // smooth floating
+                    y: [startY, startY - 3, startY], // smooth floating
                     transition: {
                       scale: { type: "spring", stiffness: 300, damping: 15, delay: idx * 0.02 },
                       x: { type: "spring", stiffness: 220, damping: 18, delay: idx * 0.02 },
-                      y: {
-                        y: { duration: 2, repeat: Infinity, ease: "easeInOut", delay: idx * 0.15 },
-                        default: { type: "spring", stiffness: 220, damping: 18, delay: idx * 0.02 }
-                      }
+                      y: { duration: 2, repeat: Infinity, ease: "easeInOut", delay: idx * 0.15 },
+                      default: { type: "spring", stiffness: 220, damping: 18, delay: idx * 0.02 }
                     }
                   }}
                   exit={{
@@ -163,8 +163,8 @@ export default function About1({
     if (!ctx) return;
 
     let animationId: number;
-    let particles: TrailParticle[] = [];
-    let mouse = { x: -1000, y: -1000, active: false };
+    const particles: TrailParticle[] = [];
+    const mouse = { x: -1000, y: -1000, active: false };
 
     const resize = () => {
       if (!canvas) return;
@@ -370,7 +370,7 @@ export default function About1({
 
         {/* Bio paragraph with interactive sprout highlights */}
         <motion.p
-          className="text-[#e5d4a1]/70 text-sm sm:text-base leading-relaxed max-w-2xl mx-auto mb-6"
+          className="text-[#e5d4a1]/70 text-[110%] leading-relaxed max-w-2xl mx-auto mb-6"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.5 }}
@@ -384,7 +384,7 @@ export default function About1({
           interfaces with a mindset that every output represents my craft.
         </motion.p>
 
-        <span className="text-[10px] tracking-[0.2em] text-[#e5d4a1]/25 uppercase select-none block mt-12 mb-4 animate-pulse">
+        <span className="text-[10px] tracking-[0.2em] text-[#e5d4a1]/80 uppercase select-none block mt-12 mb-4 animate-pulse italic">
           💡 hover over the underlined text to see my stack
         </span>
 
