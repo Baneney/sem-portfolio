@@ -1,10 +1,21 @@
 import { useRef } from 'react'
 import { motion, useScroll, useSpring, useTransform } from 'framer-motion'
 
+const sparkles = Array.from({ length: 28 }, (_, i) => ({
+  left: 5 + (i * 7.7) % 90,
+  top: 5 + (i * 12.3) % 90,
+  size: 1.5 + (i % 4) * 1.1,
+  color: i % 3 === 0 ? '#ffd86a' : i % 3 === 1 ? '#ffb300' : '#ff8c00',
+  shadow: i % 3 === 0 ? 'rgba(255,216,106,0.8)' : i % 3 === 1 ? 'rgba(255,179,0,0.7)' : 'rgba(255,140,0,0.6)',
+  duration: 2.5 + (i % 5) * 0.8,
+  delay: i * 0.19,
+  dx: Math.cos((i / 28) * Math.PI * 2 + 1.5) * (10 + (i % 5) * 9),
+  dy: Math.sin((i / 28) * Math.PI * 2 + 1.5) * (10 + (i % 5) * 9) - 8,
+}))
+
 export default function About3({ containerRef }: { containerRef: React.RefObject<HTMLDivElement | null> }) {
   const sectionRef = useRef<HTMLElement>(null)
 
-  // Entry parallax
   const { scrollYProgress } = useScroll({
     container: containerRef,
     target: sectionRef,
@@ -12,14 +23,12 @@ export default function About3({ containerRef }: { containerRef: React.RefObject
   })
   const smooth = useSpring(scrollYProgress, { stiffness: 40, damping: 30 })
 
-  // Exit transforms
   const { scrollYProgress: exitProgress } = useScroll({
     container: containerRef,
     target: sectionRef,
     offset: ["start start", "end start"]
   })
   const smoothExit = useSpring(exitProgress, { stiffness: 45, damping: 25 })
-
   const contentOpacity = useTransform(smoothExit, [0, 0.7], [1, 0])
 
   const orb1Y = useTransform(smooth, [0, 1], [50, -50])
@@ -29,25 +38,38 @@ export default function About3({ containerRef }: { containerRef: React.RefObject
     <motion.section
       ref={sectionRef}
       id="about3"
-      className="section-page relative min-h-screen flex items-center justify-center overflow-hidden"
+      className="section-page relative min-h-screen flex items-center justify-center overflow-hidden bg-[#080400]"
     >
-      {/* amber vignette */}
-      <div className="amber-vignette absolute inset-0 pointer-events-none z-[1]" />
+      {/* Fire background glows — bottom-centre heavy (chapter 3 of 3, building toward Skills) */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-[15%] right-[-5%] w-[55%] h-[45%] rounded-full bg-[#c85000]/18 blur-[130px]" />
+        <div className="absolute top-[35%] left-[-10%] w-[48%] h-[42%] rounded-full bg-[#e86000]/14 blur-[100px]" />
+        <div className="absolute bottom-[-5%] left-[20%] w-[60%] h-[50%] rounded-full bg-[#ff8c00]/18 blur-[100px]" />
+      </div>
 
+      {/* Sparkles */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        {sparkles.map((s, i) => (
+          <div
+            key={i}
+            className="absolute rounded-full"
+            style={{
+              left: `${s.left}%`,
+              top: `${s.top}%`,
+              width: `${s.size}px`,
+              height: `${s.size}px`,
+              background: s.color,
+              boxShadow: `0 0 ${6 + (i % 4) * 3}px ${s.shadow}`,
+              opacity: 0,
+              animation: `project-scatter ${s.duration}s ease-out ${s.delay}s infinite`,
+              '--scatter-x': `${s.dx}vw`,
+              '--scatter-y': `${s.dy}vh`,
+            } as React.CSSProperties}
+          />
+        ))}
+      </div>
 
-      {/* Radial glow expand */}
-      <motion.div
-        className="absolute w-[80vw] h-[80vw] rounded-full pointer-events-none"
-        style={{
-          background: 'radial-gradient(circle, rgba(255,180,50,0.12) 0%, rgba(200,80,0,0.04) 40%, transparent 70%)',
-        }}
-        initial={{ scale: 0.4, opacity: 0 }}
-        whileInView={{ scale: 1.5, opacity: 0.25 }}
-        viewport={{ once: true, amount: 0.3 }}
-        transition={{ duration: 1.5, ease: 'easeOut' }}
-      />
-
-      {/* Fire glow orb — left, parallax */}
+      {/* Parallax glow orbs */}
       <motion.div
         className="absolute w-[40vw] h-[40vw] rounded-full pointer-events-none"
         style={{
@@ -57,8 +79,6 @@ export default function About3({ containerRef }: { containerRef: React.RefObject
           left: '5%',
         }}
       />
-
-      {/* Fire glow orb — right, parallax */}
       <motion.div
         className="absolute w-[30vw] h-[30vw] rounded-full pointer-events-none"
         style={{
@@ -69,12 +89,11 @@ export default function About3({ containerRef }: { containerRef: React.RefObject
         }}
       />
 
-      {/* Content — exit transforms */}
+      {/* Content */}
       <motion.div
         className="relative z-10 text-center px-5 max-w-3xl"
         style={{ opacity: contentOpacity }}
       >
-        {/* Label */}
         <motion.p
           className="text-[#c9952a] text-xs tracking-[0.3em] uppercase mb-5"
           initial={{ opacity: 0, y: 20 }}
@@ -85,7 +104,6 @@ export default function About3({ containerRef }: { containerRef: React.RefObject
           What drives me
         </motion.p>
 
-        {/* Heading */}
         <div className="text-center">
           <motion.h2
             className="inline-block text-[9vw] sm:text-[4vw] font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#ffd86a] via-[#f0b43a] to-[#d18a1e] uppercase tracking-[0.08em] mb-10 leading-tight px-[0.2em] mr-[-0.08em]"
@@ -98,7 +116,6 @@ export default function About3({ containerRef }: { containerRef: React.RefObject
           </motion.h2>
         </div>
 
-        {/* Quote body */}
         <motion.blockquote
           className="relative max-w-2xl mx-auto px-10"
           initial={{ opacity: 0, y: 30 }}
@@ -106,7 +123,6 @@ export default function About3({ containerRef }: { containerRef: React.RefObject
           viewport={{ once: true, amount: 0.5 }}
           transition={{ duration: 0.6, delay: 0.3 }}
         >
-          {/* Opening quote mark */}
           <span className="absolute top-0 left-0 text-[#ffd86a]/10 text-8xl font-serif leading-none pointer-events-none select-none">
             &ldquo;
           </span>
@@ -117,13 +133,11 @@ export default function About3({ containerRef }: { containerRef: React.RefObject
             life a little easier.
           </p>
 
-          {/* Closing quote mark */}
           <span className="absolute bottom-0 right-0 text-[#ffd86a]/10 text-8xl font-serif leading-none pointer-events-none select-none">
             &rdquo;
           </span>
         </motion.blockquote>
 
-        {/* Bottom accent line */}
         <motion.div
           className="mx-auto mt-14 h-px bg-gradient-to-r from-transparent via-[#ffd86a]/30 to-transparent"
           initial={{ width: 0, opacity: 0 }}
@@ -132,7 +146,6 @@ export default function About3({ containerRef }: { containerRef: React.RefObject
           transition={{ duration: 0.6, delay: 0.5 }}
         />
 
-        {/* Signature */}
         <motion.p
           className="mt-8 text-[#c9952a]/40 text-[10px] tracking-[0.4em] uppercase"
           initial={{ opacity: 0 }}
