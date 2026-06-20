@@ -142,7 +142,7 @@ export default function About2({ containerRef }: { containerRef: React.RefObject
 
       {/* Timeline */}
       <div className="relative z-10 w-full max-w-3xl">
-        <div className="absolute left-1/2 top-0 bottom-0 -translate-x-1/2">
+        <div className="absolute left-4 sm:left-1/2 top-0 bottom-0 -translate-x-1/2">
           <motion.div
             className="w-px bg-gradient-to-b from-[#ffd86a]/50 via-[#ff8c00]/30 to-transparent"
             initial={{ height: 0 }}
@@ -157,7 +157,7 @@ export default function About2({ containerRef }: { containerRef: React.RefObject
             <div key={i} className="relative">
               {/* Glowing timeline dot */}
               <motion.div
-                className="absolute left-1/2 top-8 -translate-x-1/2 z-20"
+                className="absolute left-4 sm:left-1/2 top-8 -translate-x-1/2 z-20"
                 initial={{ scale: 0, opacity: 0 }}
                 whileInView={{ scale: 1, opacity: 1 }}
                 viewport={{ once: true, amount: 0.5 }}
@@ -180,7 +180,7 @@ export default function About2({ containerRef }: { containerRef: React.RefObject
 
               {/* Card */}
               <motion.div
-                className={`relative w-full sm:w-[46%] ${i === 0 ? "sm:mr-auto sm:pr-14" : "sm:ml-auto sm:pl-14"}`}
+                className={`relative w-full pl-10 sm:pl-0 sm:w-[46%] ${i === 0 ? "sm:mr-auto sm:pr-14" : "sm:ml-auto sm:pl-14"}`}
                 initial={{ opacity: 0, x: i === 0 ? -80 : 80 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true, amount: 0.3 }}
