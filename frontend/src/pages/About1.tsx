@@ -83,17 +83,17 @@ const projectItems: SproutItem[] = [
 ];
 
 // Interactive sprout element for the bio keywords
-function InteractiveSprout({ text, items }: { text: string; items: SproutItem[] }) {
-  const [hovered, setHovered] = useState(false);
+function InteractiveSprout({ text, items, sproutHovered, setSproutHovered }: { text: string; items: SproutItem[]; sproutHovered: string | null; setSproutHovered: (v: string | null) => void }) {
+  const isThisHovered = sproutHovered === text;
   return (
     <span
-      className="relative inline-block cursor-help font-bold text-[#ffd86a] underline decoration-[#ffd86a]/40 decoration-wavy underline-offset-4 hover:decoration-[#ffd86a] transition-colors"
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      className={`relative inline-block cursor-help font-bold text-[#ffd86a] underline decoration-[#ffd86a]/40 decoration-wavy underline-offset-4 hover:decoration-[#ffd86a] transition-all duration-300 ${isThisHovered ? '!opacity-100 !blur-none' : ''}`}
+      onMouseEnter={() => setSproutHovered(text)}
+      onMouseLeave={() => setSproutHovered(null)}
     >
       {text}
       <AnimatePresence>
-        {hovered && (
+        {isThisHovered && (
           <span className="absolute inset-0 pointer-events-none z-30">
             {items.map((item, idx) => {
               const startX = Math.cos((item.angle * Math.PI) / 180) * item.radius;
@@ -263,6 +263,8 @@ export default function About1({
   const contentOpacity = useTransform(smoothExit, [0, 0.7], [1, 0]);
 
   const words = ["I", "build", "things", "that", "move."];
+  const [sproutHovered, setSproutHovered] = useState<string | null>(null);
+  const dim = sproutHovered !== null ? "opacity-10 blur-sm" : "opacity-100 blur-none";
 
   return (
     <motion.section
@@ -327,7 +329,7 @@ export default function About1({
       >
         {/* Gold accent line */}
         <motion.div
-          className="mx-auto mb-8 h-px bg-gradient-to-r from-transparent via-[#ffd86a]/40 to-transparent"
+          className={`mx-auto mb-8 h-px bg-gradient-to-r from-transparent via-[#ffd86a]/40 to-transparent transition-all duration-300 ${dim}`}
           initial={{ width: 0, opacity: 0 }}
           whileInView={{ width: 120, opacity: 1 }}
           viewport={{ once: true, amount: 0.5 }}
@@ -335,7 +337,7 @@ export default function About1({
         />
 
         <motion.p
-          className="text-[#c9952a] text-xs tracking-[0.3em] uppercase mb-6 font-semibold"
+          className={`text-[#c9952a] text-xs tracking-[0.3em] uppercase mb-6 font-semibold transition-all duration-300 ${dim}`}
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.5 }}
@@ -345,7 +347,7 @@ export default function About1({
         </motion.p>
 
         {/* Headline words react with springy scale & shadow on hover */}
-        <div className="flex flex-wrap justify-center gap-x-3 sm:gap-x-5 gap-y-2 mb-12">
+        <div className={`flex flex-wrap justify-center gap-x-3 sm:gap-x-5 gap-y-2 mb-12 transition-all duration-300 ${dim}`}>
           {words.map((word, i) => (
             <motion.span
               key={i}
@@ -376,21 +378,21 @@ export default function About1({
           viewport={{ once: true, amount: 0.5 }}
           transition={{ duration: 0.6, delay: 0.8 }}
         >
-          I'm <span className="font-semibold text-white">Sem Luiz Warain</span> — a{" "}
-          <InteractiveSprout text="Full Stack Developer" items={stackItems} /> who blends{" "}
-          <InteractiveSprout text="technology and design" items={designItems} /> to create
-          polished digital experiences. I build web applications,{" "}
-          <InteractiveSprout text="interactive projects" items={projectItems} />, and intuitive
-          interfaces with a mindset that every output represents my craft.
+          <span className={`transition-all duration-300 ${dim}`}>I'm <span className="font-semibold text-white">Sem Luiz Warain</span> — a </span>
+          <InteractiveSprout text="Full Stack Developer" items={stackItems} sproutHovered={sproutHovered} setSproutHovered={setSproutHovered} /><span className={`transition-all duration-300 ${dim}`}> who blends </span>
+          <InteractiveSprout text="technology and design" items={designItems} sproutHovered={sproutHovered} setSproutHovered={setSproutHovered} /><span className={`transition-all duration-300 ${dim}`}> to create
+          polished digital experiences. I build web applications, </span>
+          <InteractiveSprout text="interactive projects" items={projectItems} sproutHovered={sproutHovered} setSproutHovered={setSproutHovered} /><span className={`transition-all duration-300 ${dim}`}>, and intuitive
+          interfaces with a mindset that every output represents my craft.</span>
         </motion.p>
 
-        <span className="text-[10px] tracking-[0.2em] text-[#e5d4a1]/80 uppercase select-none block mt-12 mb-4 animate-pulse italic">
+        <span className={`text-[10px] tracking-[0.2em] text-[#e5d4a1]/80 uppercase select-none block mt-12 mb-4 animate-pulse italic transition-all duration-300 ${dim}`}>
           💡 hover over the underlined text to see my stack
         </span>
 
         {/* Animated bottom divider */}
         <motion.div
-          className="mx-auto mt-6 h-px bg-gradient-to-r from-transparent via-[#c85000]/30 to-transparent"
+          className={`mx-auto mt-6 h-px bg-gradient-to-r from-transparent via-[#c85000]/30 to-transparent transition-all duration-300 ${dim}`}
           initial={{ width: 0, opacity: 0 }}
           whileInView={{ width: 80, opacity: 1 }}
           viewport={{ once: true, amount: 0.5 }}
