@@ -1,5 +1,5 @@
 import { useEffect, useRef, useCallback, useState } from 'react'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { Mail, ExternalLink, Check, Copy, Download } from 'lucide-react'
 
 const GithubIcon = () => (
@@ -173,10 +173,31 @@ export default function Contact() {
         </motion.p>
 
         {/* Links */}
-        <div className="flex flex-col sm:flex-row gap-5 w-full justify-center">
+        <div className="flex flex-col sm:flex-row gap-5 w-full justify-center relative">
           {links.map((l, i) => (
             <LinkCard key={l.label} link={l} index={3 + i} onCopy={l.copy ? handleCopy : undefined} copied={copied && !!l.copy} />
           ))}
+          {/* Copied toast */}
+          <AnimatePresence>
+            {copied && (
+              <motion.div
+                initial={{ opacity: 0, y: 10, scale: 0.9 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -10, scale: 0.9 }}
+                transition={{ duration: 0.2, ease: 'easeOut' }}
+                className="absolute -top-10 left-1/2 -translate-x-1/2 flex items-center gap-2 px-4 py-2 rounded-full text-xs font-medium tracking-wide whitespace-nowrap pointer-events-none"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(255,216,106,0.15), rgba(200,80,0,0.1))',
+                  border: '1px solid rgba(255,216,106,0.2)',
+                  color: '#ffd86a',
+                  boxShadow: '0 0 20px rgba(255,216,106,0.1)',
+                }}
+              >
+                <Check size={14} strokeWidth={2} />
+                Copied to clipboard
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
         {/* Bottom line */}
@@ -198,7 +219,7 @@ export default function Contact() {
 }
 
 function LinkCard({ link, index, onCopy, copied }: { link: typeof links[number]; index: number; onCopy?: () => void; copied: boolean }) {
-  const cardRef = useRef<HTMLAnchorElement>(null)
+  const cardRef = useRef<HTMLDivElement>(null)
 
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
     const card = cardRef.current
@@ -222,39 +243,17 @@ function LinkCard({ link, index, onCopy, copied }: { link: typeof links[number];
     card.style.transform = 'perspective(600px) rotateX(0deg) rotateY(0deg) scale(1)'
   }, [])
 
-  return (
-    <motion.a
-      ref={cardRef}
-      href={link.href}
-      target={link.href.startsWith('http') ? '_blank' : undefined}
-      rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-      download={link.href.endsWith('.pdf') ? 'resume.pdf' : undefined}
-      custom={index}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, amount: 0.3 }}
-      variants={fadeUp}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      className="group relative flex flex-col items-center gap-3 px-6 sm:px-8 py-6 sm:py-7 rounded-2xl border border-[#ffd86a]/10 bg-gradient-to-b from-white/[0.08] to-white/[0.02] hover:border-[#ffd86a]/30 transition-all duration-500 min-w-0 sm:min-w-[180px] cursor-pointer overflow-hidden"
-      style={{ transformStyle: 'preserve-3d', willChange: 'transform', transition: 'transform 0.15s ease-out, border-color 0.5s, background 0.5s' }}
-    >
-      {/* Spotlight follow */}
+  const isCopyCard = !!onCopy
+
+  const cardContent = (
+    <>
       <div
         className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
         style={{ background: 'radial-gradient(circle 120px at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255,216,106,0.12), transparent)' }}
       />
-
-      {/* Top fire glow line */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[60%] h-[1px] bg-gradient-to-r from-transparent via-[#ffd86a]/40 to-transparent group-hover:w-[90%] group-hover:via-[#ffd86a]/60 transition-all duration-700" />
-
-      {/* Top ember glow */}
       <div className="absolute -top-8 left-1/2 -translate-x-1/2 w-24 h-16 bg-[#ffd86a]/0 group-hover:bg-[#ffd86a]/[0.06] blur-2xl rounded-full transition-all duration-700 pointer-events-none" />
-
-      {/* Floating ember particle */}
       <div className="absolute top-2 right-3 w-1 h-1 rounded-full bg-[#ffd86a]/30 group-hover:bg-[#ffd86a]/70 group-hover:shadow-[0_0_8px_rgba(255,216,106,0.5)] transition-all duration-500 pointer-events-none group-hover:animate-[bounce_2s_ease-in-out_infinite]" />
-
-      {/* Icon ring */}
       <div className="relative flex items-center justify-center w-14 h-14 rounded-xl bg-white/[0.04] border border-white/[0.06] group-hover:border-[#ffd86a]/20 group-hover:bg-[#ffd86a]/[0.06] transition-all duration-500" style={{ transform: 'translateZ(20px)' }}>
         <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"
           style={{ background: 'radial-gradient(circle at center, rgba(255,216,106,0.1), transparent 70%)' }}
@@ -264,21 +263,13 @@ function LinkCard({ link, index, onCopy, copied }: { link: typeof links[number];
           : <link.Icon size={22} strokeWidth={1.5} className="text-white/40 group-hover:text-[#ffd86a] transition-colors duration-500" />
         }
       </div>
-
-      {/* Label */}
       <span className="text-white/50 text-sm font-medium tracking-wide group-hover:text-[#ffd86a]/90 transition-colors duration-300" style={{ transform: 'translateZ(12px)' }}>
         {link.label}
       </span>
-
-      {/* Subtitle */}
       <span className="text-white/15 text-[11px] tracking-wider group-hover:text-white/35 transition-colors duration-300" style={{ transform: 'translateZ(8px)' }}>
         {link.subtitle}
       </span>
-
-      {/* Bottom shimmer line on hover */}
       <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#ffd86a]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-
-      {/* Copy / External */}
       {onCopy ? (
         <button
           onClick={(e) => { e.preventDefault(); e.stopPropagation(); onCopy() }}
@@ -293,6 +284,39 @@ function LinkCard({ link, index, onCopy, copied }: { link: typeof links[number];
           className="absolute top-3 right-3 text-white/10 group-hover:text-[#ffd86a]/40 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
         />
       )}
+    </>
+  )
+
+  const sharedProps = {
+    ref: cardRef,
+    custom: index,
+    initial: "hidden" as const,
+    whileInView: "visible" as const,
+    viewport: { once: true, amount: 0.3 },
+    variants: fadeUp,
+    onMouseMove: handleMouseMove,
+    onMouseLeave: handleMouseLeave,
+    className: "group relative flex flex-col items-center gap-3 px-6 sm:px-8 py-6 sm:py-7 rounded-2xl border border-[#ffd86a]/10 bg-gradient-to-b from-white/[0.08] to-white/[0.02] hover:border-[#ffd86a]/30 transition-all duration-500 min-w-0 sm:min-w-[180px] cursor-pointer overflow-hidden",
+    style: { transformStyle: 'preserve-3d' as const, willChange: 'transform' as const, transition: 'transform 0.15s ease-out, border-color 0.5s, background 0.5s' },
+  }
+
+  if (isCopyCard) {
+    return (
+      <motion.div {...sharedProps} onClick={onCopy}>
+        {cardContent}
+      </motion.div>
+    )
+  }
+
+  return (
+    <motion.a
+      {...sharedProps}
+      href={link.href}
+      target={link.href.startsWith('http') ? '_blank' : undefined}
+      rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+      download={link.href.endsWith('.pdf') ? 'resume.pdf' : undefined}
+    >
+      {cardContent}
     </motion.a>
   )
 }
