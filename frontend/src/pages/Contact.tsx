@@ -288,7 +288,7 @@ function LinkCard({ link, index, onCopy, copied }: { link: typeof links[number];
   )
 
   const sharedProps = {
-    ref: cardRef,
+    ref: cardRef as any,
     custom: index,
     initial: "hidden" as const,
     whileInView: "visible" as const,
