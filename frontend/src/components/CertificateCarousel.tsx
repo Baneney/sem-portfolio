@@ -39,7 +39,6 @@ const CertificateCarousel: React.FC<CertificateCarouselProps> = ({ certificates:
 
   const isAnySelected = selectedId !== null;
 
-  // ── Drag state ──
   const carouselRef = useRef<HTMLDivElement>(null);
   const rotRef = useRef(0);
   const dragging = useRef(false);
@@ -50,20 +49,19 @@ const CertificateCarousel: React.FC<CertificateCarouselProps> = ({ certificates:
   const lastT = useRef(0);
   const rafRef = useRef(0);
   const snapTarget = useRef<number | null>(null);
+  const pressedCardIdx = useRef<number | null>(null);
 
   const SPIN_FACTOR = 0.4;
   const FRICTION = 0.96;
-  const AUTO_SPEED = 9 / 1000; // 9°/s — matches CSS 40s/360°
+  const AUTO_SPEED = 9 / 1000;
   const SNAP_SPEED = 0.08;
 
-  // ── Apply rotation to DOM ──
   const applyRot = useCallback((rot: number) => {
     if (carouselRef.current) {
       carouselRef.current.style.transform = `rotateX(-10deg) rotateY(${rot}deg)`;
     }
   }, []);
 
-  // ── RAF loop: auto-spin when not hovered, momentum, snap ──
   useEffect(() => {
     let prev = performance.now();
 
@@ -86,7 +84,6 @@ const CertificateCarousel: React.FC<CertificateCarouselProps> = ({ certificates:
           velRef.current *= Math.pow(FRICTION, dt / 16);
         } else {
           velRef.current = 0;
-          // Only auto-spin when no card is selected and not hovered
           if (!isAnySelected && !isHovered) {
             rotRef.current += AUTO_SPEED * dt;
           }
@@ -101,7 +98,19 @@ const CertificateCarousel: React.FC<CertificateCarouselProps> = ({ certificates:
     return () => cancelAnimationFrame(rafRef.current);
   }, [applyRot, isAnySelected, isHovered]);
 
-  // ── Pointer handlers ──
+  const snapTo = useCallback((index: number) => {
+    const target = index * anglePerItem;
+    const current = rotRef.current;
+    const norm = ((current % 360) + 360) % 360;
+    const diff = target - norm;
+    let adjust = diff;
+    if (adjust > 180) adjust -= 360;
+    if (adjust < -180) adjust += 360;
+    snapTarget.current = current + adjust;
+    velRef.current = 0;
+    dragging.current = false;
+  }, [anglePerItem]);
+
   const onDown = useCallback((clientX: number) => {
     dragging.current = true;
     dragStartX.current = clientX;
@@ -127,9 +136,24 @@ const CertificateCarousel: React.FC<CertificateCarouselProps> = ({ certificates:
     lastT.current = now;
   }, []);
 
-  const onUp = useCallback(() => {
+  const onUp = useCallback((clientX: number) => {
     if (!dragging.current) return;
     dragging.current = false;
+
+    const totalMoved = Math.abs(clientX - dragStartX.current);
+
+    if (totalMoved < 5 && pressedCardIdx.current !== null) {
+      const idx = pressedCardIdx.current;
+      const cert = certificates[idx];
+      if (cert && cert.id >= 0) {
+        setSelectedId(prev => prev === cert.id ? null : cert.id);
+        snapTo(idx);
+      }
+      pressedCardIdx.current = null;
+      return;
+    }
+
+    pressedCardIdx.current = null;
 
     if (Math.abs(velRef.current) > 0.3) {
       const check = () => {
@@ -145,14 +169,13 @@ const CertificateCarousel: React.FC<CertificateCarouselProps> = ({ certificates:
       const nearest = Math.round(rotRef.current / anglePerItem) * anglePerItem;
       snapTarget.current = nearest;
     }
-  }, [anglePerItem]);
+  }, [anglePerItem, certificates, snapTo]);
 
-  // ── Global event listeners (active only during drag) ──
   useEffect(() => {
     const move = (e: MouseEvent) => onMove(e.clientX);
-    const up = () => onUp();
+    const up = (e: MouseEvent) => onUp(e.clientX);
     const touchMove = (e: TouchEvent) => { if (e.touches.length) onMove(e.touches[0].clientX); };
-    const touchEnd = () => onUp();
+    const touchEnd = (e: TouchEvent) => { const t = e.changedTouches[0]; onUp(t ? t.clientX : 0); };
 
     window.addEventListener('mousemove', move);
     window.addEventListener('mouseup', up);
@@ -167,30 +190,12 @@ const CertificateCarousel: React.FC<CertificateCarouselProps> = ({ certificates:
     };
   }, [onMove, onUp]);
 
-  // ── Click-to-snap a specific card ──
-  const snapTo = useCallback((index: number) => {
-    const target = index * anglePerItem;
-    const current = rotRef.current;
-    const norm = ((current % 360) + 360) % 360;
-    const diff = target - norm;
-    let adjust = diff;
-    if (adjust > 180) adjust -= 360;
-    if (adjust < -180) adjust += 360;
-    snapTarget.current = current + adjust;
-    velRef.current = 0;
-    dragging.current = false;
-  }, [anglePerItem]);
-
   const selectedCert = certificates.find(c => c.id === selectedId);
 
   return (
     <div
       className="relative w-full min-h-[600px] flex items-center justify-center overflow-visible px-4 md:px-10"
-      style={{ cursor: dragging.current ? 'grabbing' : 'grab' }}
-      onMouseDown={(e) => onDown(e.clientX)}
-      onTouchStart={(e) => { if (e.touches.length) onDown(e.touches[0].clientX); }}
     >
-      {/* Dynamic Glow */}
       <AnimatePresence>
         {selectedId && (
           <motion.div
@@ -204,12 +209,13 @@ const CertificateCarousel: React.FC<CertificateCarouselProps> = ({ certificates:
 
       <div className={`relative z-20 flex flex-col md:flex-row items-center justify-center gap-12 md:gap-24 transition-all duration-1000 ease-[cubic-bezier(0.23,1,0.32,1)] w-full ${selectedId ? 'md:translate-x-[-8%]' : ''}`}>
 
-        {/* Carousel Section */}
         <div
           className="relative w-[300px] h-[420px] flex items-center justify-center transform-style-3d transition-all duration-700"
           style={{ perspective: '1200px' }}
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
+          onMouseDown={(e) => onDown(e.clientX)}
+          onTouchStart={(e) => { if (e.touches.length) onDown(e.touches[0].clientX); }}
         >
           <div
             ref={carouselRef}
@@ -220,6 +226,7 @@ const CertificateCarousel: React.FC<CertificateCarouselProps> = ({ certificates:
               ['--h' as any]: '310px',
               ['--translateZ' as any]: isAnySelected ? '0px' : '380px',
               transform: 'rotateX(-10deg) rotateY(0deg)',
+              cursor: dragging.current ? 'grabbing' : 'grab',
             }}
           >
             {certificates.map((cert, index) => {
@@ -229,10 +236,8 @@ const CertificateCarousel: React.FC<CertificateCarouselProps> = ({ certificates:
               return (
                 <div
                   key={cert.id}
-                  onPointerDown={(e) => {
-                    e.stopPropagation();
-                    setSelectedId(isSelected ? null : cert.id);
-                    snapTo(index);
+                  onPointerDown={() => {
+                    pressedCardIdx.current = index;
                   }}
                   className={`absolute inset-0 rounded-2xl overflow-hidden border-2 transition-all duration-500 cursor-pointer group
                     ${isSelected
@@ -264,10 +269,8 @@ const CertificateCarousel: React.FC<CertificateCarouselProps> = ({ certificates:
                     </div>
                   )}
 
-                  {/* Subtle Reflection */}
                   <div className="absolute inset-0 bg-gradient-to-tr from-white/5 via-transparent to-transparent opacity-40 pointer-events-none" />
 
-                  {/* Shimmer on Hover */}
                   <div className="absolute inset-0 w-full h-full opacity-0 group-hover:opacity-100 pointer-events-none overflow-hidden z-10">
                     <div className="absolute inset-0 w-[200%] h-full bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-20 -translate-x-full animate-[cert-shimmer_2.5s_infinite]" />
                   </div>
@@ -277,7 +280,6 @@ const CertificateCarousel: React.FC<CertificateCarouselProps> = ({ certificates:
           </div>
         </div>
 
-        {/* Floating Details Section */}
         <AnimatePresence mode="wait">
           {selectedCert && (
             <motion.div
@@ -328,7 +330,6 @@ const CertificateCarousel: React.FC<CertificateCarouselProps> = ({ certificates:
         </AnimatePresence>
       </div>
 
-      {/* Dynamic Background Glow */}
       <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-[#ffd86a]/5 rounded-full blur-[140px] pointer-events-none transition-opacity duration-1000 ${selectedId ? 'opacity-30' : 'opacity-100'}`} />
     </div>
   );
