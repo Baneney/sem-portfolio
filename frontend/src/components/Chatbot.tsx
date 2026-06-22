@@ -103,7 +103,39 @@ CONTACT:
 
 The portfolio website features a Hunger Games/fire theme with gold (#ffd86a) on dark (#080400), cinematic splash screen, fire particle effects, scroll snap navigation, and a Mockingjay pin motif.`
 
-interface Msg { role: 'user' | 'bot'; text: string }
+interface Msg { role: 'user' | 'bot'; text: string; suggestions?: { label: string; sectionId: string }[] }
+
+const sectionKeywords: { keywords: string[]; sectionId: string; label: string }[] = [
+  { keywords: ['about', 'who i am', 'who is', 'background', 'bio'], sectionId: 'about1', label: 'About' },
+  { keywords: ['skill', 'expertise', 'technology', 'tech stack', 'tool'], sectionId: 'skills', label: 'Skills' },
+  { keywords: ['certificate', 'certification', 'cert'], sectionId: 'certificates', label: 'Certificates' },
+  { keywords: ['project', 'portfolio', 'work', 'built', 'build'], sectionId: 'projects', label: 'Projects' },
+  { keywords: ['contact', 'email', 'reach', 'message', 'hire', 'connect'], sectionId: 'contact', label: 'Contact' },
+  { keywords: ['experience', 'intern', 'internship'], sectionId: 'about2', label: 'Experience' },
+]
+
+function parseSectionSuggestions(text: string): { label: string; sectionId: string }[] {
+  const lower = text.toLowerCase()
+  const found = new Set<string>()
+  const result: { label: string; sectionId: string }[] = []
+  for (const entry of sectionKeywords) {
+    if (entry.keywords.some(kw => lower.includes(kw))) {
+      const key = entry.sectionId
+      if (!found.has(key)) {
+        found.add(key)
+        result.push({ label: entry.label, sectionId: entry.sectionId })
+      }
+    }
+  }
+  return result
+}
+
+function scrollToSection(id: string) {
+  const container = document.getElementById('snap-container')
+  const el = document.getElementById(id)
+  if (!container || !el) return
+  container.scrollTo({ top: el.offsetTop, behavior: 'smooth' })
+}
 
 async function callGemini(messages: Msg[]): Promise<string> {
   if (!GEMINI_API_KEY) {
@@ -147,7 +179,7 @@ async function callGemini(messages: Msg[]): Promise<string> {
 export default function Chatbot() {
   const [open, setOpen] = useState(false)
   const [msgs, setMsgs] = useState<Msg[]>([
-    { role: 'bot', text: "Hey! I'm Sem's portfolio assistant. Ask me anything about his skills, projects, experience, or just say hi!" },
+    { role: 'bot', text: "Hey! I'm Sem's portfolio assistant. Ask me anything about his skills, projects, experience, or just say hi!", suggestions: [{ label: 'Skills', sectionId: 'skills' }, { label: 'Projects', sectionId: 'projects' }, { label: 'Contact', sectionId: 'contact' }] },
   ])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
@@ -168,7 +200,8 @@ export default function Chatbot() {
     setLoading(true)
 
     const reply = await callGemini(newMsgs)
-    setMsgs(prev => [...prev, { role: 'bot', text: reply }])
+    const suggestions = parseSectionSuggestions(reply)
+    setMsgs(prev => [...prev, { role: 'bot', text: reply, suggestions }])
     setLoading(false)
   }, [input, loading, msgs])
 
@@ -177,7 +210,7 @@ export default function Chatbot() {
       {/* Toggle button — futuristic Mockingjay beacon */}
       <motion.button
         onClick={() => setOpen(!open)}
-        className="fixed bottom-5 right-5 z-[100] w-14 h-14 rounded-full cursor-pointer group"
+        className="fixed bottom-5 left-5 z-[100] w-14 h-14 rounded-full cursor-pointer group"
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
       >
@@ -209,13 +242,16 @@ export default function Chatbot() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.25, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className="fixed bottom-22 right-5 z-[100] w-[360px] max-w-[calc(100vw-40px)] h-[480px] max-h-[72vh] rounded-2xl flex flex-col overflow-hidden"
+            className="fixed bottom-22 left-5 z-[100] w-[360px] max-w-[calc(100vw-40px)] h-[480px] max-h-[72vh] rounded-2xl flex flex-col overflow-hidden"
             style={{
               background: 'linear-gradient(180deg, rgba(12,7,0,0.97) 0%, rgba(8,4,0,0.99) 100%)',
-              boxShadow: '0 0 60px rgba(200,80,0,0.12), 0 0 1px rgba(255,216,106,0.3), inset 0 1px 0 rgba(255,216,106,0.06)',
+              boxShadow: '0 0 60px rgba(200,80,0,0.15), 0 0 1px rgba(255,216,106,0.3), inset 0 1px 0 rgba(255,216,106,0.06)',
               border: '1px solid rgba(255,216,106,0.1)',
             }}
           >
+            {/* Noise texture overlay */}
+            <div className="absolute inset-0 opacity-[0.03] pointer-events-none rounded-2xl" style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")", backgroundSize: '128px 128px' }} />
+
             {/* Animated border glow — top edge */}
             <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#ffd86a]/40 to-transparent" />
             {/* Corner accents */}
@@ -223,11 +259,21 @@ export default function Chatbot() {
             <div className="absolute top-0 right-0 w-8 h-8 border-t border-r border-[#ffd86a]/20 rounded-tr-2xl pointer-events-none" />
             <div className="absolute bottom-0 left-0 w-8 h-8 border-b border-l border-[#ffd86a]/10 rounded-bl-2xl pointer-events-none" />
             <div className="absolute bottom-0 right-0 w-8 h-8 border-b border-r border-[#ffd86a]/10 rounded-br-2xl pointer-events-none" />
+            {/* Vignette overlay */}
+            <div className="absolute inset-0 rounded-2xl pointer-events-none" style={{ background: 'radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.2) 100%)' }} />
 
             {/* Header */}
             <div className="relative px-5 py-4 border-b border-[#ffd86a]/10">
-              {/* Header background glow */}
-              <div className="absolute inset-0 bg-gradient-to-r from-[#ffd86a]/[0.03] via-transparent to-[#c85000]/[0.03]" />
+              {/* Header background glow — subtle amber shimmer */}
+              <motion.div
+                className="absolute inset-0"
+                animate={{ opacity: [0.4, 0.7, 0.4], backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'] }}
+                transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+                style={{
+                  background: 'linear-gradient(90deg, rgba(255,216,106,0.02), rgba(200,80,0,0.03), rgba(255,216,106,0.02))',
+                  backgroundSize: '200% 100%',
+                }}
+              />
               <div className="relative flex items-center gap-3">
                 {/* Avatar with status */}
                 <div className="relative">
@@ -261,26 +307,43 @@ export default function Chatbot() {
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.2 }}
-                  className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
-                  {m.role === 'bot' && (
-                    <div className="w-6 h-6 rounded-full bg-gradient-to-br from-[#ffd86a]/20 to-[#c85000]/20 flex items-center justify-center mr-2 mt-0.5 flex-shrink-0 border border-[#ffd86a]/10">
-                      <MessageCircle size={10} className="text-[#ffd86a]/60" />
+                  <div className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                    {m.role === 'bot' && (
+                      <div className="w-6 h-6 rounded-full bg-gradient-to-br from-[#ffd86a]/20 to-[#c85000]/20 flex items-center justify-center mr-2 mt-0.5 flex-shrink-0 border border-[#ffd86a]/10">
+                        <MessageCircle size={10} className="text-[#ffd86a]/60" />
+                      </div>
+                    )}
+                    <div
+                      className={`max-w-[80%] px-4 py-2.5 text-[13px] leading-relaxed whitespace-pre-line ${
+                        m.role === 'user'
+                          ? 'text-[#e5d4a1] rounded-2xl rounded-br-md'
+                          : 'text-white/70 rounded-2xl rounded-bl-md'
+                      }`}
+                      style={m.role === 'user'
+                        ? { background: 'linear-gradient(135deg, rgba(255,216,106,0.12), rgba(200,80,0,0.08))', border: '1px solid rgba(255,216,106,0.1)' }
+                        : { background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.04)' }
+                      }
+                    >
+                      {m.text}
+                    </div>
+                  </div>
+                  {m.role === 'bot' && m.suggestions && m.suggestions.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5 mt-1.5 ml-8">
+                      {m.suggestions.map(s => (
+                        <button
+                          key={s.sectionId}
+                          onClick={() => { setOpen(false); scrollToSection(s.sectionId) }}
+                          className="text-[10px] px-2.5 py-1 rounded-full font-medium tracking-wider transition-all duration-200 cursor-pointer
+                                     bg-[#ffd86a]/[0.07] border border-[#ffd86a]/20 text-[#ffd86a]/70
+                                     hover:bg-[#ffd86a]/[0.15] hover:border-[#ffd86a]/40 hover:text-[#ffd86a]
+                                     active:scale-95"
+                        >
+                          Go to {s.label} →
+                        </button>
+                      ))}
                     </div>
                   )}
-                  <div
-                    className={`max-w-[80%] px-4 py-2.5 text-[13px] leading-relaxed whitespace-pre-line ${
-                      m.role === 'user'
-                        ? 'text-[#e5d4a1] rounded-2xl rounded-br-md'
-                        : 'text-white/70 rounded-2xl rounded-bl-md'
-                    }`}
-                    style={m.role === 'user'
-                      ? { background: 'linear-gradient(135deg, rgba(255,216,106,0.12), rgba(200,80,0,0.08))', border: '1px solid rgba(255,216,106,0.1)' }
-                      : { background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.04)' }
-                    }
-                  >
-                    {m.text}
-                  </div>
                 </motion.div>
               ))}
               {loading && (
