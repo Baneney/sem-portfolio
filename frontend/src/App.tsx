@@ -27,8 +27,8 @@ function App() {
   const currentPageRef = useRef(-1)
   const [showTransition, setShowTransition] = useState(false)
   const [showSplash, setShowSplash] = useState(true)
+  const [contentReady, setContentReady] = useState(false)
   const splashDone = useRef(false)
-  const contentReady = useRef(false)
   const scrollLockedRef = useRef(false)
   const programmaticScrollRef = useRef(false)
 
@@ -67,18 +67,19 @@ function App() {
   })
 
   function tryDismissSplash() {
-    if (splashDone.current && contentReady.current) {
+    if (splashDone.current && contentReady) {
       setShowSplash(false)
     }
   }
 
   useEffect(() => {
+    if (!contentReady) return
     const t = setTimeout(() => {
       splashDone.current = true
       tryDismissSplash()
     }, 3500)
     return () => clearTimeout(t)
-  }, [])
+  }, [contentReady])
 
   useEffect(() => {
     const container = snapContainerRef.current
@@ -106,8 +107,7 @@ function App() {
 
   useEffect(() => {
     const dismiss = () => {
-      contentReady.current = true
-      tryDismissSplash()
+      setContentReady(true)
     }
 
     if (document.readyState === 'complete') {
@@ -217,7 +217,7 @@ function App() {
   return (
     <div className="text-gray-300 font-sans">
       <AnimatePresence>
-        {showSplash && <Splash onComplete={() => setShowSplash(false)} />}
+        {showSplash && <Splash onComplete={() => setShowSplash(false)} ready={contentReady} />}
       </AnimatePresence>
 
       {/* ── Unified Cinematic Background Layer ── */}

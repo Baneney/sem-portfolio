@@ -308,13 +308,16 @@ function LinkCard({ link, index, onCopy, copied }: { link: typeof links[number];
     )
   }
 
+  const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
+  const isPdf = link.href.endsWith('.pdf')
+
   return (
     <motion.a
       {...sharedProps}
       href={link.href}
-      target={link.href.startsWith('http') ? '_blank' : undefined}
-      rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-      download={link.href.endsWith('.pdf') ? 'resume.pdf' : undefined}
+      target={isPdf && !isMobile ? '_blank' : link.href.startsWith('http') ? '_blank' : undefined}
+      rel={link.href.startsWith('http') || (isPdf && !isMobile) ? 'noopener noreferrer' : undefined}
+      download={isPdf && isMobile ? 'sem-resume.pdf' : undefined}
     >
       {cardContent}
     </motion.a>

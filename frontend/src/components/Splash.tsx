@@ -3,6 +3,7 @@ import hgPin from '../assets/hg-pin.png'
 
 interface SplashProps {
   onComplete: () => void
+  ready: boolean
 }
 
 const embers = Array.from({ length: 24 }, () => ({
@@ -20,7 +21,7 @@ const sparks = Array.from({ length: 16 }, (_, i) => ({
   size: 1.5 + Math.random() * 2,
 }))
 
-export default function Splash({ onComplete }: SplashProps) {
+export default function Splash({ onComplete, ready }: SplashProps) {
   return (
     <motion.div
       className="fixed inset-0 z-[100] overflow-hidden"
@@ -32,7 +33,7 @@ export default function Splash({ onComplete }: SplashProps) {
       <motion.div
         className="absolute inset-0 bg-[#080400]"
         initial={{ opacity: 1 }}
-        animate={{ opacity: [1, 1, 1, 0] }}
+        animate={ready ? { opacity: [1, 1, 1, 0] } : { opacity: 1 }}
         transition={{ duration: 3.2, times: [0, 0.75, 0.88, 1], ease: 'easeInOut' }}
       />
 
@@ -49,10 +50,10 @@ export default function Splash({ onComplete }: SplashProps) {
           background: 'radial-gradient(circle, #fff 0%, #ffd86a 40%, #ff8c00 70%, transparent 100%)',
         }}
         initial={{ scale: 0, opacity: 0 }}
-        animate={{
+        animate={ready ? {
           scale: [0, 0, 1, 3, 0],
           opacity: [0, 0, 1, 0.8, 0],
-        }}
+        } : {}}
         transition={{ duration: 1.2, times: [0, 0.1, 0.25, 0.6, 1], ease: 'easeOut' }}
       />
 
@@ -70,11 +71,11 @@ export default function Splash({ onComplete }: SplashProps) {
           boxShadow: '0 0 30px rgba(255,140,0,0.4), inset 0 0 20px rgba(255,140,0,0.2)',
         }}
         initial={{ scale: 0, opacity: 0 }}
-        animate={{
+        animate={ready ? {
           scale: [0, 1.5, 4],
           opacity: [0, 0.9, 0],
           borderWidth: ['2px', '3px', '1px'],
-        }}
+        } : {}}
         transition={{ duration: 1.0, delay: 0.3, ease: 'easeOut' }}
       />
 
@@ -92,10 +93,10 @@ export default function Splash({ onComplete }: SplashProps) {
           boxShadow: '0 0 20px rgba(255,140,0,0.3)',
         }}
         initial={{ scale: 0, opacity: 0 }}
-        animate={{
+        animate={ready ? {
           scale: [0, 2, 5],
           opacity: [0, 0.7, 0],
-        }}
+        } : {}}
         transition={{ duration: 1.2, delay: 0.5, ease: 'easeOut' }}
       />
 
@@ -112,10 +113,10 @@ export default function Splash({ onComplete }: SplashProps) {
           background: 'radial-gradient(circle, rgba(255,140,0,0.5) 0%, rgba(200,60,0,0.3) 30%, rgba(100,20,0,0.1) 60%, transparent 80%)',
         }}
         initial={{ scale: 0, opacity: 0 }}
-        animate={{
+        animate={ready ? {
           scale: [0, 0.5, 1.2, 1.0],
           opacity: [0, 0.3, 0.8, 0],
-        }}
+        } : {}}
         transition={{ duration: 2.0, delay: 0.4, ease: 'easeOut' }}
       />
 
@@ -132,10 +133,10 @@ export default function Splash({ onComplete }: SplashProps) {
           background: 'radial-gradient(circle, rgba(255,220,100,0.6) 0%, rgba(255,160,0,0.3) 40%, transparent 70%)',
         }}
         initial={{ scale: 0, opacity: 0 }}
-        animate={{
+        animate={ready ? {
           scale: [0, 0.8, 1.5],
           opacity: [0, 0.9, 0],
-        }}
+        } : {}}
         transition={{ duration: 1.6, delay: 0.6, ease: 'easeOut' }}
       />
 
@@ -155,7 +156,7 @@ export default function Splash({ onComplete }: SplashProps) {
           opacity: 0,
           filter: 'brightness(2) saturate(1.5)',
         }}
-        animate={{
+        animate={ready ? {
           left: ['50%', '50%', '50%', '90%'],
           top: ['50%', '50%', '50%', '35%'],
           x: '-50%',
@@ -170,7 +171,7 @@ export default function Splash({ onComplete }: SplashProps) {
             'brightness(1) saturate(1)',
             'brightness(1) saturate(1)',
           ],
-        }}
+        } : {}}
         transition={{
           duration: 3.0,
           ease: [0.25, 0.1, 0.25, 1],
@@ -193,12 +194,12 @@ export default function Splash({ onComplete }: SplashProps) {
           filter: 'blur(8px)',
         }}
         initial={{ opacity: 0, scale: 0 }}
-        animate={{
+        animate={ready ? {
           left: ['50%', '50%', '50%', '88%'],
           top: ['50%', '50%', '50%', '34%'],
           opacity: [0, 0, 0.7, 0],
           scale: [0, 0.5, 1.2, 0.3],
-        }}
+        } : {}}
         transition={{
           duration: 3.0,
           ease: [0.25, 0.1, 0.25, 1],
@@ -220,10 +221,10 @@ export default function Splash({ onComplete }: SplashProps) {
           boxShadow: '0 0 40px rgba(255,160,0,0.3)',
         }}
         initial={{ scale: 0, opacity: 0 }}
-        animate={{
+        animate={ready ? {
           scale: [0, 2.5, 4],
           opacity: [0, 0.8, 0],
-        }}
+        } : {}}
         transition={{ duration: 1.0, delay: 2.1, ease: 'easeOut' }}
       />
 
@@ -239,10 +240,10 @@ export default function Splash({ onComplete }: SplashProps) {
           border: '1px solid rgba(255,180,50,0.3)',
         }}
         initial={{ scale: 0, opacity: 0 }}
-        animate={{
+        animate={ready ? {
           scale: [0, 3, 5],
           opacity: [0, 0.6, 0],
-        }}
+        } : {}}
         transition={{ duration: 1.2, delay: 2.2, ease: 'easeOut' }}
       />
 
@@ -259,10 +260,10 @@ export default function Splash({ onComplete }: SplashProps) {
           background: 'radial-gradient(circle, rgba(255,220,100,0.6) 0%, rgba(255,160,0,0.2) 40%, transparent 70%)',
         }}
         initial={{ scale: 0, opacity: 0 }}
-        animate={{
+        animate={ready ? {
           scale: [0, 1.5, 2.5],
           opacity: [0, 0.9, 0],
-        }}
+        } : {}}
         transition={{ duration: 0.8, delay: 2.1, ease: 'easeOut' }}
       />
 
@@ -280,11 +281,11 @@ export default function Splash({ onComplete }: SplashProps) {
             boxShadow: `0 0 ${e.size * 3}px rgba(255,160,0,0.6)`,
           }}
           initial={{ opacity: 0, y: 0, x: 0 }}
-          animate={{
+          animate={ready ? {
             opacity: [0, 0.9, 0.6, 0],
             y: [0, -window.innerHeight * 0.5, -window.innerHeight * 0.8],
             x: [0, e.drift * 0.5, e.drift],
-          }}
+          } : {}}
           transition={{
             duration: e.duration,
             delay: e.delay,
@@ -309,12 +310,12 @@ export default function Splash({ onComplete }: SplashProps) {
               boxShadow: `0 0 ${s.size * 4}px rgba(255,216,106,0.8)`,
             }}
             initial={{ opacity: 0, x: 0, y: 0, scale: 1 }}
-            animate={{
+            animate={ready ? {
               opacity: [0, 1, 0],
               x: [0, Math.cos(rad) * s.distance],
               y: [0, Math.sin(rad) * s.distance],
               scale: [1, 0.3],
-            }}
+            } : {}}
             transition={{
               duration: 0.8,
               delay: s.delay,
@@ -333,10 +334,10 @@ export default function Splash({ onComplete }: SplashProps) {
           filter: 'blur(20px)',
         }}
         initial={{ opacity: 0, y: '100%' }}
-        animate={{
+        animate={ready ? {
           opacity: [0, 0.8, 0.6, 0],
           y: ['100%', '0%', '-20%', '-50%'],
-        }}
+        } : {}}
         transition={{ duration: 2.5, delay: 0.3, ease: 'easeOut' }}
       />
 
@@ -347,7 +348,7 @@ export default function Splash({ onComplete }: SplashProps) {
           background: 'radial-gradient(ellipse at center, rgba(255,140,0,0.08) 0%, transparent 70%)',
         }}
         initial={{ opacity: 0 }}
-        animate={{ opacity: [0, 0.6, 0] }}
+        animate={ready ? { opacity: [0, 0.6, 0] } : {}}
         transition={{ duration: 2.5, delay: 0.5, ease: 'easeInOut' }}
       />
     </motion.div>
