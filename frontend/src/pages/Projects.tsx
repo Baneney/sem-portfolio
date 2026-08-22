@@ -39,7 +39,7 @@ const projects = [
     longDescription:
       "React Native mobile application designed to streamline apartment maintenance by facilitating real-time service requests and transparent transaction tracking between tenants, landlords, and technicians",
     tech: ["React Native", "Typescript", "Firebase", "Expo"],
-    github: "https://github.com/Baneney/Schedulater.git",
+    github: "https://github.com/Baneney/FixTrack.git",
     live: "",
     highlights: [
       "Request approval and assignment workflow",
@@ -105,7 +105,14 @@ const projects = [
       "A personal portfolio website developed with React and Tailwind CSS that highlights my skills, projects, and development experience. This project represents the portfolio website currently displayed.",
     longDescription:
       "A personal portfolio website developed using React and Tailwind CSS to showcase my technical skills, projects, and professional experience in software development. The website features a modern and responsive design that highlights my work, capabilities, and journey as a developer.",
-    tech: ["React", "Typescript","Tailwind CSS", "Framer Motion", "Vite", "Vercel"],
+    tech: [
+      "React",
+      "Typescript",
+      "Tailwind CSS",
+      "Framer Motion",
+      "Vite",
+      "Vercel",
+    ],
     github: "#",
     live: "",
     highlights: [

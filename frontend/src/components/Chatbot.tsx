@@ -82,6 +82,17 @@ PROJECTS:
    - Features: cinematic fire splash, parallax effects, scroll animations, responsive design
    - Tech: React, TypeScript, Tailwind CSS, Framer Motion, Vite, Vercel
 
+CERTIFICATIONS:
+
+1. Networking Basics — Cisco Networking Academy (2024)
+   - Learned the basic concepts of computer networking, including how networks work, common network devices, and how data is shared between computers.
+
+2. Nasa Space Up Challenge (2024) — NASA
+   - Recognized for participating in NASA's global hackathon, solving real-world challenges through innovation and teamwork.
+
+3. Introduction to Data Science — Cisco Networking Academy (2024)
+   - Gained knowledge in data analysis, insights, and data-driven technologies.
+
 EXPERIENCE:
 
 1. UI/UX & Frontend Design Intern — Camtastic Corp. (Jan–Mar 2025)
