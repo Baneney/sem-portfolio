@@ -6,6 +6,8 @@ import schedulaterImg from "../assets/schedulater.png";
 import fixTrack from "../assets/fixtrack.png";
 import ciudad from '../assets/ciudad.png'
 import tas from '../assets/tas.png'
+import bscool from '../assets/bscool.png'
+import lifewood from '../assets/lifewood.png'
 import portfolio from "../assets/portfolio.png";
 
 const PROJECT_H = 280
@@ -98,6 +100,24 @@ const projects = [
     ],
   },
   {
+    title: "Lifewood Website",
+    year: "2025",
+    image: lifewood,
+    description:
+      "A company showcase website built during my IT internship, pairing a React, TypeScript, and Tailwind CSS frontend with a Node.js and Supabase backend.",
+    longDescription:
+      "A full-stack project built during my IT internship to demonstrate my capability in designing interactive user interfaces and connecting them to a live database. It pairs a modern React, TypeScript, and Tailwind CSS frontend with a scalable Node.js and Supabase backend.",
+    tech: ["React", "TypeScript", "Tailwind CSS", "Node.js", "Supabase"],
+    github: "https://github.com/Baneney/Lifewood-data-tech",
+    live: "https://lifewood-data-tech-six.vercel.app/",
+    highlights: [
+      "Dark/light theme toggle",
+      "Company story video showcase",
+      "Services and project showcase pages",
+      "Careers and contact sections for recruitment",
+    ],
+  },
+  {
     title: "Personal Portfolio",
     year: "2026",
     image: portfolio,
@@ -113,12 +133,30 @@ const projects = [
       "Vite",
       "Vercel",
     ],
-    github: "#",
+    github: "",
     live: "",
     highlights: [
       "Skills and experience presentation",
       "Project showcase and case study sections",
       "Responsive and modern UI design",
+    ],
+  },
+  {
+    title: "BSCOOL",
+    year: "2026",
+    image: bscool,
+    description:
+      "A website for BSCOOL, a creative arts and crafts brand that offers activity books, DIY kits, and imaginative products to inspire girls' creativity, confidence, and screen-free play.",
+    longDescription:
+      "A corporate website for BSCOOL, a creative arts and crafts brand offering activity books, DIY kits, and imaginative products designed to inspire girls' creativity, confidence, and screen-free play. Built with Next.js and Supabase to support a growing product catalog and a distributor inquiry pipeline.",
+    tech: ["Next.js", "React", "Tailwind CSS", "Supabase"],
+    github: "",
+    live: "https://www.bscool.xyz/",
+    highlights: [
+      "Brand storytelling with a 'Meet the Girls' character showcase",
+      "Product catalog for activity books and DIY kits",
+      "B2B distributor inquiry flow",
+      "Responsive, playful UI tailored to a young audience",
     ],
   },
 ];
@@ -135,10 +173,14 @@ function generateSnakePath(n: number) {
   let prevCP2 = { x: lx, y: -seg * 0.25 }
 
   for (let i = 0; i < n; i++) {
+    const isLast = i === n - 1
     const startX = i === 0 ? lx : (i % 2 === 0 ? lx : rx)
     const startY = i * seg
     const endX = i % 2 === 0 ? rx : lx
-    const endY = (i + 1) * seg
+    // The last node has no following node to lead into, so its segment
+    // stops at the node itself instead of trailing a further half-segment
+    // into empty space.
+    const endY = isLast ? startY + seg / 2 : (i + 1) * seg
 
     // C1 continuity: reflect previous CP2 through current start point
     const cp1x = 2 * startX - prevCP2.x
@@ -146,12 +188,16 @@ function generateSnakePath(n: number) {
 
     // Second control point pulls toward the end x, 30% above end y
     const cp2x = endX
-    const cp2y = endY - seg * 0.3
+    const cp2y = endY - seg * (isLast ? 0.15 : 0.3)
 
     d += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${endX} ${endY}`
     prevCP2 = { x: cp2x, y: cp2y }
   }
   return d
+}
+
+function snakePathHeight(n: number) {
+  return (n - 0.5) * PROJECT_H
 }
 
 function getPointOnPath(pathEl: SVGPathElement, ratio: number) {
@@ -465,11 +511,11 @@ export default function Projects() {
           {/* SVG snake line */}
           <svg
             ref={svgRef}
-            viewBox={`0 0 200 ${projects.length * PROJECT_H}`}
+            viewBox={`0 0 200 ${snakePathHeight(projects.length)}`}
             className="absolute top-[8%] pb-10"
             style={{
               width: 200,
-              height: projects.length * PROJECT_H,
+              height: snakePathHeight(projects.length),
               overflow: 'visible',
             }}
           >
@@ -836,26 +882,30 @@ export default function Projects() {
                 </div>
 
                 {/* Links */}
-                <div className="flex gap-6">
-                  <a
-                    href={projects[selected].github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-xs tracking-[0.2em] uppercase text-white/40 hover:text-[#ffd86a] transition-colors"
-                  >
-                    GitHub →
-                  </a>
-                  {projects[selected].live && (
-                    <a
-                      href={projects[selected].live}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-xs tracking-[0.2em] uppercase text-[#ffd86a]/60 hover:text-[#ffd86a] transition-colors"
-                    >
-                      Live Demo →
-                    </a>
-                  )}
-                </div>
+                {(projects[selected].github || projects[selected].live) && (
+                  <div className="flex gap-6">
+                    {projects[selected].github && (
+                      <a
+                        href={projects[selected].github}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs tracking-[0.2em] uppercase text-white/40 hover:text-[#ffd86a] transition-colors"
+                      >
+                        GitHub →
+                      </a>
+                    )}
+                    {projects[selected].live && (
+                      <a
+                        href={projects[selected].live}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs tracking-[0.2em] uppercase text-[#ffd86a]/60 hover:text-[#ffd86a] transition-colors"
+                      >
+                        Live Demo →
+                      </a>
+                    )}
+                  </div>
+                )}
               </div>
             </motion.div>
           </motion.div>

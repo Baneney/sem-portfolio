@@ -3,14 +3,14 @@ import { motion, useScroll, useSpring, useTransform } from 'framer-motion'
 
 const internships = [
   {
-    role: "UI/UX & Frontend Design Intern",
-    company: "Camtastic Corp.",
-    period: "Jan 2025 – Mar 2025",
+    role: "Software Developer",
+    company: "1000 Miles Limited",
+    period: "August 2025 – Present",
     description:
-      "Assisted in UI/UX design by creating wireframes, website layouts, and application graphics. Developed responsive frontend interfaces using HTML and CSS while ensuring a consistent and user-friendly experience.",
-    tags: ["HTML5", "CSS"],
-    accent: "#ffd86a",
-    icon: "✦",
+      "Developed and maintained corporate websites to expand company web presence and functionality. Streamlined internal operations and optimized manual processes by designing and deploying custom automated workflows using n8n and Make. Managed software-based employee onboarding and delivered continuous technical support for internal digital applications and software tools.",
+    tags: ["React", "Next.js", "n8n", "Make"],
+    accent: "#ffb300",
+    icon: "✚",
   },
   {
     role: "Full Stack Intern",
@@ -21,6 +21,16 @@ const internships = [
     tags: ["Node.js", "PostgreSQL", "Docker"],
     accent: "#ff8c00",
     icon: "◈",
+  },
+  {
+    role: "UI/UX & Frontend Design Intern",
+    company: "Camtastic Corp.",
+    period: "Jan 2025 – Mar 2025",
+    description:
+      "Assisted in UI/UX design by creating wireframes, website layouts, and application graphics. Developed responsive frontend interfaces using HTML and CSS while ensuring a consistent and user-friendly experience.",
+    tags: ["HTML5", "CSS"],
+    accent: "#ffd86a",
+    icon: "✦",
   },
 ]
 
@@ -84,7 +94,7 @@ export default function About2({ containerRef }: { containerRef: React.RefObject
     offset: ["start start", "end start"],
   })
   const smoothExit = useSpring(exitProgress, { stiffness: 45, damping: 25 })
-  const contentOpacity = useTransform(smoothExit, [0, 0.7], [1, 0])
+  const contentOpacity = useTransform(smoothExit, [0.85, 1], [1, 0])
 
   return (
     <motion.section
@@ -180,8 +190,8 @@ export default function About2({ containerRef }: { containerRef: React.RefObject
 
               {/* Card */}
               <motion.div
-                className={`relative w-full pl-10 sm:pl-0 sm:w-[46%] ${i === 0 ? "sm:mr-auto sm:pr-14" : "sm:ml-auto sm:pl-14"}`}
-                initial={{ opacity: 0, x: i === 0 ? -80 : 80 }}
+                className={`relative w-full pl-10 sm:pl-0 sm:w-[46%] ${i % 2 === 0 ? "sm:mr-auto sm:pr-14" : "sm:ml-auto sm:pl-14"}`}
+                initial={{ opacity: 0, x: i % 2 === 0 ? -80 : 80 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true, amount: 0.3 }}
                 transition={{ duration: 0.75, ease: [0.25, 0.46, 0.45, 0.94] }}

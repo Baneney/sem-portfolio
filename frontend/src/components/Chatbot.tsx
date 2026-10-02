@@ -30,9 +30,9 @@ PHILOSOPHY:
 SKILLS:
 • Frontend: HTML, CSS, JavaScript, TypeScript, React, React Native, Tailwind CSS
 • Animation & 3D: Framer Motion, Three.js, ReactBits
-• Backend: Node.js, Python, Flask, ASP.NET, Django
+• Backend: Node.js, Next.js, Python, Flask, ASP.NET, Django
 • Databases: PostgreSQL, MongoDB, Firebase, Supabase
-• DevOps & Tools: Git, Docker, GitHub, Figma, Lucidchart, AI Tools
+• DevOps & Tools: Git, Docker, GitHub, Figma, Lucidchart, n8n, Make, AI Tools
 
 PROJECTS:
 
@@ -70,17 +70,25 @@ PROJECTS:
    - Developed as intern project at Lifewood Data Technology
    - GitHub: github.com/Baneney/tas-game
 
-5. Lifewood Data Tech Website (2026)
-   - Company showcase website for Lifewood Data Technology
-   - Built during internship
-   - Live at lifewood-data-tech-sandy.vercel.app
-   - Tech: TypeScript, React
+5. Lifewood Website (2025)
+   - Full-stack company showcase website built during IT internship at Lifewood Data Technology
+   - Demonstrates interactive UI design connected to a live database
+   - Dark/light theme toggle, company story video showcase, services and project showcase pages, careers and contact sections
+   - Tech: React, TypeScript, Tailwind CSS, Node.js, Supabase
    - GitHub: github.com/Baneney/Lifewood-data-tech
+   - Live: lifewood-data-tech-six.vercel.app
 
 6. Personal Portfolio (2026)
    - This website you're chatting on!
    - Features: cinematic fire splash, parallax effects, scroll animations, responsive design
    - Tech: React, TypeScript, Tailwind CSS, Framer Motion, Vite, Vercel
+
+7. BSCOOL (2026)
+   - Corporate website for BSCOOL, a creative arts and crafts brand offering activity books, DIY kits, and imaginative products to inspire girls' creativity, confidence, and screen-free play
+   - Built while working as a Software Developer at 1000 Miles Limited
+   - Features: brand storytelling with a "Meet the Girls" character showcase, product catalog, B2B distributor inquiry flow
+   - Tech: Next.js, React, Tailwind CSS, Supabase
+   - Live: www.bscool.xyz
 
 CERTIFICATIONS:
 
@@ -105,6 +113,13 @@ EXPERIENCE:
    - Built company showcase website and game project
    - Gained experience with AI tools
    - Assisted with SEO strategies and content enhancements
+
+3. Software Developer — 1000 Miles Limited (Aug 2025–Present)
+   - Developed and maintained corporate websites to expand company web presence and functionality
+   - Streamlined internal operations by designing and deploying custom automated workflows using n8n and Make
+   - Managed software-based employee onboarding
+   - Delivered continuous technical support for internal digital applications and software tools
+   - Tech: React, Next.js, n8n, Make
 
 CONTACT:
 - Email: luizsemwarain@gmail.com

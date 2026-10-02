@@ -27,7 +27,7 @@ const categories = [
   {
     name: "Backend",
     icon: "✦",
-    skills: ["Node.js", "Python", "Flask", "ASP.NET", "Django"],
+    skills: ["Node.js", "Next.js", "Python", "Flask", "ASP.NET", "Django"],
   },
   {
     name: "Databases",
@@ -37,7 +37,7 @@ const categories = [
   {
     name: "DevOps & Tools",
     icon: "✦",
-    skills: ["Git", "Docker", "Github", "Figma", "Lucidchart", "AI Tools"],
+    skills: ["Git", "Docker", "Github", "Figma", "Lucidchart", "n8n", "Make", "AI Tools"],
   },
 ];
 
